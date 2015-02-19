@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		D454805D1A9572F5009D7229 /* Result.h in Headers */ = {isa = PBXBuildFile; fileRef = D454805C1A9572F5009D7229 /* Result.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D454805F1A9572F5009D7229 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = D454805E1A9572F5009D7229 /* .gitignore */; };
-		D45480621A9572F5009D7229 /* Result.xcworkspace in Resources */ = {isa = PBXBuildFile; fileRef = D45480611A9572F5009D7229 /* Result.xcworkspace */; };
 		D45480681A9572F5009D7229 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D45480571A9572F5009D7229 /* Result.framework */; };
 		D454806F1A9572F5009D7229 /* ResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D454806E1A9572F5009D7229 /* ResultTests.swift */; };
 /* End PBXBuildFile section */
@@ -28,9 +26,6 @@
 		D45480571A9572F5009D7229 /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D454805B1A9572F5009D7229 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D454805C1A9572F5009D7229 /* Result.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Result.h; sourceTree = "<group>"; };
-		D454805E1A9572F5009D7229 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; name = .gitignore; path = ../.gitignore; sourceTree = "<group>"; };
-		D45480601A9572F5009D7229 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		D45480611A9572F5009D7229 /* Result.xcworkspace */ = {isa = PBXFileReference; lastKnownFileType = wrapper.workspace; path = Result.xcworkspace; sourceTree = SOURCE_ROOT; };
 		D45480671A9572F5009D7229 /* ResultTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ResultTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D454806D1A9572F5009D7229 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D454806E1A9572F5009D7229 /* ResultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultTests.swift; sourceTree = "<group>"; };
@@ -77,9 +72,6 @@
 			isa = PBXGroup;
 			children = (
 				D454805C1A9572F5009D7229 /* Result.h */,
-				D454805E1A9572F5009D7229 /* .gitignore */,
-				D45480601A9572F5009D7229 /* LICENSE */,
-				D45480611A9572F5009D7229 /* Result.xcworkspace */,
 				D454805A1A9572F5009D7229 /* Supporting Files */,
 			);
 			path = Result;
@@ -200,8 +192,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D454805F1A9572F5009D7229 /* .gitignore in Resources */,
-				D45480621A9572F5009D7229 /* Result.xcworkspace in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
