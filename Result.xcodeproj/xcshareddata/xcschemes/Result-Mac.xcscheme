@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D45480561A9572F5009D7229"
-               BuildableName = "Result-Mac.framework"
+               BuildableName = "Result.framework"
                BlueprintName = "Result-Mac"
                ReferencedContainer = "container:Result.xcodeproj">
             </BuildableReference>
@@ -57,7 +57,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D45480561A9572F5009D7229"
-            BuildableName = "Result-Mac.framework"
+            BuildableName = "Result.framework"
             BlueprintName = "Result-Mac"
             ReferencedContainer = "container:Result.xcodeproj">
          </BuildableReference>
@@ -76,7 +76,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D45480561A9572F5009D7229"
-            BuildableName = "Result-Mac.framework"
+            BuildableName = "Result.framework"
             BlueprintName = "Result-Mac"
             ReferencedContainer = "container:Result.xcodeproj">
          </BuildableReference>
@@ -94,7 +94,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D45480561A9572F5009D7229"
-            BuildableName = "Result-Mac.framework"
+            BuildableName = "Result.framework"
             BlueprintName = "Result-Mac"
             ReferencedContainer = "container:Result.xcodeproj">
          </BuildableReference>
