@@ -75,6 +75,9 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 	/// The domain for errors constructed by Result.
 	public static var errorDomain: String { return "com.antitypical.Result" }
 
+	/// The userInfo key for source functions in errors constructed by Result.
+	public static var functionKey: String { return "\(errorDomain).function" }
+
 	/// The userInfo key for source file paths in errors constructed by Result.
 	public static var fileKey: String { return "\(errorDomain).file" }
 
@@ -82,8 +85,9 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 	public static var lineKey: String { return "\(errorDomain).line" }
 
 	/// Constructs an error.
-	public static func error(file: String = __FILE__, line: UInt = __LINE__) -> NSError {
+	public static func error(function: String = __FUNCTION__, file: String = __FILE__, line: UInt = __LINE__) -> NSError {
 		return NSError(domain: "com.antitypical.Result", code: 0, userInfo: [
+			functionKey: function,
 			fileKey: file,
 			lineKey: line,
 		])
