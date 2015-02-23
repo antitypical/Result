@@ -108,6 +108,11 @@ public func == <T: Equatable> (left: Result<T>, right: Result<T>) -> Bool {
 	??	false
 }
 
+/// Returns `true` if `left` and `right` represent different cases, or if they represent the same case but different values.
+public func != <T: Equatable> (left: Result<T>, right: Result<T>) -> Bool {
+	return !(left == right)
+}
+
 
 // MARK: - Operators
 
