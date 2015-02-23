@@ -7,6 +7,13 @@ final class ResultTests: XCTestCase {
 			ifFailure: const(0))
 		XCTAssertEqual(value, 7)
 	}
+
+	func testMapRewrapsFailures() {
+		let value = failure.map(count).analysis(
+			ifSuccess: id,
+			ifFailure: const(0))
+		XCTAssertEqual(value, 0)
+	}
 }
 
 let success = Result.success("success")
