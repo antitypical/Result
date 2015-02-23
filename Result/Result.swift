@@ -45,6 +45,21 @@ public enum Result<T>: EitherType {
 	}
 
 
+	// MARK: Higher-order functions
+
+	/// Returns a new Result by mapping `Success`es’ values using `transform`, or re-wrapping `Failure`s’ errors.
+	public func map<U>(transform: T -> U) -> Result<U> {
+		return flatMap(transform >>> Result<U>.success)
+	}
+
+	/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
+	public func flatMap<U>(transform: T -> Result<U>) -> Result<U> {
+		return analysis(
+			ifSuccess: transform,
+			ifFailure: Result<U>.failure)
+	}
+
+
 	// MARK: Cases
 
 	case Success(Box<T>)
@@ -66,6 +81,25 @@ public enum Result<T>: EitherType {
 			ifSuccess: ifRight,
 			ifFailure: ifLeft)
 	}
+}
+
+
+// MARK: - Operators
+
+infix operator >>- {
+	// Left-associativity so that chaining works like you’d expect, and for consistency with Haskell, Runes, swiftz, etc.
+	associativity left
+
+	// Higher precedence than function application, but lower than function composition.
+	precedence 150
+}
+
+
+/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
+///
+/// This is a synonym for `flatMap`.
+public func >>- <T, U> (result: Result<T>, transform: T -> Result<U>) -> Result<U> {
+	return result.flatMap(transform)
 }
 
 
