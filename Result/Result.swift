@@ -14,37 +14,6 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 		self = Failure(error)
 	}
 
-	/// Constructs a Result with the result of calling `try` with an error pointer.
-	///
-	/// This is convenient for wrapping Cocoa API which returns an object or `nil` + an error, by reference. e.g.:
-	///
-	///     Result { NSData(contentsOfFile: "/…", options: .DataReadingMapped, error: $0) }
-	public init(_ try: NSErrorPointer -> T?, function: String = __FUNCTION__, file: String = __FILE__, line: UInt = __LINE__) {
-		self = Result.try(try, function: function, file: file, line: line)
-	}
-
-	/// Constructs a Result with the result of calling `try` with an error pointer.
-	///
-	/// This is convenient for wrapping Cocoa API which returns an object or `nil` + an error, by reference. e.g.:
-	///
-	///     Result { NSData(contentsOfFile: "/…", options: .DataReadingMapped, error: $0) }
-	public static func try(try: NSErrorPointer -> T?, function: String = __FUNCTION__, file: String = __FILE__, line: UInt = __LINE__) -> Result {
-		var error: NSError?
-		return try(&error).map(success) ?? failure(error ?? Result.error(function: function, file: file, line: line))
-	}
-
-	/// Constructs a Result with the result of calling `try` with an error pointer.
-	///
-	/// This is convenient for wrapping Cocoa API which returns an object or `nil` + an error, by reference. e.g.:
-	///
-	///     Result.try { NSFileManager.defaultManager().removeItemAtURL(URL, error: $0) }
-	public static func try(try: NSErrorPointer -> Bool, function: String = __FUNCTION__, file: String = __FILE__, line: UInt = __LINE__) -> Result<()> {
-		var error: NSError?
-		return try(&error) ?
-			.success(())
-		:	.failure(error ?? Result.error(function: function, file: file, line: line))
-	}
-
 
 	/// Constructs a success wrapping a `value`.
 	public static func success(value: T) -> Result {
@@ -190,6 +159,31 @@ public func ?? <T> (left: Result<T>, @autoclosure right: () -> Result<T>) -> Res
 	return left.analysis(
 		ifSuccess: const(left),
 		ifFailure: { _ in right() })
+}
+
+
+// MARK: - Cocoa API conveniences
+
+/// Constructs a Result with the result of calling `try` with an error pointer.
+///
+/// This is convenient for wrapping Cocoa API which returns an object or `nil` + an error, by reference. e.g.:
+///
+///     Result.try { NSData(contentsOfURL: URL, options: .DataReadingMapped, error: $0) }
+public func try<T>(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__, try: NSErrorPointer -> T?) -> Result<T> {
+	var error: NSError?
+	return try(&error).map(Result.success) ?? Result.failure(error ?? Result<T>.error(function: function, file: file, line: line))
+}
+
+/// Constructs a Result with the result of calling `try` with an error pointer.
+///
+/// This is convenient for wrapping Cocoa API which returns an object or `nil` + an error, by reference. e.g.:
+///
+///     Result.try { NSFileManager.defaultManager().removeItemAtURL(URL, error: $0) }
+public func try(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__, try: NSErrorPointer -> Bool) -> Result<()> {
+	var error: NSError?
+	return try(&error) ?
+		.success(())
+	:	.failure(error ?? Result<()>.error(function: function, file: file, line: line))
 }
 
 
