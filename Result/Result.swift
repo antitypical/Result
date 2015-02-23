@@ -27,6 +27,9 @@ public enum Result<T>: EitherType {
 		return either(const(nil), id)
 	}
 
+	/// Case analysis for Result.
+	///
+	/// Returns the value produced by applying `ifFailure` to `Failure` Results, or `ifSuccess` to `Success` Results.
 	public func analysis<Result>(#ifFailure: NSError -> Result, ifSuccess: T -> Result) -> Result {
 		switch self {
 		case let Failure(error):
