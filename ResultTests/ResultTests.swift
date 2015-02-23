@@ -10,6 +10,24 @@ final class ResultTests: XCTestCase {
 	}
 
 
+	// MARK: Errors
+
+	func testErrorsIncludeTheSourceFile() {
+		let file = __FILE__
+		XCTAssertEqual(Result<()>.error().file ?? "", file)
+	}
+
+	func testErrorsIncludeTheSourceLine() {
+		let (line, error) = (__LINE__, Result<()>.error())
+		XCTAssertEqual(error.line ?? -1, line)
+	}
+
+	func testErrorsIncludeTheCallingFunction() {
+		let function = __FUNCTION__
+		XCTAssertEqual(Result<()>.error().function ?? "", function)
+	}
+
+
 	// MARK: Cocoa API idioms
 
 	func testTryProducesFailuresForBooleanAPIWithErrorReturnedByReference() {
@@ -37,6 +55,15 @@ final class ResultTests: XCTestCase {
 	}
 }
 
+
+// MARK: - Fixtures
+
+let success = Result.success("success")
+let failure = Result<String>.failure(NSError(domain: "com.antitypical.Result", code: 0xdeadbeef, userInfo: nil))
+
+
+// MARK: - Helpers
+
 func attempt<T>(value: T, #succeed: Bool, #error: NSErrorPointer) -> T? {
 	if succeed {
 		return value
@@ -46,8 +73,19 @@ func attempt<T>(value: T, #succeed: Bool, #error: NSErrorPointer) -> T? {
 	}
 }
 
-let success = Result.success("success")
-let failure = Result<String>.failure(NSError(domain: "com.antitypical.Result", code: 0xdeadbeef, userInfo: nil))
+extension NSError {
+	var function: String? {
+		return userInfo?[Result<()>.functionKey as NSString] as? String
+	}
+	
+	var file: String? {
+		return userInfo?[Result<()>.fileKey as NSString] as? String
+	}
+
+	var line: Int? {
+		return userInfo?[Result<()>.lineKey as NSString] as? Int
+	}
+}
 
 
 // MARK: - Imports
