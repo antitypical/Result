@@ -141,7 +141,7 @@ infix operator >>- {
 /// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
 ///
 /// This is a synonym for `flatMap`.
-public func >>- <T, U> (result: Result<T>, transform: T -> Result<U>) -> Result<U> {
+public func >>- <T, U> (result: Result<T>, @noescape transform: T -> Result<U>) -> Result<U> {
 	return result.flatMap(transform)
 }
 
