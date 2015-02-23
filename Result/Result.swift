@@ -48,8 +48,8 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 	// MARK: Higher-order functions
 
 	/// Returns a new Result by mapping `Success`es’ values using `transform`, or re-wrapping `Failure`s’ errors.
-	public func map<U>(transform: T -> U) -> Result<U> {
-		return flatMap(transform >>> Result<U>.success)
+	public func map<U>(@noescape transform: T -> U) -> Result<U> {
+		return flatMap { Result<U>.success(transform($0)) }
 	}
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
