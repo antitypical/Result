@@ -4,21 +4,51 @@
 public enum Result<T>: EitherType {
 	// MARK: Constructors
 
-	/// Constructs a failure from an `error`.
-	public static func failure(error: NSError) -> Result {
-		return Failure(error)
-	}
-
 	/// Constructs a success from a `value`.
 	public static func success(value: T) -> Result {
 		return Success(Box(value))
 	}
 
+	/// Constructs a failure from an `error`.
+	public static func failure(error: NSError) -> Result {
+		return Failure(error)
+	}
+
+
+	// MARK: Deconstruction
+
+	/// Returns the value from `Success` Results, `nil` otherwise.
+	public var success: T? {
+		return analysis(
+			ifSuccess: id,
+			ifFailure: const(nil))
+	}
+
+	/// Returns the error from `Failure` Results, `nil` otherwise.
+	public var failure: NSError? {
+		return analysis(
+			ifSuccess: const(nil),
+			ifFailure: id)
+	}
+
+	/// Case analysis for Result.
+	///
+	/// Returns the value produced by applying `ifFailure` to `Failure` Results, or `ifSuccess` to `Success` Results.
+	public func analysis<Result>(#ifSuccess: T -> Result, ifFailure: NSError -> Result) -> Result {
+		switch self {
+		case let Failure(error):
+			return ifFailure(error)
+
+		case let Success(value):
+			return ifSuccess(value.value)
+		}
+	}
+
 
 	// MARK: Cases
 
-	case Failure(NSError)
 	case Success(Box<T>)
+	case Failure(NSError)
 
 
 	// MARK: EitherType
@@ -32,13 +62,9 @@ public enum Result<T>: EitherType {
 	}
 
 	public func either<Result>(ifLeft: NSError -> Result, _ ifRight: T -> Result) -> Result {
-		switch self {
-		case let Failure(error):
-			return ifLeft(error)
-
-		case let Success(v):
-			return ifRight(v.value)
-		}
+		return analysis(
+			ifSuccess: ifRight,
+			ifFailure: ifLeft)
 	}
 }
 
@@ -47,4 +73,5 @@ public enum Result<T>: EitherType {
 
 import Box
 import Either
+import Prelude
 import Foundation
