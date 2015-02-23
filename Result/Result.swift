@@ -1,7 +1,7 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
 /// An enum representing either a failure with an explanatory error, or a success with a result value.
-public enum Result<T>: EitherType, Printable {
+public enum Result<T>: EitherType, Printable, DebugPrintable {
 	// MARK: Constructors
 
 	/// Constructs a success from a `value`.
@@ -89,6 +89,13 @@ public enum Result<T>: EitherType, Printable {
 		return analysis(
 			ifSuccess: { ".Success(\($0))" },
 			ifFailure: { ".Failure(\($0))" })
+	}
+
+
+	// MARK: DebugPrintable
+
+	public var debugDescription: String {
+		return description
 	}
 }
 
