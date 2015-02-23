@@ -34,7 +34,7 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 	/// Case analysis for Result.
 	///
 	/// Returns the value produced by applying `ifFailure` to `Failure` Results, or `ifSuccess` to `Success` Results.
-	public func analysis<Result>(#ifSuccess: T -> Result, ifFailure: NSError -> Result) -> Result {
+	public func analysis<Result>(@noescape #ifSuccess: T -> Result, @noescape ifFailure: NSError -> Result) -> Result {
 		switch self {
 		case let Failure(error):
 			return ifFailure(error)
