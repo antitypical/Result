@@ -5,12 +5,12 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 	// MARK: Constructors
 
 	/// Constructs a success wrapping a `value`.
-	public init(_ value: T) {
+	public init(value: T) {
 		self = Success(Box(value))
 	}
 
 	/// Constructs a failure wrapping an `error`.
-	public init(_ error: NSError) {
+	public init(error: NSError) {
 		self = Failure(error)
 	}
 
@@ -48,12 +48,12 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 
 	/// Constructs a success wrapping a `value`.
 	public static func success(value: T) -> Result {
-		return Result(value)
+		return Result(value: value)
 	}
 
 	/// Constructs a failure wrapping an `error`.
 	public static func failure(error: NSError) -> Result {
-		return Result(error)
+		return Result(error: error)
 	}
 
 
