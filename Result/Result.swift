@@ -53,7 +53,7 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 	}
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
-	public func flatMap<U>(transform: T -> Result<U>) -> Result<U> {
+	public func flatMap<U>(@noescape transform: T -> Result<U>) -> Result<U> {
 		return analysis(
 			ifSuccess: transform,
 			ifFailure: Result<U>.failure)
