@@ -3,10 +3,11 @@
 /// An enum representing either a failure with an explanatory error, or a success with a result value.
 public enum Result<T> {
 	case Failure(NSError)
-	case Success(() -> T)
+	case Success(Box<T>)
 }
 
 
 // MARK: - Imports
 
+import Box
 import Foundation
