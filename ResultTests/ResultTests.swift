@@ -18,10 +18,22 @@ final class ResultTests: XCTestCase {
 		XCTAssertNotNil(result.failure)
 	}
 
-	func testTryProducesFailuresForObjectAPIWithErrorReturnedByReference() {
+	func testTryProducesFailuresForOptionalWithErrorReturnedByReference() {
 		let result = try { attempt(1, succeed: false, error: $0) }
 		XCTAssertEqual(result ?? 0, 0)
 		XCTAssertNotNil(result.failure)
+	}
+
+	func testTryProducesSuccessesForBooleanAPI() {
+		let result = try { attempt(true, succeed: true, error: $0) }
+		XCTAssertTrue(result ?? false)
+		XCTAssertNil(result.failure)
+	}
+
+	func testTryProducesSuccessesForOptionalAPI() {
+		let result = try { attempt(1, succeed: true, error: $0) }
+		XCTAssertEqual(result ?? 0, 1)
+		XCTAssertNil(result.failure)
 	}
 }
 
