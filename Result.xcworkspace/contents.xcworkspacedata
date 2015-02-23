@@ -4,4 +4,13 @@
    <FileRef
       location = "group:Result.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:External/Either/External/Box/Box.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:External/Either/Either.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:External/Either/External/Prelude/Prelude.xcodeproj">
+   </FileRef>
 </Workspace>
