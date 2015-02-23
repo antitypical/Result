@@ -54,6 +54,12 @@ public enum Result<T>: EitherType {
 			ifFailure: Result<U>.failure)
 	}
 
+	public func flatMap<U>(transform: T -> Result<U>) -> Result<U> {
+		return analysis(
+			ifSuccess: transform,
+			ifFailure: Result<U>.failure)
+	}
+
 
 	// MARK: Cases
 
