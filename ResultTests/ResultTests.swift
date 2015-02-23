@@ -10,6 +10,24 @@ final class ResultTests: XCTestCase {
 	}
 
 
+	// MARK: Errors
+
+	func testErrorsIncludeTheSourceFile() {
+		let file = __FILE__
+		XCTAssertEqual(Result<()>.error().file ?? "", file)
+	}
+
+	func testErrorsIncludeTheSourceLine() {
+		let (line, error) = (__LINE__, Result<()>.error())
+		XCTAssertEqual(error.line ?? -1, line)
+	}
+
+	func testErrorsIncludeTheCallingFunction() {
+		let function = __FUNCTION__
+		XCTAssertEqual(Result<()>.error().function ?? "", function)
+	}
+
+
 	// MARK: Cocoa API idioms
 
 	func testTryProducesFailuresForBooleanAPIWithErrorReturnedByReference() {
