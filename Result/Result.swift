@@ -4,9 +4,14 @@
 public enum Result<T>: EitherType, Printable, DebugPrintable {
 	// MARK: Constructors
 
-	/// Constructs a success from a `value`.
+	/// Constructs a success wrapping a `value`.
+	public init(_ value: T) {
+		self = Success(Box(value))
+	}
+
+	/// Constructs a success wrapping a `value`.
 	public static func success(value: T) -> Result {
-		return Success(Box(value))
+		return Result(value)
 	}
 
 	/// Constructs a failure from an `error`.
