@@ -117,7 +117,7 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 	public static var lineKey: String { return "\(errorDomain).line" }
 
 	/// Constructs an error.
-	public static func error(function: String = __FUNCTION__, file: String = __FILE__, line: UInt = __LINE__) -> NSError {
+	public static func error(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__) -> NSError {
 		return NSError(domain: "com.antitypical.Result", code: 0, userInfo: [
 			functionKey: function,
 			fileKey: file,
