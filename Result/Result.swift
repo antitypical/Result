@@ -119,6 +119,13 @@ public func ?? <T> (left: Result<T>, @autoclosure right: () -> T) -> T {
 	return left.success ?? right()
 }
 
+/// Returns `left` if it is a `Success`es, or `right` otherwise. Short-circuits.
+public func ?? <T> (left: Result<T>, @autoclosure right: () -> Result<T>) -> Result<T> {
+	return left.analysis(
+		ifSuccess: const(left),
+		ifFailure: { _ in right() })
+}
+
 
 // MARK: - Operators
 
