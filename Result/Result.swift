@@ -17,10 +17,12 @@ public enum Result<T>: EitherType {
 
 	// MARK: Properties
 
+	/// Returns the error from `Failure` Results, `nil` otherwise.
 	var failure: NSError? {
 		return either(id, const(nil))
 	}
 
+	/// Returns the value from `Success` Results, `nil` otherwise.
 	var success: T? {
 		return either(const(nil), id)
 	}
