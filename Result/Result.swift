@@ -52,7 +52,7 @@ public enum Result<T>: EitherType {
 		return flatMap(transform >>> Result<U>.success)
 	}
 
-	/// Returns the result of applying `transform` to `Success`es values, or re-wrapping `Failure`’s errors.
+	/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
 	public func flatMap<U>(transform: T -> Result<U>) -> Result<U> {
 		return analysis(
 			ifSuccess: transform,
@@ -92,6 +92,14 @@ infix operator >>- {
 
 	// Higher precedence than function application, but lower than function composition.
 	precedence 150
+}
+
+
+/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
+///
+/// This is a synonym for `flatMap`.
+public func >>- <T, U> (result: Result<T>, transform: T -> Result<U>) -> Result<U> {
+	return result.flatMap(transform)
 }
 
 
