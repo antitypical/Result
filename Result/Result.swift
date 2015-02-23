@@ -34,7 +34,7 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 	/// Case analysis for Result.
 	///
 	/// Returns the value produced by applying `ifFailure` to `Failure` Results, or `ifSuccess` to `Success` Results.
-	public func analysis<Result>(#ifSuccess: T -> Result, ifFailure: NSError -> Result) -> Result {
+	public func analysis<Result>(@noescape #ifSuccess: T -> Result, @noescape ifFailure: NSError -> Result) -> Result {
 		switch self {
 		case let Failure(error):
 			return ifFailure(error)
@@ -111,6 +111,19 @@ public func == <T: Equatable> (left: Result<T>, right: Result<T>) -> Bool {
 /// Returns `true` if `left` and `right` represent different cases, or if they represent the same case but different values.
 public func != <T: Equatable> (left: Result<T>, right: Result<T>) -> Bool {
 	return !(left == right)
+}
+
+
+/// Returns the value of `left` if it is a `Success`, or `right` otherwise. Short-circuits.
+public func ?? <T> (left: Result<T>, @autoclosure right: () -> T) -> T {
+	return left.success ?? right()
+}
+
+/// Returns `left` if it is a `Success`es, or `right` otherwise. Short-circuits.
+public func ?? <T> (left: Result<T>, @autoclosure right: () -> Result<T>) -> Result<T> {
+	return left.analysis(
+		ifSuccess: const(left),
+		ifFailure: { _ in right() })
 }
 
 
