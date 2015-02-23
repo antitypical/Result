@@ -19,12 +19,16 @@ public enum Result<T>: EitherType {
 
 	/// Returns the error from `Failure` Results, `nil` otherwise.
 	public var failure: NSError? {
-		return either(id, const(nil))
+		return analysis(
+			ifFailure: id,
+			ifSuccess: const(nil))
 	}
 
 	/// Returns the value from `Success` Results, `nil` otherwise.
 	public var success: T? {
-		return either(const(nil), id)
+		return analysis(
+			ifFailure: const(nil),
+			ifSuccess: id)
 	}
 
 	/// Case analysis for Result.
@@ -58,13 +62,9 @@ public enum Result<T>: EitherType {
 	}
 
 	public func either<Result>(ifLeft: NSError -> Result, _ ifRight: T -> Result) -> Result {
-		switch self {
-		case let Failure(error):
-			return ifLeft(error)
-
-		case let Success(v):
-			return ifRight(v.value)
-		}
+		return analysis(
+			ifFailure: ifLeft,
+			ifSuccess: ifRight)
 	}
 }
 
