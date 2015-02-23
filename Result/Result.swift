@@ -48,12 +48,12 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 	// MARK: Higher-order functions
 
 	/// Returns a new Result by mapping `Success`es’ values using `transform`, or re-wrapping `Failure`s’ errors.
-	public func map<U>(transform: T -> U) -> Result<U> {
-		return flatMap(transform >>> Result<U>.success)
+	public func map<U>(@noescape transform: T -> U) -> Result<U> {
+		return flatMap { Result<U>.success(transform($0)) }
 	}
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
-	public func flatMap<U>(transform: T -> Result<U>) -> Result<U> {
+	public func flatMap<U>(@noescape transform: T -> Result<U>) -> Result<U> {
 		return analysis(
 			ifSuccess: transform,
 			ifFailure: Result<U>.failure)
@@ -141,7 +141,7 @@ infix operator >>- {
 /// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
 ///
 /// This is a synonym for `flatMap`.
-public func >>- <T, U> (result: Result<T>, transform: T -> Result<U>) -> Result<U> {
+public func >>- <T, U> (result: Result<T>, @noescape transform: T -> Result<U>) -> Result<U> {
 	return result.flatMap(transform)
 }
 
