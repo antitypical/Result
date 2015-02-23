@@ -45,6 +45,15 @@ public enum Result<T>: EitherType {
 	}
 
 
+	// MARK: Higher-order functions
+
+	public func map<U>(transform: T -> U) -> Result<U> {
+		return analysis(
+			ifSuccess: transform >>> Result<U>.success,
+			ifFailure: Result<U>.failure)
+	}
+
+
 	// MARK: Cases
 
 	case Success(Box<T>)
