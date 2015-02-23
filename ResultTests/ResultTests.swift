@@ -15,25 +15,25 @@ final class ResultTests: XCTestCase {
 	func testTryProducesFailuresForBooleanAPIWithErrorReturnedByReference() {
 		let result = try { attempt(true, succeed: false, error: $0) }
 		XCTAssertFalse(result ?? false)
-		XCTAssertNotNil(result.failure)
+		XCTAssertNotNil(result.error)
 	}
 
 	func testTryProducesFailuresForOptionalWithErrorReturnedByReference() {
 		let result = try { attempt(1, succeed: false, error: $0) }
 		XCTAssertEqual(result ?? 0, 0)
-		XCTAssertNotNil(result.failure)
+		XCTAssertNotNil(result.error)
 	}
 
 	func testTryProducesSuccessesForBooleanAPI() {
 		let result = try { attempt(true, succeed: true, error: $0) }
 		XCTAssertTrue(result ?? false)
-		XCTAssertNil(result.failure)
+		XCTAssertNil(result.error)
 	}
 
 	func testTryProducesSuccessesForOptionalAPI() {
 		let result = try { attempt(1, succeed: true, error: $0) }
 		XCTAssertEqual(result ?? 0, 1)
-		XCTAssertNil(result.failure)
+		XCTAssertNil(result.error)
 	}
 }
 

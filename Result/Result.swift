@@ -29,14 +29,14 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 	// MARK: Deconstruction
 
 	/// Returns the value from `Success` Results, `nil` otherwise.
-	public var success: T? {
+	public var value: T? {
 		return analysis(
 			ifSuccess: id,
 			ifFailure: const(nil))
 	}
 
 	/// Returns the error from `Failure` Results, `nil` otherwise.
-	public var failure: NSError? {
+	public var error: NSError? {
 		return analysis(
 			ifSuccess: const(nil),
 			ifFailure: id)
@@ -138,8 +138,8 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 /// Returns `true` if `left` and `right` are both `Success`es and their values are equal, or if `left` and `right` are both `Failure`s and their errors are equal.
 public func == <T: Equatable> (left: Result<T>, right: Result<T>) -> Bool {
 	return
-		(left.success &&& right.success).map { $0 == $1 }
-	??	(left.failure &&& right.failure).map(==)
+		(left.value &&& right.value).map { $0 == $1 }
+	??	(left.error &&& right.error).map(==)
 	??	false
 }
 
@@ -151,7 +151,7 @@ public func != <T: Equatable> (left: Result<T>, right: Result<T>) -> Bool {
 
 /// Returns the value of `left` if it is a `Success`, or `right` otherwise. Short-circuits.
 public func ?? <T> (left: Result<T>, @autoclosure right: () -> T) -> T {
-	return left.success ?? right()
+	return left.value ?? right()
 }
 
 /// Returns `left` if it is a `Success`es, or `right` otherwise. Short-circuits.
