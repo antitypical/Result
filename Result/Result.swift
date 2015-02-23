@@ -4,10 +4,12 @@
 public enum Result<T>: EitherType {
 	// MARK: Constructors
 
+	/// Constructs a failure from an `error`.
 	public static func failure(error: NSError) -> Result {
 		return Failure(error)
 	}
 
+	/// Constructs a success from a `value`.
 	public static func success(value: T) -> Result {
 		return Success(Box(value))
 	}
