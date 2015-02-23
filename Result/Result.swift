@@ -49,9 +49,7 @@ public enum Result<T>: EitherType {
 
 	/// Returns a new Result by mapping `Success`es’ values using `transform`, or re-wrapping `Failure`s’ errors.
 	public func map<U>(transform: T -> U) -> Result<U> {
-		return analysis(
-			ifSuccess: transform >>> Result<U>.success,
-			ifFailure: Result<U>.failure)
+		return flatMap(transform >>> Result<U>.success)
 	}
 
 	/// Returns the result of applying `transform` to `Success`es values, or re-wrapping `Failure`’s errors.
