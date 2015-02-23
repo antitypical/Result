@@ -14,6 +14,17 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 		self = Failure(error)
 	}
 
+	/// Constructs a Result with the result of calling `try` with an error pointer.
+	///
+	/// This is convenient for wrapping Cocoa API which returns an object or `nil` + an error, by reference. e.g.:
+	///
+	///     Result { NSData(contentsOfFile: "/…", options: .DataReadingMapped, error: $0) }
+	public init(_ try: NSErrorPointer -> T?, function: String = __FUNCTION__, file: String = __FILE__, line: UInt = __LINE__) {
+		var error: NSError?
+		self = try(&error).map(Result.success) ?? Result.failure(error ?? Result.error(function: function, file: file, line: line))
+	}
+
+
 	/// Constructs a success wrapping a `value`.
 	public static func success(value: T) -> Result {
 		return Result(value)
