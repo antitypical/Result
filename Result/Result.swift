@@ -2,6 +2,8 @@
 
 /// An enum representing either a failure with an explanatory error, or a success with a result value.
 public enum Result<T>: EitherType {
+	// MARK: Constructors
+
 	public static func failure(error: NSError) -> Result {
 		return Failure(error)
 	}
@@ -10,6 +12,8 @@ public enum Result<T>: EitherType {
 		return Success(Box(value))
 	}
 
+
+	// MARK: Cases
 
 	case Failure(NSError)
 	case Success(Box<T>)
