@@ -15,6 +15,17 @@ public enum Result<T>: EitherType {
 	}
 
 
+	// MARK: Properties
+
+	var failure: NSError? {
+		return either(id, const(nil))
+	}
+
+	var success: T? {
+		return either(const(nil), id)
+	}
+
+
 	// MARK: Cases
 
 	case Failure(NSError)
@@ -47,4 +58,5 @@ public enum Result<T>: EitherType {
 
 import Box
 import Either
+import Prelude
 import Foundation
