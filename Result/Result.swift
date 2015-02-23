@@ -114,6 +114,12 @@ public func != <T: Equatable> (left: Result<T>, right: Result<T>) -> Bool {
 }
 
 
+/// Returns the value of `Success`es, or `right` otherwise. Short-circuits.
+public func ?? <T> (left: Result<T>, @autoclosure right: () -> T) -> T {
+	return left.success ?? right()
+}
+
+
 // MARK: - Operators
 
 infix operator >>- {
