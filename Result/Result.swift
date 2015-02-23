@@ -70,6 +70,26 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 	}
 
 
+	// MARK: Errors
+
+	/// The domain for errors constructed by Result.
+	public static var errorDomain: String { return "com.antitypical.Result" }
+
+	/// The userInfo key for source file paths in errors constructed by Result.
+	public static var fileKey: String { return "\(errorDomain).file" }
+
+	/// The userInfo key for source file line numbers in errors constructed by Result.
+	public static var lineKey: String { return "\(errorDomain).line" }
+
+	/// Constructs an error.
+	public static func error(file: String = __FILE__, line: UInt = __LINE__) -> NSError {
+		return NSError(domain: "com.antitypical.Result", code: 0, userInfo: [
+			fileKey: file,
+			lineKey: line,
+		])
+	}
+
+
 	// MARK: Cases
 
 	case Success(Box<T>)
