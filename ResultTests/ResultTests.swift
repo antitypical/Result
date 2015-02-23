@@ -2,6 +2,9 @@
 
 final class ResultTests: XCTestCase {}
 
+let success = Result.success("success")
+let failure = Result<String>.failure(NSError(domain: "com.antitypical.Result", code: 0xdeadbeef, userInfo: nil))
+
 
 // MARK: - Imports
 
