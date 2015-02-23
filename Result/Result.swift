@@ -100,6 +100,15 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 }
 
 
+/// Returns `true` if `left` and `right` are both `Success`es and their values are equal, or if `left` and `right` are both `Failure`s and their errors are equal.
+public func == <T: Equatable> (left: Result<T>, right: Result<T>) -> Bool {
+	return
+		(left.success &&& right.success).map { $0 == $1 }
+	??	(left.failure &&& right.failure).map(==)
+	??	false
+}
+
+
 // MARK: - Operators
 
 infix operator >>- {
