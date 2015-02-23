@@ -47,6 +47,7 @@ public enum Result<T>: EitherType {
 
 	// MARK: Higher-order functions
 
+	/// Returns a new Result by mapping `Success`es’ values using `transform`, or re-wrapping `Failure`s’ errors.
 	public func map<U>(transform: T -> U) -> Result<U> {
 		return analysis(
 			ifSuccess: transform >>> Result<U>.success,
