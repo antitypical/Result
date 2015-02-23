@@ -15,7 +15,7 @@ public enum Result<T>: EitherType {
 	}
 
 
-	// MARK: Properties
+	// MARK: Deconstruction
 
 	/// Returns the error from `Failure` Results, `nil` otherwise.
 	public var failure: NSError? {
