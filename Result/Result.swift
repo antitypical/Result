@@ -9,14 +9,19 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 		self = Success(Box(value))
 	}
 
+	/// Constructs a failure wrapping an `error`.
+	public init(_ error: NSError) {
+		self = Failure(error)
+	}
+
 	/// Constructs a success wrapping a `value`.
 	public static func success(value: T) -> Result {
 		return Result(value)
 	}
 
-	/// Constructs a failure from an `error`.
+	/// Constructs a failure wrapping an `error`.
 	public static func failure(error: NSError) -> Result {
-		return Failure(error)
+		return Result(error)
 	}
 
 
