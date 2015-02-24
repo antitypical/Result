@@ -31,7 +31,7 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 	/// Returns the value from `Success` Results, `nil` otherwise.
 	public var value: T? {
 		return analysis(
-			ifSuccess: id,
+			ifSuccess: unit,
 			ifFailure: const(nil))
 	}
 
@@ -39,7 +39,7 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 	public var error: NSError? {
 		return analysis(
 			ifSuccess: const(nil),
-			ifFailure: id)
+			ifFailure: unit)
 	}
 
 	/// Case analysis for Result.
