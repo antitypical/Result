@@ -1,7 +1,7 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
 /// An enum representing either a failure with an explanatory error, or a success with a result value.
-public struct Result<T>: EitherType, Printable, DebugPrintable {
+public struct Result<T, Error>: EitherType, Printable, DebugPrintable {
 	// MARK: Constructors
 
 	/// Constructs a success wrapping a `value`.
@@ -10,7 +10,7 @@ public struct Result<T>: EitherType, Printable, DebugPrintable {
 	}
 
 	/// Constructs a failure wrapping an `error`.
-	public init(error: NSError) {
+	public init(error: Error) {
 		either = .left(error)
 	}
 
@@ -21,7 +21,7 @@ public struct Result<T>: EitherType, Printable, DebugPrintable {
 	}
 
 	/// Constructs a failure wrapping an `error`.
-	public static func failure(error: NSError) -> Result {
+	public static func failure(error: Error) -> Result {
 		return Result(error: error)
 	}
 
@@ -34,14 +34,14 @@ public struct Result<T>: EitherType, Printable, DebugPrintable {
 	}
 
 	/// Returns the error from `Failure` Results, `nil` otherwise.
-	public var error: NSError? {
+	public var error: Error? {
 		return either.left
 	}
 
 	/// Case analysis for Result.
 	///
 	/// Returns the value produced by applying `ifFailure` to `Failure` Results, or `ifSuccess` to `Success` Results.
-	public func analysis<Result>(@noescape #ifSuccess: T -> Result, @noescape ifFailure: NSError -> Result) -> Result {
+	public func analysis<Result>(@noescape #ifSuccess: T -> Result, @noescape ifFailure: Error -> Result) -> Result {
 		return either.either(ifLeft: ifFailure, ifRight: ifSuccess)
 	}
 
@@ -49,15 +49,15 @@ public struct Result<T>: EitherType, Printable, DebugPrintable {
 	// MARK: Higher-order functions
 
 	/// Returns a new Result by mapping `Success`es’ values using `transform`, or re-wrapping `Failure`s’ errors.
-	public func map<U>(@noescape transform: T -> U) -> Result<U> {
+	public func map<U>(@noescape transform: T -> U) -> Result<U, Error> {
 		return flatMap { .success(transform($0)) }
 	}
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
-	public func flatMap<U>(@noescape transform: T -> Result<U>) -> Result<U> {
+	public func flatMap<U>(@noescape transform: T -> Result<U, Error>) -> Result<U, Error> {
 		return analysis(
 			ifSuccess: transform,
-			ifFailure: Result<U>.failure)
+			ifFailure: Result<U, Error>.failure)
 	}
 
 
@@ -87,7 +87,7 @@ public struct Result<T>: EitherType, Printable, DebugPrintable {
 
 	// MARK: EitherType
 
-	public static func left(error: NSError) -> Result {
+	public static func left(error: Error) -> Result {
 		return failure(error)
 	}
 
@@ -95,7 +95,7 @@ public struct Result<T>: EitherType, Printable, DebugPrintable {
 		return success(value)
 	}
 
-	public func either<Result>(@noescape #ifLeft: NSError -> Result, @noescape ifRight: T -> Result) -> Result {
+	public func either<Result>(@noescape #ifLeft: Error -> Result, @noescape ifRight: T -> Result) -> Result {
 		return either.either(ifLeft: ifLeft, ifRight: ifRight)
 	}
 
@@ -118,31 +118,31 @@ public struct Result<T>: EitherType, Printable, DebugPrintable {
 
 	// MARK: Private
 
-	private var either: Either<NSError, T>
+	private var either: Either<Error, T>
 }
 
 
 /// Returns `true` if `left` and `right` are both `Success`es and their values are equal, or if `left` and `right` are both `Failure`s and their errors are equal.
-public func == <T: Equatable> (left: Result<T>, right: Result<T>) -> Bool {
+public func == <T: Equatable, Error: Equatable> (left: Result<T, Error>, right: Result<T, Error>) -> Bool {
 	return
 		(left.value &&& right.value).map { $0 == $1 }
-	??	(left.error &&& right.error).map(==)
+	??	(left.error &&& right.error).map { $0 == $1 }
 	??	false
 }
 
 /// Returns `true` if `left` and `right` represent different cases, or if they represent the same case but different values.
-public func != <T: Equatable> (left: Result<T>, right: Result<T>) -> Bool {
+public func != <T: Equatable, Error: Equatable> (left: Result<T, Error>, right: Result<T, Error>) -> Bool {
 	return !(left == right)
 }
 
 
 /// Returns the value of `left` if it is a `Success`, or `right` otherwise. Short-circuits.
-public func ?? <T> (left: Result<T>, @autoclosure right: () -> T) -> T {
+public func ?? <T, Error> (left: Result<T, Error>, @autoclosure right: () -> T) -> T {
 	return left.value ?? right()
 }
 
 /// Returns `left` if it is a `Success`es, or `right` otherwise. Short-circuits.
-public func ?? <T> (left: Result<T>, @autoclosure right: () -> Result<T>) -> Result<T> {
+public func ?? <T, Error> (left: Result<T, Error>, @autoclosure right: () -> Result<T, Error>) -> Result<T, Error> {
 	return left.analysis(
 		ifSuccess: const(left),
 		ifFailure: { _ in right() })
@@ -156,9 +156,9 @@ public func ?? <T> (left: Result<T>, @autoclosure right: () -> Result<T>) -> Res
 /// This is convenient for wrapping Cocoa API which returns an object or `nil` + an error, by reference. e.g.:
 ///
 ///     Result.try { NSData(contentsOfURL: URL, options: .DataReadingMapped, error: $0) }
-public func try<T>(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__, try: NSErrorPointer -> T?) -> Result<T> {
+public func try<T>(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__, try: NSErrorPointer -> T?) -> Result<T, NSError> {
 	var error: NSError?
-	return try(&error).map(Result.success) ?? Result.failure(error ?? Result<T>.error(function: function, file: file, line: line))
+	return try(&error).map(Result.success) ?? Result.failure(error ?? Result<T, NSError>.error(function: function, file: file, line: line))
 }
 
 /// Constructs a Result with the result of calling `try` with an error pointer.
@@ -166,11 +166,11 @@ public func try<T>(function: String = __FUNCTION__, file: String = __FILE__, lin
 /// This is convenient for wrapping Cocoa API which returns an object or `nil` + an error, by reference. e.g.:
 ///
 ///     Result.try { NSFileManager.defaultManager().removeItemAtURL(URL, error: $0) }
-public func try(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__, try: NSErrorPointer -> Bool) -> Result<()> {
+public func try(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__, try: NSErrorPointer -> Bool) -> Result<(), NSError> {
 	var error: NSError?
 	return try(&error) ?
 		.success(())
-	:	.failure(error ?? Result<()>.error(function: function, file: file, line: line))
+	:	.failure(error ?? Result<(), NSError>.error(function: function, file: file, line: line))
 }
 
 
@@ -188,7 +188,7 @@ infix operator >>- {
 /// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
 ///
 /// This is a synonym for `flatMap`.
-public func >>- <T, U> (result: Result<T>, @noescape transform: T -> Result<U>) -> Result<U> {
+public func >>- <T, U, Error> (result: Result<T, Error>, @noescape transform: T -> Result<U, Error>) -> Result<U, Error> {
 	return result.flatMap(transform)
 }
 
