@@ -1,17 +1,17 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
 /// An enum representing either a failure with an explanatory error, or a success with a result value.
-public enum Result<T>: EitherType, Printable, DebugPrintable {
+public struct Result<T>: EitherType, Printable, DebugPrintable {
 	// MARK: Constructors
 
 	/// Constructs a success wrapping a `value`.
 	public init(value: T) {
-		self = Success(Box(value))
+		either = .right(value)
 	}
 
 	/// Constructs a failure wrapping an `error`.
 	public init(error: NSError) {
-		self = Failure(error)
+		either = .left(error)
 	}
 
 
@@ -30,29 +30,19 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 
 	/// Returns the value from `Success` Results, `nil` otherwise.
 	public var value: T? {
-		return analysis(
-			ifSuccess: unit,
-			ifFailure: const(nil))
+		return either.right
 	}
 
 	/// Returns the error from `Failure` Results, `nil` otherwise.
 	public var error: NSError? {
-		return analysis(
-			ifSuccess: const(nil),
-			ifFailure: unit)
+		return either.left
 	}
 
 	/// Case analysis for Result.
 	///
 	/// Returns the value produced by applying `ifFailure` to `Failure` Results, or `ifSuccess` to `Success` Results.
 	public func analysis<Result>(@noescape #ifSuccess: T -> Result, @noescape ifFailure: NSError -> Result) -> Result {
-		switch self {
-		case let Failure(error):
-			return ifFailure(error)
-
-		case let Success(value):
-			return ifSuccess(value.value)
-		}
+		return either.either(ifLeft: ifFailure, ifRight: ifSuccess)
 	}
 
 
@@ -60,7 +50,7 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 
 	/// Returns a new Result by mapping `Success`es’ values using `transform`, or re-wrapping `Failure`s’ errors.
 	public func map<U>(@noescape transform: T -> U) -> Result<U> {
-		return flatMap { Result<U>.success(transform($0)) }
+		return flatMap { .success(transform($0)) }
 	}
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
@@ -95,12 +85,6 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 	}
 
 
-	// MARK: Cases
-
-	case Success(Box<T>)
-	case Failure(NSError)
-
-
 	// MARK: EitherType
 
 	public static func left(error: NSError) -> Result {
@@ -111,10 +95,8 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 		return success(value)
 	}
 
-	public func either<Result>(ifLeft: NSError -> Result, _ ifRight: T -> Result) -> Result {
-		return analysis(
-			ifSuccess: ifRight,
-			ifFailure: ifLeft)
+	public func either<Result>(@noescape #ifLeft: NSError -> Result, @noescape ifRight: T -> Result) -> Result {
+		return either.either(ifLeft: ifLeft, ifRight: ifRight)
 	}
 
 
@@ -132,6 +114,11 @@ public enum Result<T>: EitherType, Printable, DebugPrintable {
 	public var debugDescription: String {
 		return description
 	}
+
+
+	// MARK: Private
+
+	private var either: Either<NSError, T>
 }
 
 
@@ -208,7 +195,6 @@ public func >>- <T, U> (result: Result<T>, @noescape transform: T -> Result<U>) 
 
 // MARK: - Imports
 
-import Box
 import Either
 import Prelude
 import Foundation
