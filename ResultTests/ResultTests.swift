@@ -14,17 +14,17 @@ final class ResultTests: XCTestCase {
 
 	func testErrorsIncludeTheSourceFile() {
 		let file = __FILE__
-		XCTAssertEqual(Result<()>.error().file ?? "", file)
+		XCTAssertEqual(Result<(), NSError>.error().file ?? "", file)
 	}
 
 	func testErrorsIncludeTheSourceLine() {
-		let (line, error) = (__LINE__, Result<()>.error())
+		let (line, error) = (__LINE__, Result<(), NSError>.error())
 		XCTAssertEqual(error.line ?? -1, line)
 	}
 
 	func testErrorsIncludeTheCallingFunction() {
 		let function = __FUNCTION__
-		XCTAssertEqual(Result<()>.error().function ?? "", function)
+		XCTAssertEqual(Result<(), NSError>.error().function ?? "", function)
 	}
 
 
@@ -58,8 +58,8 @@ final class ResultTests: XCTestCase {
 
 // MARK: - Fixtures
 
-let success = Result.success("success")
-let failure = Result<String>.failure(NSError(domain: "com.antitypical.Result", code: 0xdeadbeef, userInfo: nil))
+let success = Result<String, NSError>.success("success")
+let failure = Result<String, NSError>.failure(NSError(domain: "com.antitypical.Result", code: 0xdeadbeef, userInfo: nil))
 
 
 // MARK: - Helpers
@@ -68,22 +68,22 @@ func attempt<T>(value: T, #succeed: Bool, #error: NSErrorPointer) -> T? {
 	if succeed {
 		return value
 	} else {
-		error.memory = Result<()>.error()
+		error.memory = Result<(), NSError>.error()
 		return nil
 	}
 }
 
 extension NSError {
 	var function: String? {
-		return userInfo?[Result<()>.functionKey as NSString] as? String
+		return userInfo?[Result<(), NSError>.functionKey as NSString] as? String
 	}
 	
 	var file: String? {
-		return userInfo?[Result<()>.fileKey as NSString] as? String
+		return userInfo?[Result<(), NSError>.fileKey as NSString] as? String
 	}
 
 	var line: Int? {
-		return userInfo?[Result<()>.lineKey as NSString] as? Int
+		return userInfo?[Result<(), NSError>.lineKey as NSString] as? Int
 	}
 }
 
