@@ -50,7 +50,7 @@
 		D45480571A9572F5009D7229 /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D454805B1A9572F5009D7229 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D454805C1A9572F5009D7229 /* Result.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Result.h; sourceTree = "<group>"; };
-		D45480671A9572F5009D7229 /* ResultTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = ResultTests.xctest; path = "Result-MacTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D45480671A9572F5009D7229 /* Result-MacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Result-MacTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D454806D1A9572F5009D7229 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D454806E1A9572F5009D7229 /* ResultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultTests.swift; sourceTree = "<group>"; };
 		D454807D1A957361009D7229 /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -120,7 +120,7 @@
 			isa = PBXGroup;
 			children = (
 				D45480571A9572F5009D7229 /* Result.framework */,
-				D45480671A9572F5009D7229 /* ResultTests.xctest */,
+				D45480671A9572F5009D7229 /* Result-MacTests.xctest */,
 				D454807D1A957361009D7229 /* Result.framework */,
 				D45480871A957362009D7229 /* Result-iOSTests.xctest */,
 			);
@@ -220,7 +220,7 @@
 			);
 			name = "Result-MacTests";
 			productName = ResultTests;
-			productReference = D45480671A9572F5009D7229 /* ResultTests.xctest */;
+			productReference = D45480671A9572F5009D7229 /* Result-MacTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		D454807C1A957361009D7229 /* Result-iOS */ = {
