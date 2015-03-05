@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2EEC99A51AA8D43B000026C8 /* Either.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EEC99A41AA8D43B000026C8 /* Either.framework */; };
+		2EEC99AA1AA8D9FC000026C8 /* Either.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47B107C1A9AAC3C006701A8 /* Either.framework */; };
 		D454805D1A9572F5009D7229 /* Result.h in Headers */ = {isa = PBXBuildFile; fileRef = D454805C1A9572F5009D7229 /* Result.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D45480681A9572F5009D7229 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D45480571A9572F5009D7229 /* Result.framework */; };
 		D454806F1A9572F5009D7229 /* ResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D454806E1A9572F5009D7229 /* ResultTests.swift */; };
@@ -15,12 +17,6 @@
 		D45480981A957465009D7229 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45480961A957465009D7229 /* Result.swift */; };
 		D45480991A9574B8009D7229 /* ResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D454806E1A9572F5009D7229 /* ResultTests.swift */; };
 		D454809A1A9574BB009D7229 /* Result.h in Headers */ = {isa = PBXBuildFile; fileRef = D454805C1A9572F5009D7229 /* Result.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D47B107E1A9AAC3C006701A8 /* Box.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47B107B1A9AAC3C006701A8 /* Box.framework */; };
-		D47B107F1A9AAC3C006701A8 /* Either.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47B107C1A9AAC3C006701A8 /* Either.framework */; };
-		D47B10801A9AAC3C006701A8 /* Prelude.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47B107D1A9AAC3C006701A8 /* Prelude.framework */; };
-		D47B10841A9AAC51006701A8 /* Box.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47B107B1A9AAC3C006701A8 /* Box.framework */; };
-		D47B10851A9AAC51006701A8 /* Either.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47B107C1A9AAC3C006701A8 /* Either.framework */; };
-		D47B10861A9AAC51006701A8 /* Prelude.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47B107D1A9AAC3C006701A8 /* Prelude.framework */; };
 		D47B10871A9AAC54006701A8 /* Box.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47B107B1A9AAC3C006701A8 /* Box.framework */; };
 		D47B10881A9AAC54006701A8 /* Either.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47B107C1A9AAC3C006701A8 /* Either.framework */; };
 		D47B10891A9AAC54006701A8 /* Prelude.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47B107D1A9AAC3C006701A8 /* Prelude.framework */; };
@@ -47,6 +43,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2EEC99A41AA8D43B000026C8 /* Either.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Either.framework; path = Carthage/Build/Mac/Either.framework; sourceTree = "<group>"; };
+		2EEC99A71AA8D9DE000026C8 /* Either.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Either.framework; path = Carthage/Build/iOS/Either.framework; sourceTree = "<group>"; };
 		D45480571A9572F5009D7229 /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D454805B1A9572F5009D7229 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D454805C1A9572F5009D7229 /* Result.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Result.h; sourceTree = "<group>"; };
@@ -66,9 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D47B107E1A9AAC3C006701A8 /* Box.framework in Frameworks */,
-				D47B107F1A9AAC3C006701A8 /* Either.framework in Frameworks */,
-				D47B10801A9AAC3C006701A8 /* Prelude.framework in Frameworks */,
+				2EEC99A51AA8D43B000026C8 /* Either.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -87,9 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D47B10841A9AAC51006701A8 /* Box.framework in Frameworks */,
-				D47B10861A9AAC51006701A8 /* Prelude.framework in Frameworks */,
-				D47B10851A9AAC51006701A8 /* Either.framework in Frameworks */,
+				2EEC99AA1AA8D9FC000026C8 /* Either.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -107,9 +101,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2EEC99A61AA8D441000026C8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2EEC99A71AA8D9DE000026C8 /* Either.framework */,
+				2EEC99A41AA8D43B000026C8 /* Either.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		D454804D1A9572F5009D7229 = {
 			isa = PBXGroup;
 			children = (
+				2EEC99A61AA8D441000026C8 /* Frameworks */,
 				D45480591A9572F5009D7229 /* Result */,
 				D454806B1A9572F5009D7229 /* ResultTests */,
 				D45480581A9572F5009D7229 /* Products */,
@@ -475,6 +479,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = Result/Info.plist;
 				INSTALL_PATH = "@rpath";
@@ -494,6 +502,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = Result/Info.plist;
 				INSTALL_PATH = "@rpath";
@@ -545,6 +557,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -570,6 +586,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = Result/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
