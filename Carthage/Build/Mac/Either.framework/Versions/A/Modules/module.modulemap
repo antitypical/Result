@@ -1,0 +1,10 @@
+framework module Either {
+  umbrella header "Either.h"
+
+  export *
+  module * { export * }
+}
+
+module Either.Swift {
+    header "Either-Swift.h"
+}
