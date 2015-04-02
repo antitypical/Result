@@ -5,12 +5,12 @@
       location = "group:Result.xcodeproj">
    </FileRef>
    <FileRef
-     location = "group:Carthage/Checkouts/Either/External/Box/Box.xcodeproj">
+      location = "group:Carthage/Checkouts/Box/Box.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Carthage/Checkouts/Either/Either.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Carthage/Checkouts/Either/External/Prelude/Prelude.xcodeproj">
+      location = "group:Carthage/Checkouts/Prelude/Prelude.xcodeproj">
    </FileRef>
 </Workspace>
