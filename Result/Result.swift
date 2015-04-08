@@ -14,6 +14,10 @@ public struct Result<T, Error>: EitherType, Printable, DebugPrintable {
 		either = .left(error)
 	}
 
+    /// Constructs a result from an Optional, failing with `Error` if `nil`
+    public init(_ value: T?, @autoclosure failWith: () -> Error) {
+        self = value.map { .success($0) } ?? .failure(failWith())
+    }
 
 	/// Constructs a success wrapping a `value`.
 	public static func success(value: T) -> Result {
