@@ -1,17 +1,17 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
 /// An enum representing either a failure with an explanatory error, or a success with a result value.
-public struct Result<T, Error>: EitherType, Printable, DebugPrintable {
+public enum Result<T, Error>: Printable, DebugPrintable {
 	// MARK: Constructors
 
 	/// Constructs a success wrapping a `value`.
 	public init(value: T) {
-		either = .right(value)
+		self = .Success(Box(value))
 	}
 
 	/// Constructs a failure wrapping an `error`.
 	public init(error: Error) {
-		either = .left(error)
+		self = .Failure(Box(error))
 	}
 
     /// Constructs a result from an Optional, failing with `Error` if `nil`
@@ -34,19 +34,24 @@ public struct Result<T, Error>: EitherType, Printable, DebugPrintable {
 
 	/// Returns the value from `Success` Results, `nil` otherwise.
 	public var value: T? {
-		return either.right
+		return analysis(ifSuccess: { $0 }, ifFailure: { _ in nil })
 	}
 
 	/// Returns the error from `Failure` Results, `nil` otherwise.
 	public var error: Error? {
-		return either.left
+		return analysis(ifSuccess: { _ in nil }, ifFailure: { $0 })
 	}
 
 	/// Case analysis for Result.
 	///
 	/// Returns the value produced by applying `ifFailure` to `Failure` Results, or `ifSuccess` to `Success` Results.
 	public func analysis<Result>(@noescape #ifSuccess: T -> Result, @noescape ifFailure: Error -> Result) -> Result {
-		return either.either(ifLeft: ifFailure, ifRight: ifSuccess)
+		switch self {
+		case let .Success(value):
+			return ifSuccess(value.value)
+		case let .Failure(value):
+			return ifFailure(value.value)
+		}
 	}
 
 
@@ -89,21 +94,6 @@ public struct Result<T, Error>: EitherType, Printable, DebugPrintable {
 	}
 
 
-	// MARK: EitherType
-
-	public static func left(error: Error) -> Result {
-		return failure(error)
-	}
-
-	public static func right(value: T) -> Result {
-		return success(value)
-	}
-
-	public func either<Result>(@noescape #ifLeft: Error -> Result, @noescape ifRight: T -> Result) -> Result {
-		return either.either(ifLeft: ifLeft, ifRight: ifRight)
-	}
-
-
 	// MARK: Printable
 
 	public var description: String {
@@ -120,18 +110,21 @@ public struct Result<T, Error>: EitherType, Printable, DebugPrintable {
 	}
 
 
-	// MARK: Private
+	// MARK: Cases
 
-	private var either: Either<Error, T>
+	case Success(Box<T>)
+	case Failure(Box<Error>)
 }
 
 
 /// Returns `true` if `left` and `right` are both `Success`es and their values are equal, or if `left` and `right` are both `Failure`s and their errors are equal.
 public func == <T: Equatable, Error: Equatable> (left: Result<T, Error>, right: Result<T, Error>) -> Bool {
-	return
-		(left.value &&& right.value).map { $0 == $1 }
-	??	(left.error &&& right.error).map { $0 == $1 }
-	??	false
+	if let left = left.value, right = right.value {
+		return left == right
+	} else if let left = left.error, right = right.error {
+		return left == right
+	}
+	return false
 }
 
 /// Returns `true` if `left` and `right` represent different cases, or if they represent the same case but different values.
@@ -148,7 +141,7 @@ public func ?? <T, Error> (left: Result<T, Error>, @autoclosure right: () -> T) 
 /// Returns `left` if it is a `Success`es, or `right` otherwise. Short-circuits.
 public func ?? <T, Error> (left: Result<T, Error>, @autoclosure right: () -> Result<T, Error>) -> Result<T, Error> {
 	return left.analysis(
-		ifSuccess: const(left),
+		ifSuccess: { _ in left  },
 		ifFailure: { _ in right() })
 }
 
@@ -199,6 +192,4 @@ public func >>- <T, U, Error> (result: Result<T, Error>, @noescape transform: T 
 
 // MARK: - Imports
 
-import Either
-import Prelude
 import Foundation
