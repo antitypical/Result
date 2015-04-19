@@ -27,6 +27,7 @@
 		D47B108A1A9AAC54006701A8 /* Box.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47B107B1A9AAC3C006701A8 /* Box.framework */; };
 		D47B108B1A9AAC54006701A8 /* Either.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47B107C1A9AAC3C006701A8 /* Either.framework */; };
 		D47B108C1A9AAC54006701A8 /* Prelude.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47B107D1A9AAC3C006701A8 /* Prelude.framework */; };
+		D48EA2DA1AE3D9FE00B23F6F /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48EA2D91AE3D9FE00B23F6F /* Box.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 		D47B107B1A9AAC3C006701A8 /* Box.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Box.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D47B107C1A9AAC3C006701A8 /* Either.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Either.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D47B107D1A9AAC3C006701A8 /* Prelude.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Prelude.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D48EA2D91AE3D9FE00B23F6F /* Box.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +134,7 @@
 			children = (
 				D454805C1A9572F5009D7229 /* Result.h */,
 				D45480961A957465009D7229 /* Result.swift */,
+				D48EA2D91AE3D9FE00B23F6F /* Box.swift */,
 				D454805A1A9572F5009D7229 /* Supporting Files */,
 			);
 			path = Result;
@@ -339,6 +342,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D45480971A957465009D7229 /* Result.swift in Sources */,
+				D48EA2DA1AE3D9FE00B23F6F /* Box.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
