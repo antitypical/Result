@@ -14,10 +14,10 @@ public struct Result<T, Error>: Printable, DebugPrintable {
 		state = .Failure(Box(error))
 	}
 
-    /// Constructs a result from an Optional, failing with `Error` if `nil`
-    public init(_ value: T?, @autoclosure failWith: () -> Error) {
-        self = value.map { .success($0) } ?? .failure(failWith())
-    }
+	/// Constructs a result from an Optional, failing with `Error` if `nil`
+	public init(_ value: T?, @autoclosure failWith: () -> Error) {
+		self = value.map { .success($0) } ?? .failure(failWith())
+	}
 
 	/// Constructs a success wrapping a `value`.
 	public static func success(value: T) -> Result {
@@ -158,7 +158,7 @@ public func try<T>(function: String = __FUNCTION__, file: String = __FILE__, lin
 
 /// Constructs a Result with the result of calling `try` with an error pointer.
 ///
-/// This is convenient for wrapping Cocoa API which returns an object or `nil` + an error, by reference. e.g.:
+/// This is convenient for wrapping Cocoa API which returns a `Bool` + an error, by reference. e.g.:
 ///
 ///     Result.try { NSFileManager.defaultManager().removeItemAtURL(URL, error: $0) }
 public func try(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__, try: NSErrorPointer -> Bool) -> Result<(), NSError> {
