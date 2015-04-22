@@ -10,7 +10,7 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testInitOptionalSuccess() {
-		XCTAssert(Result(unit("success"), failWith: error) == success)
+		XCTAssert(Result("success" as String?, failWith: error) == success)
 	}
 
 	func testInitOptionalFailure() {
