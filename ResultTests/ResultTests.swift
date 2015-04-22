@@ -17,6 +17,7 @@ final class ResultTests: XCTestCase {
 		XCTAssert(Result(nil, failWith: error) == failure)
 	}
 
+
 	// MARK: Errors
 
 	func testErrorsIncludeTheSourceFile() {
@@ -68,6 +69,7 @@ final class ResultTests: XCTestCase {
 let success = Result<String, NSError>.success("success")
 let error = NSError(domain: "com.antitypical.Result", code: 0xdeadbeef, userInfo: nil)
 let failure = Result<String, NSError>.failure(error)
+
 
 // MARK: - Helpers
 
