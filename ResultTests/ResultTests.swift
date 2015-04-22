@@ -9,13 +9,14 @@ final class ResultTests: XCTestCase {
 		XCTAssertEqual(failure.map(count) ?? 0, 0)
 	}
 
-    func testInitOptionalSuccess() {
-        XCTAssert(Result(unit("success"), failWith: error) == success)
-    }
+	func testInitOptionalSuccess() {
+		XCTAssert(Result("success" as String?, failWith: error) == success)
+	}
 
-    func testInitOptionalFailure() {
-        XCTAssert(Result(nil, failWith: error) == failure)
-    }
+	func testInitOptionalFailure() {
+		XCTAssert(Result(nil, failWith: error) == failure)
+	}
+
 
 	// MARK: Errors
 
@@ -69,6 +70,7 @@ let success = Result<String, NSError>.success("success")
 let error = NSError(domain: "com.antitypical.Result", code: 0xdeadbeef, userInfo: nil)
 let failure = Result<String, NSError>.failure(error)
 
+
 // MARK: - Helpers
 
 func attempt<T>(value: T, #succeed: Bool, #error: NSErrorPointer) -> T? {
@@ -95,8 +97,5 @@ extension NSError {
 }
 
 
-// MARK: - Imports
-
-import Prelude
 import Result
 import XCTest
