@@ -97,8 +97,5 @@ extension NSError {
 }
 
 
-// MARK: - Imports
-
-import Prelude
 import Result
 import XCTest
