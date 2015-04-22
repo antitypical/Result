@@ -1,5 +1,8 @@
 # Result
 
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![CocoaPods](https://img.shields.io/cocoapods/v/Result.svg)](https://cocoapods.org/)
+
 This is a Swift µframework providing `Result<Value, Error>`.
 
 `Result<Value, Error>` values are either successful (wrapping `Value`) or failed (wrapping `Error`). This is similar to Swift’s native `Optional` type, with the addition of an error value to pass some error code, message, or object along to be logged or displayed to the user.
@@ -7,7 +10,7 @@ This is a Swift µframework providing `Result<Value, Error>`.
 
 ## Use
 
-API documentation is in the source.
+[API documentation](http://cocoadocs.org/docsets/Result/) is in the source.
 
 
 ## Integration
