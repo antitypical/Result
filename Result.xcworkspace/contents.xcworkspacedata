@@ -4,4 +4,7 @@
    <FileRef
       location = "group:Result.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:Carthage/Checkouts/Box/Box.xcodeproj">
+   </FileRef>
 </Workspace>

@@ -1,17 +1,22 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
+import Box
+
 /// An enum representing either a failure with an explanatory error, or a success with a result value.
-public struct Result<T, Error>: Printable, DebugPrintable {
+public enum Result<T, Error>: Printable, DebugPrintable {
+	case Success(Box<T>)
+	case Failure(Box<Error>)
+
 	// MARK: Constructors
 
 	/// Constructs a success wrapping a `value`.
 	public init(value: T) {
-		state = .Success(Box(value))
+		self = .Success(Box(value))
 	}
 
 	/// Constructs a failure wrapping an `error`.
 	public init(error: Error) {
-		state = .Failure(Box(error))
+		self = .Failure(Box(error))
 	}
 
 	/// Constructs a result from an Optional, failing with `Error` if `nil`
@@ -46,7 +51,12 @@ public struct Result<T, Error>: Printable, DebugPrintable {
 	///
 	/// Returns the value produced by applying `ifFailure` to `Failure` Results, or `ifSuccess` to `Success` Results.
 	public func analysis<Result>(@noescape #ifSuccess: T -> Result, @noescape ifFailure: Error -> Result) -> Result {
-		return state.analysis(ifSuccess: ifSuccess, ifFailure: ifFailure)
+		switch self {
+		case let .Success(value):
+			return ifSuccess(value.value)
+		case let .Failure(value):
+			return ifFailure(value.value)
+		}
 	}
 
 
@@ -103,15 +113,6 @@ public struct Result<T, Error>: Printable, DebugPrintable {
 	public var debugDescription: String {
 		return description
 	}
-
-
-	// MARK: State
-
-	private init(state: State<T, Error>) {
-		self.state = state
-	}
-
-	private let state: State<T, Error>
 }
 
 
