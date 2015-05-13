@@ -73,6 +73,18 @@ public enum Result<T, Error>: Printable, DebugPrintable {
 			ifSuccess: transform,
 			ifFailure: Result<U, Error>.failure)
 	}
+    
+    /// Returns `self.value` if this result is a .Success, or the given value otherwise. Equivalent with `??`
+    public func recover(value: T) -> T {
+        return self.value ?? value
+    }
+    
+    /// Returns this result if it is a .Success, or the given result otherwise. Equivalent with `??`
+    public func recoverWith(result: Result<T,Error>) -> Result<T,Error> {
+        return analysis(
+            ifSuccess: { _ in self },
+            ifFailure: { _ in result })
+    }
 
 
 	// MARK: Errors
@@ -134,14 +146,12 @@ public func != <T: Equatable, Error: Equatable> (left: Result<T, Error>, right: 
 
 /// Returns the value of `left` if it is a `Success`, or `right` otherwise. Short-circuits.
 public func ?? <T, Error> (left: Result<T, Error>, @autoclosure right: () -> T) -> T {
-	return left.value ?? right()
+	return left.recover(right())
 }
 
 /// Returns `left` if it is a `Success`es, or `right` otherwise. Short-circuits.
 public func ?? <T, Error> (left: Result<T, Error>, @autoclosure right: () -> Result<T, Error>) -> Result<T, Error> {
-	return left.analysis(
-		ifSuccess: { _ in left  },
-		ifFailure: { _ in right() })
+	return left.recoverWith(right())
 }
 
 
