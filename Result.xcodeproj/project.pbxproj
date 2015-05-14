@@ -93,6 +93,7 @@
 				D45480581A9572F5009D7229 /* Products */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 1;
 		};
 		D45480581A9572F5009D7229 /* Products */ = {
 			isa = PBXGroup;
