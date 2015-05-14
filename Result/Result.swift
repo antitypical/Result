@@ -1,7 +1,5 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
-import Box
-
 /// An enum representing either a failure with an explanatory error, or a success with a result value.
 public enum Result<T, Error>: Printable, DebugPrintable {
 	case Success(Box<T>)
@@ -199,6 +197,5 @@ public func >>- <T, U, Error> (result: Result<T, Error>, @noescape transform: T 
 }
 
 
-// MARK: - Imports
-
+import Box
 import Foundation
