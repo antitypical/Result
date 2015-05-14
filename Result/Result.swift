@@ -78,10 +78,10 @@ public enum Result<T, Error>: Printable, DebugPrintable {
 	}
 	
 	/// Returns this result if it is a .Success, or the given result otherwise. Equivalent with `??`
-	public func recoverWith(result: Result<T,Error>) -> Result<T,Error> {
+	public func recoverWith(@autoclosure result: () -> Result<T,Error>) -> Result<T,Error> {
 		return analysis(
 			ifSuccess: { _ in self },
-			ifFailure: { _ in result })
+			ifFailure: { _ in result() })
 	}
 
 
