@@ -73,8 +73,8 @@ public enum Result<T, Error>: Printable, DebugPrintable {
 	}
 	
 	/// Returns `self.value` if this result is a .Success, or the given value otherwise. Equivalent with `??`
-	public func recover(value: T) -> T {
-		return self.value ?? value
+	public func recover(@autoclosure value: () -> T) -> T {
+		return self.value ?? value()
 	}
 	
 	/// Returns this result if it is a .Success, or the given result otherwise. Equivalent with `??`
