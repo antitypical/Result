@@ -141,6 +141,10 @@ public func != <T: Equatable, Error: Equatable> (left: Result<T, Error>, right: 
 	return !(left == right)
 }
 
+/// Returns a Result with a tuple of `left` and `right` values if both are `Success`es, or re-wrapping the error of the earlier `Failure`.
+public func && <T, U, Error> (left: Result<T, Error>, right: Result<U, Error>) -> Result<(T, U), Error> {
+	return left.flatMap { left in right.map { right in (left, right) } }
+}
 
 /// Returns the value of `left` if it is a `Success`, or `right` otherwise. Short-circuits.
 public func ?? <T, Error> (left: Result<T, Error>, @autoclosure right: () -> T) -> T {

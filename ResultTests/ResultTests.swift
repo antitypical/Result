@@ -61,6 +61,23 @@ final class ResultTests: XCTestCase {
 		XCTAssertEqual(result ?? 0, 1)
 		XCTAssertNil(result.error)
 	}
+
+	// MARK: Operators
+
+	func testConjunctionOperator() {
+		let resultSuccess = success && success
+		if let (x, y) = resultSuccess.value {
+			XCTAssertTrue(x == "success" && y == "success")
+		} else {
+			XCTFail()
+		}
+
+		let resultFailureLeft = failure && success
+		XCTAssert(resultFailureLeft.error == error)
+
+		let resultFailureRight = success && failure2
+		XCTAssert(resultFailureRight.error == error2)
+	}
 }
 
 
@@ -68,7 +85,9 @@ final class ResultTests: XCTestCase {
 
 let success = Result<String, NSError>.success("success")
 let error = NSError(domain: "com.antitypical.Result", code: 0xdeadbeef, userInfo: nil)
+let error2 = NSError(domain: "com.antitypical.Result", code: 0x12345678, userInfo: nil)
 let failure = Result<String, NSError>.failure(error)
+let failure2 = Result<String, NSError>.failure(error2)
 
 
 // MARK: - Helpers
