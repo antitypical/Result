@@ -72,6 +72,9 @@ final class ResultTests: XCTestCase {
 			XCTFail()
 		}
 
+		let resultFailureBoth = failure && failure2
+		XCTAssert(resultFailureBoth.error == error)
+
 		let resultFailureLeft = failure && success
 		XCTAssert(resultFailureLeft.error == error)
 
