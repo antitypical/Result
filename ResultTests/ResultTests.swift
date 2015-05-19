@@ -65,20 +65,20 @@ final class ResultTests: XCTestCase {
 	// MARK: Operators
 
 	func testConjunctionOperator() {
-		let resultSuccess = success && success
+		let resultSuccess = success &&& success
 		if let (x, y) = resultSuccess.value {
 			XCTAssertTrue(x == "success" && y == "success")
 		} else {
 			XCTFail()
 		}
 
-		let resultFailureBoth = failure && failure2
+		let resultFailureBoth = failure &&& failure2
 		XCTAssert(resultFailureBoth.error == error)
 
-		let resultFailureLeft = failure && success
+		let resultFailureLeft = failure &&& success
 		XCTAssert(resultFailureLeft.error == error)
 
-		let resultFailureRight = success && failure2
+		let resultFailureRight = success &&& failure2
 		XCTAssert(resultFailureRight.error == error2)
 	}
 }
