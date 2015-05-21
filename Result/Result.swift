@@ -111,7 +111,7 @@ public enum Result<T, Error>: Printable, DebugPrintable {
 			userInfo[NSLocalizedDescriptionKey] = message
 		}
 
-		return NSError(domain: "com.antitypical.Result", code: 0, userInfo: userInfo)
+		return NSError(domain: errorDomain, code: 0, userInfo: userInfo)
 	}
 
 
