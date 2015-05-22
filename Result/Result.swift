@@ -100,12 +100,18 @@ public enum Result<T, Error>: Printable, DebugPrintable {
 	public static var lineKey: String { return "\(errorDomain).line" }
 
 	/// Constructs an error.
-	public static func error(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__) -> NSError {
-		return NSError(domain: "com.antitypical.Result", code: 0, userInfo: [
+	public static func error(message: String? = nil, function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__) -> NSError {
+		var userInfo: [String: AnyObject] = [
 			functionKey: function,
 			fileKey: file,
 			lineKey: line,
-		])
+		]
+
+		if let message = message {
+			userInfo[NSLocalizedDescriptionKey] = message
+		}
+
+		return NSError(domain: errorDomain, code: 0, userInfo: userInfo)
 	}
 
 
