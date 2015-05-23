@@ -191,7 +191,7 @@ infix operator >>- {
 	associativity left
 
 	// Higher precedence than function application, but lower than function composition.
-	precedence 150
+	precedence 100
 }
 
 infix operator &&& {
