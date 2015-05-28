@@ -65,13 +65,25 @@ public enum Result<T, Error>: Printable, DebugPrintable {
 		return flatMap { .success(transform($0)) }
 	}
 
+	/// Returns a new Result by mapping `Failure`s’ values using `transform`, or re-wrapping `Success`es’ values.
+	public func map<NewError>(@noescape transform: (Error) -> NewError) -> Result<T, NewError> {
+		return flatMap { .failure(transform($0)) }
+	}
+
 	/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
 	public func flatMap<U>(@noescape transform: T -> Result<U, Error>) -> Result<U, Error> {
 		return analysis(
 			ifSuccess: transform,
 			ifFailure: Result<U, Error>.failure)
 	}
-	
+
+	/// Returns the result of applying `transform` to `Failure`s’ errors, or re-wrapping `Success`es’ errors.
+	public func flatMap<NewError>(@noescape transform: Error -> Result<T, NewError>) -> Result<T, NewError> {
+		return analysis(
+			ifSuccess: Result<T, NewError>.success,
+			ifFailure: transform)
+	}
+
 	/// Returns `self.value` if this result is a .Success, or the given value otherwise. Equivalent with `??`
 	public func recover(@autoclosure value: () -> T) -> T {
 		return self.value ?? value()
