@@ -1,20 +1,20 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
 /// An enum representing either a failure with an explanatory error, or a success with a result value.
-public enum Result<T, Error>: Printable, DebugPrintable {
-	case Success(Box<T>)
-	case Failure(Box<Error>)
+public enum Result<T, Error>: CustomStringConvertible, CustomDebugStringConvertible {
+	case Success(T)
+	case Failure(Error)
 
 	// MARK: Constructors
 
 	/// Constructs a success wrapping a `value`.
 	public init(value: T) {
-		self = .Success(Box(value))
+		self = .Success(value)
 	}
 
 	/// Constructs a failure wrapping an `error`.
 	public init(error: Error) {
-		self = .Failure(Box(error))
+		self = .Failure(error)
 	}
 
 	/// Constructs a result from an Optional, failing with `Error` if `nil`
@@ -48,12 +48,12 @@ public enum Result<T, Error>: Printable, DebugPrintable {
 	/// Case analysis for Result.
 	///
 	/// Returns the value produced by applying `ifFailure` to `Failure` Results, or `ifSuccess` to `Success` Results.
-	public func analysis<Result>(@noescape #ifSuccess: T -> Result, @noescape ifFailure: Error -> Result) -> Result {
+	public func analysis<Result>(@noescape ifSuccess ifSuccess: T -> Result, @noescape ifFailure: Error -> Result) -> Result {
 		switch self {
 		case let .Success(value):
-			return ifSuccess(value.value)
+			return ifSuccess(value)
 		case let .Failure(value):
-			return ifFailure(value.value)
+			return ifFailure(value)
 		}
 	}
 
@@ -166,9 +166,9 @@ public func ?? <T, Error> (left: Result<T, Error>, @autoclosure right: () -> Res
 /// This is convenient for wrapping Cocoa API which returns an object or `nil` + an error, by reference. e.g.:
 ///
 ///     Result.try { NSData(contentsOfURL: URL, options: .DataReadingMapped, error: $0) }
-public func try<T>(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__, try: NSErrorPointer -> T?) -> Result<T, NSError> {
+public func `try`<T>(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__, `try`: NSErrorPointer -> T?) -> Result<T, NSError> {
 	var error: NSError?
-	return try(&error).map(Result.success) ?? Result.failure(error ?? Result<T, NSError>.error(function: function, file: file, line: line))
+	return `try`(&error).map(Result.success) ?? Result.failure(error ?? Result<T, NSError>.error(function: function, file: file, line: line))
 }
 
 /// Constructs a Result with the result of calling `try` with an error pointer.
@@ -176,9 +176,9 @@ public func try<T>(function: String = __FUNCTION__, file: String = __FILE__, lin
 /// This is convenient for wrapping Cocoa API which returns a `Bool` + an error, by reference. e.g.:
 ///
 ///     Result.try { NSFileManager.defaultManager().removeItemAtURL(URL, error: $0) }
-public func try(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__, try: NSErrorPointer -> Bool) -> Result<(), NSError> {
+public func `try`(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__, `try`: NSErrorPointer -> Bool) -> Result<(), NSError> {
 	var error: NSError?
-	return try(&error) ?
+	return `try`(&error) ?
 		.success(())
 	:	.failure(error ?? Result<(), NSError>.error(function: function, file: file, line: line))
 }
@@ -215,5 +215,4 @@ public func &&& <T, U, Error> (left: Result<T, Error>, @autoclosure right: () ->
 }
 
 
-import Box
 import Foundation

@@ -95,7 +95,7 @@ let failure2 = Result<String, NSError>.failure(error2)
 
 // MARK: - Helpers
 
-func attempt<T>(value: T, #succeed: Bool, #error: NSErrorPointer) -> T? {
+func attempt<T>(value: T, succeed: Bool, error: NSErrorPointer) -> T? {
 	if succeed {
 		return value
 	} else {
