@@ -2,11 +2,11 @@
 
 final class ResultTests: XCTestCase {
 	func testMapTransformsSuccesses() {
-		XCTAssertEqual(success.map(count) ?? 0, 7)
+		XCTAssertEqual(success.map { $0.characters.count } ?? 0, 7)
 	}
 
 	func testMapRewrapsFailures() {
-		XCTAssertEqual(failure.map(count) ?? 0, 0)
+		XCTAssertEqual(failure.map { $0.characters.count } ?? 0, 0)
 	}
 
 	func testInitOptionalSuccess() {
@@ -39,25 +39,25 @@ final class ResultTests: XCTestCase {
 	// MARK: Cocoa API idioms
 
 	func testTryProducesFailuresForBooleanAPIWithErrorReturnedByReference() {
-		let result = try { attempt(true, succeed: false, error: $0) }
+		let result = `try` { attempt(true, succeed: false, error: $0) }
 		XCTAssertFalse(result ?? false)
 		XCTAssertNotNil(result.error)
 	}
 
 	func testTryProducesFailuresForOptionalWithErrorReturnedByReference() {
-		let result = try { attempt(1, succeed: false, error: $0) }
+		let result = `try` { attempt(1, succeed: false, error: $0) }
 		XCTAssertEqual(result ?? 0, 0)
 		XCTAssertNotNil(result.error)
 	}
 
 	func testTryProducesSuccessesForBooleanAPI() {
-		let result = try { attempt(true, succeed: true, error: $0) }
+		let result = `try` { attempt(true, succeed: true, error: $0) }
 		XCTAssertTrue(result ?? false)
 		XCTAssertNil(result.error)
 	}
 
 	func testTryProducesSuccessesForOptionalAPI() {
-		let result = try { attempt(1, succeed: true, error: $0) }
+		let result = `try` { attempt(1, succeed: true, error: $0) }
 		XCTAssertEqual(result ?? 0, 1)
 		XCTAssertNil(result.error)
 	}
@@ -95,7 +95,7 @@ let failure2 = Result<String, NSError>.failure(error2)
 
 // MARK: - Helpers
 
-func attempt<T>(value: T, #succeed: Bool, #error: NSErrorPointer) -> T? {
+func attempt<T>(value: T, succeed: Bool, error: NSErrorPointer) -> T? {
 	if succeed {
 		return value
 	} else {
@@ -106,15 +106,15 @@ func attempt<T>(value: T, #succeed: Bool, #error: NSErrorPointer) -> T? {
 
 extension NSError {
 	var function: String? {
-		return userInfo?[Result<(), NSError>.functionKey as NSString] as? String
+		return userInfo[Result<(), NSError>.functionKey as NSString] as? String
 	}
 	
 	var file: String? {
-		return userInfo?[Result<(), NSError>.fileKey as NSString] as? String
+		return userInfo[Result<(), NSError>.fileKey as NSString] as? String
 	}
 
 	var line: Int? {
-		return userInfo?[Result<(), NSError>.lineKey as NSString] as? Int
+		return userInfo[Result<(), NSError>.lineKey as NSString] as? Int
 	}
 }
 
