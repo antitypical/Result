@@ -115,7 +115,7 @@ public enum Result<T, Error>: CustomStringConvertible, CustomDebugStringConverti
 	}
 
 
-	// MARK: Printable
+	// MARK: CustomStringConvertible
 
 	public var description: String {
 		return analysis(
@@ -124,7 +124,7 @@ public enum Result<T, Error>: CustomStringConvertible, CustomDebugStringConverti
 	}
 
 
-	// MARK: DebugPrintable
+	// MARK: CustomDebugStringConvertible
 
 	public var debugDescription: String {
 		return description
