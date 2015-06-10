@@ -94,6 +94,17 @@ public enum Result<T, Error: ErrorType>: CustomStringConvertible, CustomDebugStr
 			ifFailure: { _ in result() })
 	}
 
+	/// Transform a function from one that uses `throw` to one that returns a `Result`
+	public static func materialize<T, U>(f: T throws -> U) -> T -> Result<U, ErrorType> {
+		return { x in
+			do {
+				return .success(try f(x))
+			} catch {
+				return .failure(error)
+			}
+		}
+	}
+
 
 	// MARK: Errors
 
