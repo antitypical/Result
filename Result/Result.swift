@@ -186,14 +186,6 @@ public func `try`(function: String = __FUNCTION__, file: String = __FILE__, line
 
 // MARK: - Operators
 
-infix operator >>- {
-	// Left-associativity so that chaining works like you’d expect, and for consistency with Haskell, Runes, swiftz, etc.
-	associativity left
-
-	// Higher precedence than function application, but lower than function composition.
-	precedence 100
-}
-
 infix operator &&& {
 	/// Same associativity as &&.
 	associativity left
