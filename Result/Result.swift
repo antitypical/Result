@@ -84,8 +84,8 @@ public enum Result<T, Error>: CustomStringConvertible, CustomDebugStringConverti
 			ifFailure: { _ in result() })
 	}
 
-	/// Returns a transformed function that used `throws` to one that uses `Result`
-	public static func transform<T, U>(f: T throws -> U) -> T -> Result<U, ErrorType> {
+	/// Transform a function from one that uses `throw` to one that returns a `Result`
+	public static func materialize<T, U>(f: T throws -> U) -> T -> Result<U, ErrorType> {
 		return { x in
 			do {
 				return .success(try f(x))
