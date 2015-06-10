@@ -45,7 +45,8 @@ public enum Result<T, Error: ErrorType>: CustomStringConvertible, CustomDebugStr
 		return analysis(ifSuccess: { _ in nil }, ifFailure: { $0 })
 	}
 
-	public func extract() throws -> T {
+	/// Returns the value from `Success` Results or `throw`s the error
+	public func dematerialize() throws -> T {
 		switch self {
 		case let .Success(value):
 			return value
