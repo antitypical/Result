@@ -5,7 +5,9 @@
 
 This is a Swift µframework providing `Result<Value, Error>`.
 
-`Result<Value, Error>` values are either successful (wrapping `Value`) or failed (wrapping `Error`). This is similar to Swift’s native `Optional` type, with the addition of an error value to pass some error code, message, or object along to be logged or displayed to the user.
+`Result<Value, Error>` values are either successful (wrapping `Value`) or failed (wrapping `Error`). This is similar to Swift’s native `Optional` type: `Success` is like `Some`, and `Failure` is like `None` except with an associated `ErrorType` value. The addition of an associated `ErrorType` allows errors to be passed along for logging or displaying to the user.
+
+Using this µframework instead of rolling your own `Result` type allows you to easily interface with other frameworks that also use `Result`.
 
 ## Use
 
@@ -57,20 +59,21 @@ Other methods available for processing `Result` are detailed in the [API documen
 
 ## Result vs. Throws
 
-Swift 2.0 introduced error handling via throwing error types. `Result` accomplishes the same goal by encapsulating the result instead of hijacking control flow. The `Result` abstraction also enables powerful functionality such as `map` and `flatMap`.
+Swift 2.0 introduces error handling via throwing and catching `ErrorType`. `Result` accomplishes the same goal by encapsulating the result instead of hijacking control flow. The `Result` abstraction also enables powerful functionality such as `map` and `flatMap`.
 
 Since dealing with APIs that throw is common, you can convert functions such functions into a `Result` by using the `materialize` method. [Note: due to compiler issues, `materialize` is not currently available]
 
 ## Higher Order Functions
 
-`map` is analagous to `map` for Swift's `Optional`. `map` transforms a `Result` into a `Result` of a new type. It does this by taking a block that processes the `Value` type of the `Result`. This block is only applied to the value if the `Result` is a success. In the case that the `Result` is a `Failure`, the error is re-wrapped in the new `Result`.
+`map` and `flatMap` operate the same as `Optional.map` and `Optional.flatMap` except they apply to `Result`.
+
+`map` transforms a `Result` into a `Result` of a new type. It does this by taking a function that transforms the `Value` type into a new value. This transformation is only applied in the case of a `Success`. In the case of a `Failure`, the associated error is re-wrapped in the new `Result`.
 
 ```swift
-let idResult: Result<Int, JSONError> = parseInt(json, key:"id")
-let idStringResult: Result<String, JSONError> = idResult.map { id in String(id) }
+let idResult: Result<String, JSONError> = parseInt(json, key:"id").map { id in String(id) }
 ```
 
-Here, `idStringResult` is either the id as a `String`, or carries over the `.Failure` from the previous expression.
+Here, the final result is either the id as a `String`, or carries over the `.Failure` from the previous expression.
 
 `flatMap` is similar to `map` in that in transforms the `Result` into another `Result`. However, the function passed into `flatMap` must return a `Result`.
 
