@@ -70,7 +70,8 @@ Since dealing with APIs that throw is common, you can convert functions such fun
 `map` transforms a `Result` into a `Result` of a new type. It does this by taking a function that transforms the `Value` type into a new value. This transformation is only applied in the case of a `Success`. In the case of a `Failure`, the associated error is re-wrapped in the new `Result`.
 
 ```swift
-let idResult: Result<String, JSONError> = parseInt(json, key:"id").map { id in String(id) }
+// transforms a Result<Int, JSONError> to a Result<String, JSONError>
+let idResult = intForKey(json, key:"id").map { id in String(id) }
 ```
 
 Here, the final result is either the id as a `String`, or carries over the `.Failure` from the previous expression.
