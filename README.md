@@ -74,7 +74,7 @@ Since dealing with APIs that throw is common, you can convert functions such fun
 let idResult = intForKey(json, key:"id").map { id in String(id) }
 ```
 
-Here, the final result is either the id as a `String`, or carries over the `.Failure` from the previous expression.
+Here, the final result is either the id as a `String`, or carries over the `.Failure` from the previous result.
 
 `flatMap` is similar to `map` in that in transforms the `Result` into another `Result`. However, the function passed into `flatMap` must return a `Result`.
 
