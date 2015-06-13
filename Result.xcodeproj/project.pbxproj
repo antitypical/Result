@@ -482,7 +482,6 @@
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
@@ -502,7 +501,6 @@
 				PRODUCT_NAME = Result;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				VALID_ARCHS = x86_64;
 			};
 			name = Release;
 		};
