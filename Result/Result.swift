@@ -181,12 +181,12 @@ public func ?? <T, Error> (left: Result<T, Error>, @autoclosure right: () -> Res
 
 // MARK: - Derive result from failable closure
 
-public func materialize<T>(f: () throws -> T) -> Result<T, ErrorType> {
-	do {
-		return .success(try f())
-	} catch {
-		return .failure(error)
-	}
+public func materialize<T, E: ErrorType>(f: () throws -> T) -> Result<T, E> {
+    do {
+        return .success(try f())
+    } catch {
+        return .failure(error as! E)
+    }
 }
 
 // MARK: - Cocoa API conveniences
