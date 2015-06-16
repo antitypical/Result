@@ -131,6 +131,21 @@ public enum Result<T, Error: ErrorType>: CustomStringConvertible, CustomDebugStr
 	}
 }
 
+public protocol ResultType {
+	typealias Value
+	typealias Error: ErrorType
+	
+	var value: Value? { get }
+	var error: Error? { get }
+	
+	init(value: Value)
+	init(error: Error)
+	
+	func analysis<U>(@noescape ifSuccess ifSuccess: Value -> U, @noescape ifFailure: Error -> U) -> U
+}
+
+extension Result: ResultType { }
+
 
 /// Returns `true` if `left` and `right` are both `Success`es and their values are equal, or if `left` and `right` are both `Failure`s and their errors are equal.
 public func == <T: Equatable, Error: Equatable> (left: Result<T, Error>, right: Result<T, Error>) -> Bool {
