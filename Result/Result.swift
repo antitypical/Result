@@ -35,6 +35,16 @@ public enum Result<T, Error: ErrorType>: ResultType, CustomStringConvertible, Cu
 
 	// MARK: Deconstruction
 
+	/// Returns the value from `Success` Results or `throw`s the error
+	public func dematerialize() throws -> T {
+		switch self {
+		case let .Success(value):
+			return value
+		case let .Failure(error):
+			throw error
+		}
+	}
+
 	/// Case analysis for Result.
 	///
 	/// Returns the value produced by applying `ifFailure` to `Failure` Results, or `ifSuccess` to `Success` Results.
@@ -73,6 +83,17 @@ public enum Result<T, Error: ErrorType>: ResultType, CustomStringConvertible, Cu
 			ifSuccess: { _ in self },
 			ifFailure: { _ in result() })
 	}
+
+	/// Transform a function from one that uses `throw` to one that returns a `Result`
+//	public static func materialize<T, U>(f: T throws -> U) -> T -> Result<U, ErrorType> {
+//		return { x in
+//			do {
+//				return .success(try f(x))
+//			} catch {
+//				return .failure(error)
+//			}
+//		}
+//	}
 
 
 	// MARK: Errors
@@ -120,6 +141,7 @@ public enum Result<T, Error: ErrorType>: ResultType, CustomStringConvertible, Cu
 		return description
 	}
 }
+
 
 /// Returns `true` if `left` and `right` are both `Success`es and their values are equal, or if `left` and `right` are both `Failure`s and their errors are equal.
 public func == <T: Equatable, Error: Equatable> (left: Result<T, Error>, right: Result<T, Error>) -> Bool {
