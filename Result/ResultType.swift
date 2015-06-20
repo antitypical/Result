@@ -5,7 +5,7 @@ public protocol ResultType {
 	typealias Value
 	typealias Error: ErrorType
 	
-	/// Constructs a succesful result wrapping a `value`.
+	/// Constructs a successful result wrapping a `value`.
 	init(value: Value)
 
 	/// Constructs a failed result wrapping an `error`.
