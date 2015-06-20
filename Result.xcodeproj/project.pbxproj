@@ -15,6 +15,8 @@
 		D45480981A957465009D7229 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45480961A957465009D7229 /* Result.swift */; };
 		D45480991A9574B8009D7229 /* ResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D454806E1A9572F5009D7229 /* ResultTests.swift */; };
 		D454809A1A9574BB009D7229 /* Result.h in Headers */ = {isa = PBXBuildFile; fileRef = D454805C1A9572F5009D7229 /* Result.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E93621461B35596200948F2A /* ResultType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93621451B35596200948F2A /* ResultType.swift */; };
+		E93621471B35596200948F2A /* ResultType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93621451B35596200948F2A /* ResultType.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +46,7 @@
 		D454807D1A957361009D7229 /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D45480871A957362009D7229 /* Result-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Result-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D45480961A957465009D7229 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
+		E93621451B35596200948F2A /* ResultType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultType.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +109,7 @@
 			children = (
 				D454805C1A9572F5009D7229 /* Result.h */,
 				D45480961A957465009D7229 /* Result.swift */,
+				E93621451B35596200948F2A /* ResultType.swift */,
 				D454805A1A9572F5009D7229 /* Supporting Files */,
 			);
 			path = Result;
@@ -310,6 +314,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E93621461B35596200948F2A /* ResultType.swift in Sources */,
 				D45480971A957465009D7229 /* Result.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -326,6 +331,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E93621471B35596200948F2A /* ResultType.swift in Sources */,
 				D45480981A957465009D7229 /* Result.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
