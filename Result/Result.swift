@@ -1,7 +1,7 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
 /// An enum representing either a failure with an explanatory error, or a success with a result value.
-public enum Result<T, Error: ErrorType>: CustomStringConvertible, CustomDebugStringConvertible {
+public enum Result<T, Error: ErrorType>: ResultType, CustomStringConvertible, CustomDebugStringConvertible {
 	case Success(T)
 	case Failure(Error)
 
@@ -34,16 +34,6 @@ public enum Result<T, Error: ErrorType>: CustomStringConvertible, CustomDebugStr
 
 
 	// MARK: Deconstruction
-
-	/// Returns the value from `Success` Results, `nil` otherwise.
-	public var value: T? {
-		return analysis(ifSuccess: { $0 }, ifFailure: { _ in nil })
-	}
-
-	/// Returns the error from `Failure` Results, `nil` otherwise.
-	public var error: Error? {
-		return analysis(ifSuccess: { _ in nil }, ifFailure: { $0 })
-	}
 
 	/// Returns the value from `Success` Results or `throw`s the error
 	public func dematerialize() throws -> T {
