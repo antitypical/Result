@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		45AE89E61B3A6564007B99D7 /* ResultType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93621451B35596200948F2A /* ResultType.swift */; };
 		D035799B1B2B788F005D26AE /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45480961A957465009D7229 /* Result.swift */; };
 		D035799E1B2B788F005D26AE /* Result.h in Headers */ = {isa = PBXBuildFile; fileRef = D454805C1A9572F5009D7229 /* Result.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D03579A91B2B78A1005D26AE /* ResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D454806E1A9572F5009D7229 /* ResultTests.swift */; };
@@ -404,6 +405,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45AE89E61B3A6564007B99D7 /* ResultType.swift in Sources */,
 				D035799B1B2B788F005D26AE /* Result.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
