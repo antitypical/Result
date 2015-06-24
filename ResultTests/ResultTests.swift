@@ -86,11 +86,11 @@ final class ResultTests: XCTestCase {
 
 // MARK: - Fixtures
 
-let success = Result<String, NSError>.success("success")
+let success = Result<String, NSError>.Success("success")
 let error = NSError(domain: "com.antitypical.Result", code: 0xdeadbeef, userInfo: nil)
 let error2 = NSError(domain: "com.antitypical.Result", code: 0x12345678, userInfo: nil)
-let failure = Result<String, NSError>.failure(error)
-let failure2 = Result<String, NSError>.failure(error2)
+let failure = Result<String, NSError>.Failure(error)
+let failure2 = Result<String, NSError>.Failure(error2)
 
 
 // MARK: - Helpers

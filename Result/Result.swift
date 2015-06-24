@@ -19,17 +19,7 @@ public enum Result<T, Error: ErrorType>: ResultType, CustomStringConvertible, Cu
 
 	/// Constructs a result from an Optional, failing with `Error` if `nil`
 	public init(_ value: T?, @autoclosure failWith: () -> Error) {
-		self = value.map { .success($0) } ?? .failure(failWith())
-	}
-
-	/// Constructs a success wrapping a `value`.
-	public static func success(value: T) -> Result {
-		return Result(value: value)
-	}
-
-	/// Constructs a failure wrapping an `error`.
-	public static func failure(error: Error) -> Result {
-		return Result(error: error)
+		self = value.map(Result.Success) ?? .Failure(failWith())
 	}
 
 
@@ -62,14 +52,14 @@ public enum Result<T, Error: ErrorType>: ResultType, CustomStringConvertible, Cu
 
 	/// Returns a new Result by mapping `Success`es’ values using `transform`, or re-wrapping `Failure`s’ errors.
 	public func map<U>(@noescape transform: T -> U) -> Result<U, Error> {
-		return flatMap { .success(transform($0)) }
+		return flatMap { .Success(transform($0)) }
 	}
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
 	public func flatMap<U>(@noescape transform: T -> Result<U, Error>) -> Result<U, Error> {
 		return analysis(
 			ifSuccess: transform,
-			ifFailure: Result<U, Error>.failure)
+			ifFailure: Result<U, Error>.Failure)
 	}
 	
 	/// Returns `self.value` if this result is a .Success, or the given value otherwise. Equivalent with `??`
@@ -88,9 +78,9 @@ public enum Result<T, Error: ErrorType>: ResultType, CustomStringConvertible, Cu
 //	public static func materialize<T, U>(f: T throws -> U) -> T -> Result<U, ErrorType> {
 //		return { x in
 //			do {
-//				return .success(try f(x))
+//				return .Success(try f(x))
 //			} catch {
-//				return .failure(error)
+//				return .Failure(error)
 //			}
 //		}
 //	}
@@ -174,9 +164,9 @@ public func ?? <T, Error> (left: Result<T, Error>, @autoclosure right: () -> Res
 // Disable until http://www.openradar.me/21341337 is fixed.
 //public func materialize<T>(f: () throws -> T) -> Result<T, ErrorType> {
 //	do {
-//		return .success(try f())
+//		return .Success(try f())
 //	} catch {
-//		return .failure(error)
+//		return .Failure(error)
 //	}
 //}
 
@@ -189,7 +179,7 @@ public func ?? <T, Error> (left: Result<T, Error>, @autoclosure right: () -> Res
 ///     Result.try { NSData(contentsOfURL: URL, options: .DataReadingMapped, error: $0) }
 public func `try`<T>(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__, `try`: NSErrorPointer -> T?) -> Result<T, NSError> {
 	var error: NSError?
-	return `try`(&error).map(Result.success) ?? Result.failure(error ?? Result<T, NSError>.error(function: function, file: file, line: line))
+	return `try`(&error).map(Result.Success) ?? .Failure(error ?? Result<T, NSError>.error(function: function, file: file, line: line))
 }
 
 /// Constructs a Result with the result of calling `try` with an error pointer.
@@ -200,8 +190,8 @@ public func `try`<T>(function: String = __FUNCTION__, file: String = __FILE__, l
 public func `try`(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__, `try`: NSErrorPointer -> Bool) -> Result<(), NSError> {
 	var error: NSError?
 	return `try`(&error) ?
-		.success(())
-	:	.failure(error ?? Result<(), NSError>.error(function: function, file: file, line: line))
+		.Success(())
+	:	.Failure(error ?? Result<(), NSError>.error(function: function, file: file, line: line))
 }
 
 
