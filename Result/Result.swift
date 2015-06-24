@@ -78,9 +78,9 @@ public enum Result<T, Error: ErrorType>: ResultType, CustomStringConvertible, Cu
 //	public static func materialize<T, U>(f: T throws -> U) -> T -> Result<U, ErrorType> {
 //		return { x in
 //			do {
-//				return .success(try f(x))
+//				return .Success(try f(x))
 //			} catch {
-//				return .failure(error)
+//				return .Failure(error)
 //			}
 //		}
 //	}
@@ -164,9 +164,9 @@ public func ?? <T, Error> (left: Result<T, Error>, @autoclosure right: () -> Res
 // Disable until http://www.openradar.me/21341337 is fixed.
 //public func materialize<T>(f: () throws -> T) -> Result<T, ErrorType> {
 //	do {
-//		return .success(try f())
+//		return .Success(try f())
 //	} catch {
-//		return .failure(error)
+//		return .Failure(error)
 //	}
 //}
 
