@@ -22,6 +22,15 @@ public enum Result<T, Error: ErrorType>: ResultType, CustomStringConvertible, Cu
 		self = value.map(Result.Success) ?? .Failure(failWith())
 	}
 
+	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws
+	public init(@autoclosure _ f: () throws -> T) {
+		do {
+			self = .Success(try f())
+		} catch {
+			self = .Failure(error as! Error)
+		}
+	}
+	
 
 	// MARK: Deconstruction
 
