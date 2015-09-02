@@ -158,14 +158,13 @@ public func ?? <T, Error> (left: Result<T, Error>, @autoclosure right: () -> Res
 
 // MARK: - Derive result from failable closure
 
-// Disable until http://www.openradar.me/21341337 is fixed.
-//public func materialize<T>(f: () throws -> T) -> Result<T, ErrorType> {
-//	do {
-//		return .Success(try f())
-//	} catch {
-//		return .Failure(error)
-//	}
-//}
+public func materialize<T>(f: () throws -> T) -> Result<T, NSError> {
+	do {
+		return .Success(try f())
+	} catch {
+		return .Failure(error as NSError)
+	}
+}
 
 // MARK: - Cocoa API conveniences
 
