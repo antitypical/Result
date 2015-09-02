@@ -83,18 +83,6 @@ public enum Result<T, Error: ErrorType>: ResultType, CustomStringConvertible, Cu
 			ifFailure: { _ in result() })
 	}
 
-	/// Transform a function from one that uses `throw` to one that returns a `Result`
-//	public static func materialize<T, U>(f: T throws -> U) -> T -> Result<U, ErrorType> {
-//		return { x in
-//			do {
-//				return .Success(try f(x))
-//			} catch {
-//				return .Failure(error)
-//			}
-//		}
-//	}
-
-
 	// MARK: Errors
 
 	/// The domain for errors constructed by Result.
