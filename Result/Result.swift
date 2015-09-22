@@ -58,18 +58,6 @@ public enum Result<T, Error: ErrorType>: ResultType, CustomStringConvertible, Cu
 
 
 	// MARK: Higher-order functions
-
-	/// Returns a new Result by mapping `Success`es’ values using `transform`, or re-wrapping `Failure`s’ errors.
-	public func map<U>(@noescape transform: T -> U) -> Result<U, Error> {
-		return flatMap { .Success(transform($0)) }
-	}
-
-	/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
-	public func flatMap<U>(@noescape transform: T -> Result<U, Error>) -> Result<U, Error> {
-		return analysis(
-			ifSuccess: transform,
-			ifFailure: Result<U, Error>.Failure)
-	}
 	
 	/// Returns `self.value` if this result is a .Success, or the given value otherwise. Equivalent with `??`
 	public func recover(@autoclosure value: () -> T) -> T {

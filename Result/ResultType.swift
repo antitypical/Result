@@ -28,4 +28,16 @@ public extension ResultType {
 	var error: Error? {
 		return analysis(ifSuccess: { _ in nil }, ifFailure: { $0 })
 	}
+
+	/// Returns a new Result by mapping `Success`es’ values using `transform`, or re-wrapping `Failure`s’ errors.
+	public func map<U>(@noescape transform: Value -> U) -> Result<U, Error> {
+		return flatMap { .Success(transform($0)) }
+	}
+
+	/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
+	func flatMap<U>(@noescape transform: Value -> Result<U, Error>) -> Result<U, Error> {
+		return analysis(
+			ifSuccess: transform,
+			ifFailure: Result<U, Error>.Failure)
+	}
 }
