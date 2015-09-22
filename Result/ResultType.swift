@@ -45,11 +45,11 @@ public extension ResultType {
 // MARK: - Operators
 
 infix operator &&& {
-/// Same associativity as &&.
-associativity left
+	/// Same associativity as &&.
+	associativity left
 
-/// Same precedence as &&.
-precedence 120
+	/// Same precedence as &&.
+	precedence 120
 }
 
 /// Returns a Result with a tuple of `left` and `right` values if both are `Success`es, or re-wrapping the error of the earlier `Failure`.
