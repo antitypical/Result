@@ -41,3 +41,18 @@ public extension ResultType {
 			ifFailure: Result<U, Error>.Failure)
 	}
 }
+
+// MARK: - Operators
+
+infix operator &&& {
+/// Same associativity as &&.
+associativity left
+
+/// Same precedence as &&.
+precedence 120
+}
+
+/// Returns a Result with a tuple of `left` and `right` values if both are `Success`es, or re-wrapping the error of the earlier `Failure`.
+public func &&& <L: ResultType, R: ResultType where L.Error == R.Error> (left: L, @autoclosure right: () -> R) -> Result<(L.Value, R.Value), L.Error> {
+	return left.flatMap { left in right().map { right in (left, right) } }
+}
