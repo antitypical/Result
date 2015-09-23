@@ -20,12 +20,12 @@ public protocol ResultType {
 public extension ResultType {
 	
 	/// Returns the value if self represents a success, `nil` otherwise.
-	var value: Value? {
+	public var value: Value? {
 		return analysis(ifSuccess: { $0 }, ifFailure: { _ in nil })
 	}
 	
 	/// Returns the error if self represents a failure, `nil` otherwise.
-	var error: Error? {
+	public var error: Error? {
 		return analysis(ifSuccess: { _ in nil }, ifFailure: { $0 })
 	}
 }
