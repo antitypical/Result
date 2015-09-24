@@ -35,7 +35,7 @@ public extension ResultType {
 	}
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
-	func flatMap<U>(@noescape transform: Value -> Result<U, Error>) -> Result<U, Error> {
+	public func flatMap<U>(@noescape transform: Value -> Result<U, Error>) -> Result<U, Error> {
 		return analysis(
 			ifSuccess: transform,
 			ifFailure: Result<U, Error>.Failure)
