@@ -15,17 +15,27 @@ public protocol ResultType {
 	///
 	/// Returns the value produced by appliying `ifFailure` to the error if self represents a failure, or `ifSuccess` to the result value if self represents a success.
 	func analysis<U>(@noescape ifSuccess ifSuccess: Value -> U, @noescape ifFailure: Error -> U) -> U
+
+	/// Returns the value if self represents a success, `nil` otherwise.
+	///
+	/// A default implementation is provided by a protocol extension. Conforming types may specialize it.
+	var value: Value? { get }
+
+	/// Returns the error if self represents a failure, `nil` otherwise.
+	///
+	/// A default implementation is provided by a protocol extension. Conforming types may specialize it.
+	var error: Error? { get }
 }
 
 public extension ResultType {
 	
 	/// Returns the value if self represents a success, `nil` otherwise.
-	var value: Value? {
+	public var value: Value? {
 		return analysis(ifSuccess: { $0 }, ifFailure: { _ in nil })
 	}
 	
 	/// Returns the error if self represents a failure, `nil` otherwise.
-	var error: Error? {
+	public var error: Error? {
 		return analysis(ifSuccess: { _ in nil }, ifFailure: { $0 })
 	}
 }
