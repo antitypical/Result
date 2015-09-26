@@ -38,4 +38,31 @@ public extension ResultType {
 	public var error: Error? {
 		return analysis(ifSuccess: { _ in nil }, ifFailure: { $0 })
 	}
+
+	/// Returns a new Result by mapping `Success`es’ values using `transform`, or re-wrapping `Failure`s’ errors.
+	public func map<U>(@noescape transform: Value -> U) -> Result<U, Error> {
+		return flatMap { .Success(transform($0)) }
+	}
+
+	/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
+	public func flatMap<U>(@noescape transform: Value -> Result<U, Error>) -> Result<U, Error> {
+		return analysis(
+			ifSuccess: transform,
+			ifFailure: Result<U, Error>.Failure)
+	}
+}
+
+// MARK: - Operators
+
+infix operator &&& {
+	/// Same associativity as &&.
+	associativity left
+
+	/// Same precedence as &&.
+	precedence 120
+}
+
+/// Returns a Result with a tuple of `left` and `right` values if both are `Success`es, or re-wrapping the error of the earlier `Failure`.
+public func &&& <L: ResultType, R: ResultType where L.Error == R.Error> (left: L, @autoclosure right: () -> R) -> Result<(L.Value, R.Value), L.Error> {
+	return left.flatMap { left in right().map { right in (left, right) } }
 }
