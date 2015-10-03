@@ -8,6 +8,7 @@ before_install:
 script:
   - xcodebuild test -scheme Result-iOS -sdk iphonesimulator
   - xcodebuild test -scheme Result-Mac
+  - pod lib lint Result.podspec
   - carthage build --no-skip-current
 
 notifications:
