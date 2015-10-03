@@ -21,6 +21,7 @@ deploy:
   api_key:
     secure: !!! to be configured !!!
   file: Result.framework.zip
+  skip_cleanup: true
   on:
     repo: antitypical/Result
     tags: true
