@@ -10,6 +10,17 @@ script:
   - xcodebuild test -scheme Result-Mac
   - pod lib lint Result.podspec
   - carthage build --no-skip-current
+  - carthage archive Result
+
+deploy:
+  provider: releases
+  api_key:
+    secure: !!! to be configured !!!
+  file: Result.framework.zip
+  on:
+    repo: antitypical/Result
+    tags: true
+    all_branches: true
 
 notifications:
   email: false
