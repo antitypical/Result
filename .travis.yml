@@ -1,9 +1,14 @@
 language: objective-c
 osx_image: xcode7
 
+before_install:
+  - brew update 
+  - brew install carthage
+
 script:
   - xcodebuild test -scheme Result-iOS -sdk iphonesimulator
   - xcodebuild test -scheme Result-Mac
+  - carthage build --no-skip-current
 
 notifications:
   email: false
