@@ -1,1 +1,1 @@
-github "robrix/Box"
+github "robrix/Box" ~> 1.2.2
