@@ -1,26 +1,9 @@
 language: objective-c
 osx_image: xcode7
 
-before_install:
-  - brew update 
-  - brew install carthage
-
 script:
   - xcodebuild test -scheme Result-iOS -sdk iphonesimulator
   - xcodebuild test -scheme Result-Mac
-  - carthage build --no-skip-current
-  - carthage archive Result
-
-deploy:
-  provider: releases
-  api_key:
-    secure: !!! to be configured !!!
-  file: Result.framework.zip
-  skip_cleanup: true
-  on:
-    repo: antitypical/Result
-    tags: true
-    all_branches: true
 
 notifications:
   email: false
