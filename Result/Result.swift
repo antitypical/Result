@@ -181,6 +181,26 @@ public func `try`(function: String = __FUNCTION__, file: String = __FILE__, line
 
 // MARK: - Operators
 
+infix operator <^> {
+	associativity left
+	precedence 140
+}
+
+/// fmap
+public func <^> <T, U, Error> (@noescape transform: T -> U, result: Result<T, Error>) -> Result<U, Error> {
+	return result.map(transform)
+}
+
+infix operator <*> {
+	associativity left
+	precedence 140
+}
+
+/// ap
+public func <*> <T, U, Error> (transform: Result<T -> U, Error>, @autoclosure result: () -> Result<T, Error>) -> Result<U, Error> {
+	return transform.flatMap { f in result().map(f) }
+}
+
 infix operator >>- {
 	// Left-associativity so that chaining works like you’d expect, and for consistency with Haskell, Runes, swiftz, etc.
 	associativity left
