@@ -92,6 +92,61 @@ final class ResultTests: XCTestCase {
 		let resultFailureRight = success &&& failure2
 		XCTAssert(resultFailureRight.error == error2)
 	}
+	
+	// MARK: Functor, Applicative, Monad
+	
+	func testFunctor() {
+		let result1 = { $0.characters.count } <^> success
+		XCTAssertTrue(result1 == .Success(7))
+		
+		let result2 = { $0.characters.count } <^> failure
+		XCTAssertTrue(result2 == .Failure(error))
+	}
+	
+	func testApplicative() {
+		let result1 = .Success({ $0.characters.count }) <*> success
+		XCTAssertTrue(result1 == .Success(7))
+		
+		let result2 = .Success({ $0.characters.count }) <*> failure
+		XCTAssertTrue(result2 == .Failure(error))
+		
+		let result3: Result<Int, NSError> = .Failure(error) <*> success
+		XCTAssertTrue(result3 == .Failure(error))
+		
+		let result4: Result<Int, NSError> = .Failure(error) <*> failure
+		XCTAssertTrue(result4 == .Failure(error))
+	}
+	
+	func testApplicativeStyle() {
+		let f: Int -> Int -> Int = { x in { y in x + y } }
+		
+		let result1: Result<Int, NSError> = f <^> .Success(1) <*> .Success(2)
+		XCTAssertTrue(result1 == .Success(3))
+		
+		let result2: Result<Int, NSError> = f <^> .Success(1) <*> .Failure(error2)
+		XCTAssertTrue(result2 == .Failure(error2))
+		
+		let result3: Result<Int, NSError> = f <^> .Failure(error) <*> .Success(2)
+		XCTAssertTrue(result3 == .Failure(error))
+		
+		let result4: Result<Int, NSError> = f <^> .Failure(error) <*> .Failure(error2)
+		XCTAssertTrue(result4 == .Failure(error))
+	}
+	
+	func testMonad() {
+		let result1 = success >>- { .Success($0.characters.count) }
+		XCTAssertTrue(result1 == .Success(7))
+		
+		let result2 = success >>- { _ in Result<Int, NSError>.Failure(error) }
+		XCTAssertTrue(result2 == .Failure(error))
+		
+		let result3 = failure >>- { .Success($0.characters.count) }
+		XCTAssertTrue(result3 == .Failure(error))
+		
+		let result4 = failure >>- { _ in Result<Int, NSError>.Failure(error) }
+		XCTAssertTrue(result4 == .Failure(error))
+	}
+
 }
 
 
