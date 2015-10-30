@@ -2,10 +2,11 @@ language: objective-c
 osx_image: xcode7.1
 
 script:
-  - xcodebuild test -scheme Result-iOS -sdk iphonesimulator
   - xcodebuild test -scheme Result-Mac
+  - xcodebuild test -scheme Result-iOS -sdk iphonesimulator
+  - xcodebuild test -scheme Result-tvOS -sdk appletvsimulator
+  - xcodebuild build -scheme Result-watchOS -sdk watchsimulator
   - pod lib lint
 
 notifications:
   email: false
-
