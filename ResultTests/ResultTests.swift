@@ -47,6 +47,22 @@ final class ResultTests: XCTestCase {
 		XCTAssert(result.error == error)
 	}
 
+	func testMaterializeProducesSuccesses() {
+		let result1 = materialize(try tryIsSuccess("success"))
+		XCTAssert(result1 == success)
+
+		let result2 = materialize { try tryIsSuccess("success") }
+		XCTAssert(result2 == success)
+	}
+
+	func testMaterializeProducesFailures() {
+		let result1 = materialize(try tryIsSuccess(nil))
+		XCTAssert(result1.error == error)
+
+		let result2 = materialize { try tryIsSuccess(nil) }
+		XCTAssert(result2.error == error)
+	}
+
 	// MARK: Cocoa API idioms
 
 	func testTryProducesFailuresForBooleanAPIWithErrorReturnedByReference() {
