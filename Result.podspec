@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'Result'
-  s.version      = '0.6.0-beta.5'
+  s.version      = '0.6.0-beta.6'
   s.summary      = 'Swift type modelling the success/failure of arbitrary operations'
 
   s.homepage     = 'https://github.com/antitypical/Result'
