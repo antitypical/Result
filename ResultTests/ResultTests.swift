@@ -89,6 +89,16 @@ final class ResultTests: XCTestCase {
 		XCTAssertNil(result.error)
 	}
 
+	func testTryMapProducesSuccess() {
+		let result = success.tryMap(tryIsSuccess)
+		XCTAssert(result == success)
+	}
+
+	func testTryMapProducesFailure() {
+		let result = Result<String, NSError>.Success("fail").tryMap(tryIsSuccess)
+		XCTAssert(result == failure)
+	}
+
 	// MARK: Operators
 
 	func testConjunctionOperator() {
@@ -132,7 +142,7 @@ func attempt<T>(value: T, succeed: Bool, error: NSErrorPointer) -> T? {
 }
 
 func tryIsSuccess(text: String?) throws -> String {
-	guard let text = text else {
+	guard let text = text where text == "success" else {
 		throw error
 	}
 	

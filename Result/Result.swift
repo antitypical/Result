@@ -200,5 +200,11 @@ public func >>- <T, U, Error> (result: Result<T, Error>, @noescape transform: T 
 	return result.flatMap(transform)
 }
 
+/// Returns a new Result by mapping `Success`es’ values using `transform`, or wrapping errors thrown as `Failure`s’.
+///
+/// This is a synonym for `tryMap`.
+public func >>- <T, U, Error> (result: Result<T, Error>, @noescape transform: T throws -> U) -> Result<U, Error> {
+    return result.tryMap(transform)
+}
 
 import Foundation
