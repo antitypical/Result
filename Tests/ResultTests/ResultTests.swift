@@ -17,6 +17,19 @@ final class ResultTests: XCTestCase {
 		XCTAssert(Result(nil, failWith: error) == failure)
 	}
 
+	func testBimapTransformsSuccesses() {
+		XCTAssertEqual(success.bimap(
+			success: { $0.characters.count },
+			failure: { $0 }
+		) ?? 0, 7)
+	}
+
+	func testBimapTransformsFailures() {
+		XCTAssert(failure.bimap(
+			success: { $0 },
+			failure: { _ in error2 }
+		) == failure2)
+	}
 
 	// MARK: Errors
 
