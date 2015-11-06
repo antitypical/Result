@@ -64,6 +64,26 @@ public extension ResultType {
 	}
 }
 
+/// Protocol used to constrain a version of `map` for `transform`s that throw.
+public protocol ErrorTypeConvertible: ErrorType {
+	typealias ConvertibleType = Self
+	static func errorFromErrorType(error:ErrorType) -> ConvertibleType
+}
+
+public extension ResultType where Error: ErrorTypeConvertible {
+
+	/// Returns the result of applying `transform` to `Success`es’ values, or wrapping thrown errors.
+	public func map<U>(@noescape transform: Value throws -> U) -> Result<U, Error> {
+		return flatMap { value in
+			do {
+				return .Success(try transform(value))
+			} catch {
+				return .Failure(Error.errorFromErrorType(error) as! Error)
+			}
+		}
+	}
+}
+
 // MARK: - Operators
 
 infix operator &&& {
