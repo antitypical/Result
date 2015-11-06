@@ -77,8 +77,12 @@ public extension ResultType where Error: ErrorTypeConvertible {
 		return flatMap { value in
 			do {
 				return .Success(try transform(value))
-			} catch {
-				return .Failure(Error.errorFromErrorType(error) as! Error)
+			}
+			catch {
+				guard let convertedError = Error.errorFromErrorType(error) as? Error else {
+					fatalError("Unable to convert error type '\(error.dynamicType)' to type '\(Error.self)'")
+				}
+				return .Failure(convertedError)
 			}
 		}
 	}

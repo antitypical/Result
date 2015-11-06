@@ -200,6 +200,9 @@ public func >>- <T, U, Error> (result: Result<T, Error>, @noescape transform: T 
 	return result.flatMap(transform)
 }
 
+
+// MARK: - ErrorTypeConvertible conformance
+
 /// Make NSError conform to ErrorTypeConvertible
 extension NSError: ErrorTypeConvertible {
 	public static func errorFromErrorType(error: ErrorType) -> NSError {
