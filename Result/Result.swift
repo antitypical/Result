@@ -31,6 +31,15 @@ public enum Result<T, Error: ErrorType>: ResultType, CustomStringConvertible, Cu
 		}
 	}
 	
+	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws, non-autoclosure version
+    	public init?(_ f: () throws -> T?) {
+        	do {
+            		guard let result = try f() else { return nil }
+            		self = .Success(result)
+		} catch {
+        		self = .Failure(error as! Error)
+        	}
+        }
 
 	// MARK: Deconstruction
 
