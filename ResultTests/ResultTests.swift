@@ -16,6 +16,16 @@ final class ResultTests: XCTestCase {
 	func testInitOptionalFailure() {
 		XCTAssert(Result(nil, failWith: error) == failure)
 	}
+	
+	// MARK: Collections
+	
+	func testCollectionMapTransformsSuccesses() {
+		XCTAssertEqual(successCollection.map { $0.characters.count } ?? [], [7, 14])
+	}
+	
+	func testCollectionMapRewrapsFailures() {
+		XCTAssertEqual(failureCollection.map { $0.characters.count } ?? [], [])
+	}
 
 
 	// MARK: Errors
@@ -114,10 +124,12 @@ final class ResultTests: XCTestCase {
 // MARK: - Fixtures
 
 let success = Result<String, NSError>.Success("success")
+let successCollection = Result<[String], NSError>.Success(["success", "anotherSuccess"])
 let error = NSError(domain: "com.antitypical.Result", code: 1, userInfo: nil)
 let error2 = NSError(domain: "com.antitypical.Result", code: 2, userInfo: nil)
 let failure = Result<String, NSError>.Failure(error)
 let failure2 = Result<String, NSError>.Failure(error2)
+let failureCollection = Result<[String], NSError>.Failure(error)
 
 
 // MARK: - Helpers
