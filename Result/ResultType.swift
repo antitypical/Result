@@ -64,6 +64,27 @@ public extension ResultType {
 	}
 }
 
+public extension ResultType where Value: CollectionType {
+	/// Returns a new Result by mapping each of `Success`es’ values using `transform`, or re-wrapping `Failure`s’ errors.
+	public func map<U>(@noescape transform: Value.Generator.Element -> U) -> Result<[U], Error> {
+		return flatMap { .Success(transform($0)) }
+	}
+
+	/// Returns the result of applying `transform` to each of `Success`es’ values, or re-wrapping `Failure`’s errors.
+	public func flatMap<U>(@noescape transform: (Value.Generator.Element) -> Result<U, Error>) -> Result<[U], Error> {
+		return analysis(
+			ifSuccess: {
+				$0.map(transform).reduce(.Success([])) { (acc, result) in
+					guard let successes = acc.value, success = result.value else {
+						return acc
+					}
+					return .Success(successes + [success])
+				}
+			},
+			ifFailure: Result<[U], Error>.Failure)
+	}
+}
+
 // MARK: - Operators
 
 infix operator &&& {
