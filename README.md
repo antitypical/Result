@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/antitypical/Result.svg?branch=master)](https://travis-ci.org/antitypical/Result)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![CocoaPods](https://img.shields.io/cocoapods/v/Result.svg)](https://cocoapods.org/)
+[![Reference Status](https://www.versioneye.com/objective-c/result/reference_badge.svg?style=flat)](https://www.versioneye.com/objective-c/result/references)
 
 This is a Swift µframework providing `Result<Value, Error>`.
 
