@@ -48,18 +48,14 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testTryCatchWithFunctionProducesSuccesses() {
-		let function = {
-			try tryIsSuccess("success")
-		}
+		let function = { try tryIsSuccess("success") }
 
 		let result: Result<String, NSError> = Result(f: function)
 		XCTAssert(result == success)
 	}
 
 	func testTryCatchWithFunctionCatchProducesFailures() {
-		let function = {
-			try tryIsSuccess(nil)
-		}
+		let function = { try tryIsSuccess(nil) }
 
 		let result: Result<String, NSError> = Result(f: function)
 		XCTAssert(result.error == error)
