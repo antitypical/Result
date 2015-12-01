@@ -24,6 +24,11 @@ public enum Result<T, Error: ErrorType>: ResultType, CustomStringConvertible, Cu
 
 	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws
 	public init(@autoclosure _ f: () throws -> T) {
+		self.init(f: f)
+	}
+
+	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws.
+	public init(@noescape f: () throws -> T) {
 		do {
 			self = .Success(try f())
 		} catch {

@@ -47,6 +47,24 @@ final class ResultTests: XCTestCase {
 		XCTAssert(result.error == error)
 	}
 
+	func testTryCatchWithFunctionProducesSuccesses() {
+		let function = {
+			try tryIsSuccess("success")
+		}
+
+		let result: Result<String, NSError> = Result(f: function)
+		XCTAssert(result == success)
+	}
+
+	func testTryCatchWithFunctionCatchProducesFailures() {
+		let function = {
+			try tryIsSuccess(nil)
+		}
+
+		let result: Result<String, NSError> = Result(f: function)
+		XCTAssert(result.error == error)
+	}
+
 	func testMaterializeProducesSuccesses() {
 		let result1 = materialize(try tryIsSuccess("success"))
 		XCTAssert(result1 == success)
