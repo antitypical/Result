@@ -90,12 +90,12 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testTryMapProducesSuccess() {
-		let result = success.map(tryIsSuccess)
+		let result = success.tryMap(tryIsSuccess)
 		XCTAssert(result == success)
 	}
 
 	func testTryMapProducesFailure() {
-		let result = Result<String, NSError>.Success("fail").map(tryIsSuccess)
+		let result = Result<String, NSError>.Success("fail").tryMap(tryIsSuccess)
 		XCTAssert(result == failure)
 	}
 
