@@ -17,24 +17,28 @@ public enum Result<T, Error: ErrorType>: ResultType, CustomStringConvertible, Cu
 		self = .Failure(error)
 	}
 
-	/// Constructs a result from an Optional, failing with `Error` if `nil`
+	/// Constructs a result from an Optional, failing with `Error` if `nil`.
 	public init(_ value: T?, @autoclosure failWith: () -> Error) {
 		self = value.map(Result.Success) ?? .Failure(failWith())
 	}
 
-	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws
+	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws.
 	public init(@autoclosure _ f: () throws -> T) {
+		self.init(attempt: f)
+	}
+
+	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws.
+	public init(@noescape attempt f: () throws -> T) {
 		do {
 			self = .Success(try f())
 		} catch {
 			self = .Failure(error as! Error)
 		}
 	}
-	
 
 	// MARK: Deconstruction
 
-	/// Returns the value from `Success` Results or `throw`s the error
+	/// Returns the value from `Success` Results or `throw`s the error.
 	public func dematerialize() throws -> T {
 		switch self {
 		case let .Success(value):
