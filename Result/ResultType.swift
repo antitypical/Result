@@ -67,7 +67,7 @@ public extension ResultType {
 /// Protocol used to constrain a version of `map` for `transform`s that throw.
 public protocol ErrorTypeConvertible: ErrorType {
 	typealias ConvertibleType = Self
-	static func errorFromErrorType(error:ErrorType) -> ConvertibleType
+	static func errorFromErrorType(error: ErrorType) -> ConvertibleType
 }
 
 public extension ResultType where Error: ErrorTypeConvertible {
