@@ -6,3 +6,4 @@ xcuserdata
 *.pbxuser
 
 Carthage/Build
+.build
