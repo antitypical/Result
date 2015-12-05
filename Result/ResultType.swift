@@ -79,9 +79,8 @@ public extension ResultType where Error: ErrorTypeConvertible {
 				return .Success(try transform(value))
 			}
 			catch {
-				guard let convertedError = Error.errorFromErrorType(error) as? Error else {
-					fatalError("Unable to convert error type '\(error.dynamicType)' to type '\(Error.self)'")
-				}
+				let convertedError = Error.errorFromErrorType(error) as! Error
+				// Revisit this in a future version of Swift. https://twitter.com/jckarter/status/672931114944696321
 				return .Failure(convertedError)
 			}
 		}
