@@ -793,6 +793,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.antitypical.$(PRODUCT_NAME:rfc1034identifier)";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -833,6 +834,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.antitypical.$(PRODUCT_NAME:rfc1034identifier)";
 				SDKROOT = macosx;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
