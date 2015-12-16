@@ -7,13 +7,80 @@
 
 This is a Swift µframework providing `Result<Value, Error>`.
 
-`Result<Value, Error>` values are either successful (wrapping `Value`) or failed (wrapping `Error`). This is similar to Swift’s native `Optional` type, with the addition of an error value to pass some error code, message, or object along to be logged or displayed to the user.
+`Result<Value, Error>` values are either successful (wrapping `Value`) or failed (wrapping `Error`). This is similar to Swift’s native `Optional` type: `Success` is like `Some`, and `Failure` is like `None` except with an associated `ErrorType` value. The addition of an associated `ErrorType` allows errors to be passed along for logging or displaying to the user.
 
+Using this µframework instead of rolling your own `Result` type allows you to easily interface with other frameworks that also use `Result`.
 
 ## Use
 
-[API documentation](http://cocoadocs.org/docsets/Result/) is in the source.
+Use `Result` whenever an operation has the possibility of failure. Consider the following example of a function that tries to extract a `String` for a given key from a JSON `Dictionary`.
 
+```swift
+typealias JSONObject = [String:AnyObject]
+
+enum JSONError : ErrorType {
+    case NoSuchKey(String)
+    case TypeMismatch
+}
+
+func stringForKey(json: JSONObject, key: String) -> Result<String, JSONError> {
+    guard let value = json[key] else {
+        return .Failure(.NoSuchKey(key))
+    }
+    
+    if let value = value as? String {
+        return .Success(value)
+    }
+    else {
+        return .Failure(.TypeMismatch)
+    }
+}
+```
+
+This function provides a more robust wrapper around the default subscripting provided by `Dictionary`. Rather than return `AnyObject?`, it returns a `Result` that either contains the `String` value for the given key, or an `ErrorType` detailing what went wrong.
+
+One simple way to handle a `Result` is to deconstruct it using a `switch` statement.
+
+```swift
+switch stringForKey(json, key: "email") {
+
+case let .Success(email):
+    print("The email is \(email)")
+    
+case let .Failure(JSONError.NoSuchKey(key)):
+    print("\(key) is not a valid key")
+    
+case .Failure(JSONError.TypeMismatch):
+    print("Didn't have the right type")
+}
+```
+
+Using a `switch` statement allows powerful pattern matching, and ensures all possible results are covered. Swift 2.0 offers new ways to deconstruct enums like the `if-case` statement, but be wary as such methods do not ensure errors are handled.
+
+Other methods available for processing `Result` are detailed in the [API documentation](http://cocoadocs.org/docsets/Result/).
+
+## Result vs. Throws
+
+Swift 2.0 introduces error handling via throwing and catching `ErrorType`. `Result` accomplishes the same goal by encapsulating the result instead of hijacking control flow. The `Result` abstraction allows enables powerful functionality such as `map` and `flatMap`, making `Result` more composable than `throw`.
+
+Since dealing with APIs that throw is common, you can convert functions such functions into a `Result` by using the `materialize` method. Conversely, a `Result` can be used to throw an error by calling `dematerialize`. [Note: due to compiler issues, `materialize` is not currently available]
+
+## Higher Order Functions
+
+`map` and `flatMap` operate the same as `Optional.map` and `Optional.flatMap` except they apply to `Result`.
+
+`map` transforms a `Result` into a `Result` of a new type. It does this by taking a function that transforms the `Value` type into a new value. This transformation is only applied in the case of a `Success`. In the case of a `Failure`, the associated error is re-wrapped in the new `Result`.
+
+```swift
+// transforms a Result<Int, JSONError> to a Result<String, JSONError>
+let idResult = intForKey(json, key:"id").map { id in String(id) }
+```
+
+Here, the final result is either the id as a `String`, or carries over the `.Failure` from the previous result.
+
+`flatMap` is similar to `map` in that in transforms the `Result` into another `Result`. However, the function passed into `flatMap` must return a `Result`.
+
+An in depth discussion of `map` and `flatMap` is beyond the scope of this documentation. If you would like a deeper understanding, read about functors and monads. This article is a good place to [start](http://www.javiersoto.me/post/106875422394).
 
 ## Integration
 
