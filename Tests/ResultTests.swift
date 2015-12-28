@@ -132,6 +132,28 @@ final class ResultTests: XCTestCase {
 		let resultFailureRight = success &&& failure2
 		XCTAssert(resultFailureRight.error == error2)
 	}
+	
+	func testMapFilterOnArray(){
+		let a = [1,2,3,4,5,6,7,8,9]
+		let r = mapFilter(a, transform: evenClosure)
+
+		XCTAssert(r == ["2","4","6","8"])
+	}
+	
+	func testMapMOnArraySuccess(){
+		let a = [2,4,6,8]
+		if case let .Success(r) = mapM(a, transform: evenClosure){
+			XCTAssert(r == ["2","4","6","8"])
+		}else{
+			XCTFail()
+		}
+	}
+	
+	func testMapMOnArrayFailure(){
+		let a = [2,4,5,8]
+		let r = mapM(a, transform: evenClosure)
+		XCTAssert(r.error == error)
+	}
 }
 
 
@@ -142,6 +164,7 @@ let error = NSError(domain: "com.antitypical.Result", code: 1, userInfo: nil)
 let error2 = NSError(domain: "com.antitypical.Result", code: 2, userInfo: nil)
 let failure = Result<String, NSError>.Failure(error)
 let failure2 = Result<String, NSError>.Failure(error2)
+let evenClosure = {i -> Result<String, NSError> in return i%2 == 0 ? .Success(String(i)) : .Failure(error)}
 
 
 // MARK: - Helpers
