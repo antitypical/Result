@@ -1,12 +1,27 @@
-language: objective-c
-osx_image: xcode7.1
-
-script:
-  - xcodebuild test -scheme Result-Mac
-  - xcodebuild test -scheme Result-iOS -sdk iphonesimulator
-  - xcodebuild test -scheme Result-tvOS -sdk appletvsimulator
-  - xcodebuild build -scheme Result-watchOS -sdk watchsimulator
-  - pod lib lint
-
+matrix:
+  include:
+    - script:
+        - xcodebuild test -scheme Result-Mac
+        - xcodebuild test -scheme Result-iOS -sdk iphonesimulator
+        - xcodebuild test -scheme Result-tvOS -sdk appletvsimulator
+        - xcodebuild build -scheme Result-watchOS -sdk watchsimulator
+        - pod lib lint
+      env: JOB=Xcode
+      os: osx
+      osx_image: xcode7.1
+      language: objective-c
+    - script: swift build
+      env: JOB=Linux
+      sudo: required
+      dist: trusty
+      language: generic
+      before_install:
+        - wget -q -O - https://swift.org/keys/all-keys.asc | gpg --import -
+        - cd ..
+        - export SWIFT_VERSION=swift-DEVELOPMENT-SNAPSHOT-2016-01-25-a
+        - wget https://swift.org/builds/development/ubuntu1404/$SWIFT_VERSION/$SWIFT_VERSION-ubuntu14.04.tar.gz
+        - tar xzf $SWIFT_VERSION-ubuntu14.04.tar.gz
+        - export PATH="${PWD}/${SWIFT_VERSION}-ubuntu14.04/usr/bin:${PATH}"
+        - cd Result
 notifications:
   email: false
