@@ -101,3 +101,29 @@ infix operator &&& {
 public func &&& <L: ResultType, R: ResultType where L.Error == R.Error> (left: L, @autoclosure right: () -> R) -> Result<(L.Value, R.Value), L.Error> {
 	return left.flatMap { left in right().map { right in (left, right) } }
 }
+
+/// Return a array of `V` by applying transform to all elements of array 'U' and filtering out failure ones
+public func mapFilter<U, V, Error>(results: [U], @noescape transform: U -> Result<V, Error>) -> [V]{
+	var vs = [V]()
+	for result in results{
+		if case let .Success(value) = transform(result){
+			vs.append(value)
+		}
+	}
+	return vs
+}
+
+/// Return a Result with an array of `V`s if all Results of applying `transform` are `Success`es or return the error of the first `Failure`
+public func mapM<U, V, Error>(results: [U], @noescape transform: U -> Result<V, Error>) -> Result<[V], Error>{
+	var vs = [V]()
+	for result in results{
+		let mapped = transform(result)
+		switch mapped{
+		case let .Success(value):
+			vs.append(value)
+		case let .Failure(error):
+			return Result(error: error)
+		}
+	}
+	return Result(vs)
+}
