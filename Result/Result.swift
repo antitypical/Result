@@ -96,7 +96,7 @@ public enum Result<T, Error: ErrorType>: ResultType, CustomStringConvertible, Cu
 	#endif
 
 	/// Constructs an error.
-	public static func error(message: String? = nil, function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__) -> NSError {
+	public static func error(message: String? = nil, function: String = #function, file: String = #file, line: Int = #line) -> NSError {
 		var userInfo: [String: UserInfoType] = [
 			functionKey: function,
 			fileKey: file,
@@ -177,7 +177,7 @@ public func materialize<T>(@autoclosure f: () throws -> T) -> Result<T, NSError>
 /// This is convenient for wrapping Cocoa API which returns an object or `nil` + an error, by reference. e.g.:
 ///
 ///     Result.try { NSData(contentsOfURL: URL, options: .DataReadingMapped, error: $0) }
-public func `try`<T>(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__, `try`: NSErrorPointer -> T?) -> Result<T, NSError> {
+public func `try`<T>(function: String = #function, file: String = #file, line: Int = #line, `try`: NSErrorPointer -> T?) -> Result<T, NSError> {
 	var error: NSError?
 	return `try`(&error).map(Result.Success) ?? .Failure(error ?? Result<T, NSError>.error(function: function, file: file, line: line))
 }
@@ -187,7 +187,7 @@ public func `try`<T>(function: String = __FUNCTION__, file: String = __FILE__, l
 /// This is convenient for wrapping Cocoa API which returns a `Bool` + an error, by reference. e.g.:
 ///
 ///     Result.try { NSFileManager.defaultManager().removeItemAtURL(URL, error: $0) }
-public func `try`(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__, `try`: NSErrorPointer -> Bool) -> Result<(), NSError> {
+public func `try`(function: String = #function, file: String = #file, line: Int = #line, `try`: NSErrorPointer -> Bool) -> Result<(), NSError> {
 	var error: NSError?
 	return `try`(&error) ?
 		.Success(())
