@@ -20,6 +20,8 @@ final class ResultTests: XCTestCase {
 
 	// MARK: Errors
 
+	#if !os(Linux)
+
 	func testErrorsIncludeTheSourceFile() {
 		let file = __FILE__
 		XCTAssert(Result<(), NSError>.error().file == file)
@@ -34,6 +36,8 @@ final class ResultTests: XCTestCase {
 		let function = __FUNCTION__
 		XCTAssert(Result<(), NSError>.error().function == function)
 	}
+
+	#endif
 
 	// MARK: Try - Catch
 	
@@ -79,6 +83,8 @@ final class ResultTests: XCTestCase {
 
 	// MARK: Cocoa API idioms
 
+	#if !os(Linux)
+
 	func testTryProducesFailuresForBooleanAPIWithErrorReturnedByReference() {
 		let result = `try` { attempt(true, succeed: false, error: $0) }
 		XCTAssertFalse(result ?? false)
@@ -113,6 +119,8 @@ final class ResultTests: XCTestCase {
 		XCTAssert(result == failure)
 	}
 
+	#endif
+
 	// MARK: Operators
 
 	func testConjunctionOperator() {
@@ -146,6 +154,8 @@ let failure2 = Result<String, NSError>.Failure(error2)
 
 // MARK: - Helpers
 
+#if !os(Linux)
+
 func attempt<T>(value: T, succeed: Bool, error: NSErrorPointer) -> T? {
 	if succeed {
 		return value
@@ -155,6 +165,8 @@ func attempt<T>(value: T, succeed: Bool, error: NSErrorPointer) -> T? {
 	}
 }
 
+#endif
+
 func tryIsSuccess(text: String?) throws -> String {
 	guard let text = text where text == "success" else {
 		throw error
@@ -162,6 +174,8 @@ func tryIsSuccess(text: String?) throws -> String {
 	
 	return text
 }
+
+#if !os(Linux)
 
 extension NSError {
 	var function: String? {
@@ -177,6 +191,38 @@ extension NSError {
 	}
 }
 
+#endif
 
+#if os(Linux)
+
+extension ResultTests: XCTestCaseProvider {
+	var allTests: [(String, () throws -> Void)] {
+		return [
+			("testMapTransformsSuccesses", testMapTransformsSuccesses),
+			("testMapRewrapsFailures", testMapRewrapsFailures),
+			("testInitOptionalSuccess", testInitOptionalSuccess),
+			("testInitOptionalFailure", testInitOptionalFailure),
+//			("testErrorsIncludeTheSourceFile", testErrorsIncludeTheSourceFile),
+//			("testErrorsIncludeTheSourceLine", testErrorsIncludeTheSourceLine),
+//			("testErrorsIncludeTheCallingFunction", testErrorsIncludeTheCallingFunction),
+			("testTryCatchProducesSuccesses", testTryCatchProducesSuccesses),
+			("testTryCatchProducesFailures", testTryCatchProducesFailures),
+			("testTryCatchWithFunctionProducesSuccesses", testTryCatchWithFunctionProducesSuccesses),
+			("testTryCatchWithFunctionCatchProducesFailures", testTryCatchWithFunctionCatchProducesFailures),
+			("testMaterializeProducesSuccesses", testMaterializeProducesSuccesses),
+			("testMaterializeProducesFailures", testMaterializeProducesFailures),
+//			("testTryProducesFailuresForBooleanAPIWithErrorReturnedByReference", testTryProducesFailuresForBooleanAPIWithErrorReturnedByReference),
+//			("testTryProducesFailuresForOptionalWithErrorReturnedByReference", testTryProducesFailuresForOptionalWithErrorReturnedByReference),
+//			("testTryProducesSuccessesForBooleanAPI", testTryProducesSuccessesForBooleanAPI),
+//			("testTryProducesSuccessesForOptionalAPI", testTryProducesSuccessesForOptionalAPI),
+//			("testTryMapProducesSuccess", testTryMapProducesSuccess),
+//			("testTryMapProducesFailure", testTryMapProducesFailure),
+			("testConjunctionOperator", testConjunctionOperator),
+		]
+	}
+}
+#endif
+
+import Foundation
 import Result
 import XCTest
