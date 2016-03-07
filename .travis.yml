@@ -12,6 +12,7 @@ matrix:
       language: objective-c
     - script:
         - swift build
+        - swift test
       env: JOB=Linux
       sudo: required
       dist: trusty
