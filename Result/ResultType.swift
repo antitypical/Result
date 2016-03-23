@@ -8,13 +8,8 @@
 
 /// A type that can represent either failure with an error or success with a result value.
 public protocol ResultType {
-	#if swift(>=2.2)
 	associatedtype Value
 	associatedtype Error: ResultErrorType
-	#else
-	typealias Value
-	typealias Error: ResultErrorType
-	#endif
 	
 	/// Constructs a successful result wrapping a `value`.
 	init(value: Value)

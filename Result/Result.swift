@@ -224,7 +224,7 @@ public func >>- <T, U, Error> (result: Result<T, Error>, @noescape transform: T 
 		}
 	}
 	
-	extension NSError : ErrorTypeConvertible {
+	extension NSError: ErrorTypeConvertible {
 		public static func errorFromErrorType(error: ResultErrorType) -> Self {
 			let e = error as NSError
 			return e.force()
