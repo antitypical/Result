@@ -65,7 +65,7 @@ final class ResultTests: XCTestCase {
 		let result1 = materialize(try tryIsSuccess("success"))
 		XCTAssert(result1 == success)
 
-		let result2 = materialize { try tryIsSuccess("success") }
+		let result2:Result<String, NSError> = materialize { try tryIsSuccess("success") }
 		XCTAssert(result2 == success)
 	}
 
@@ -73,7 +73,7 @@ final class ResultTests: XCTestCase {
 		let result1 = materialize(try tryIsSuccess(nil))
 		XCTAssert(result1.error == error)
 
-		let result2 = materialize { try tryIsSuccess(nil) }
+		let result2:Result<String, NSError> = materialize { try tryIsSuccess(nil) }
 		XCTAssert(result2.error == error)
 	}
 
@@ -150,7 +150,11 @@ func attempt<T>(value: T, succeed: Bool, error: NSErrorPointer) -> T? {
 	if succeed {
 		return value
 	} else {
-		error.memory = Result<(), NSError>.error()
+		#if swift(>=3.0)
+			error.pointee = Result<(), NSError>.error()
+		#else
+			error.memory = Result<(), NSError>.error()
+		#endif
 		return nil
 	}
 }
