@@ -43,8 +43,13 @@ final class ResultTests: XCTestCase {
 	}
 	
 	func testTryCatchProducesFailures() {
-		let result: Result<String, NSError> = Result(try tryIsSuccess(nil))
-		XCTAssert(result.error == error)
+		#if os(Linux)
+			/// FIXME: skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-03-01-a.
+			print("Test Case `\(__FUNCTION__)` skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-03-01-a.")
+		#else
+			let result: Result<String, NSError> = Result(try tryIsSuccess(nil))
+			XCTAssert(result.error == error)
+		#endif
 	}
 
 	func testTryCatchWithFunctionProducesSuccesses() {
@@ -55,10 +60,15 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testTryCatchWithFunctionCatchProducesFailures() {
-		let function = { try tryIsSuccess(nil) }
+		#if os(Linux)
+			/// FIXME: skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-03-01-a.
+			print("Test Case `\(__FUNCTION__)` skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-03-01-a.")
+		#else
+			let function = { try tryIsSuccess(nil) }
 
-		let result: Result<String, NSError> = Result(attempt: function)
-		XCTAssert(result.error == error)
+			let result: Result<String, NSError> = Result(attempt: function)
+			XCTAssert(result.error == error)
+		#endif
 	}
 
 	func testMaterializeProducesSuccesses() {
@@ -70,14 +80,21 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testMaterializeProducesFailures() {
-		let result1 = materialize(try tryIsSuccess(nil))
-		XCTAssert(result1.error == error)
+		#if os(Linux)
+			/// FIXME: skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-03-01-a.
+			print("Test Case `\(__FUNCTION__)` skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-03-01-a.")
+		#else
+			let result1 = materialize(try tryIsSuccess(nil))
+			XCTAssert(result1.error == error)
 
-		let result2 = materialize { try tryIsSuccess(nil) }
-		XCTAssert(result2.error == error)
+			let result2 = materialize { try tryIsSuccess(nil) }
+			XCTAssert(result2.error == error)
+		#endif
 	}
 
 	// MARK: Cocoa API idioms
+
+	#if !os(Linux)
 
 	func testTryProducesFailuresForBooleanAPIWithErrorReturnedByReference() {
 		let result = `try` { attempt(true, succeed: false, error: $0) }
@@ -113,6 +130,8 @@ final class ResultTests: XCTestCase {
 		XCTAssert(result == failure)
 	}
 
+	#endif
+
 	// MARK: Operators
 
 	func testConjunctionOperator() {
@@ -146,6 +165,8 @@ let failure2 = Result<String, NSError>.Failure(error2)
 
 // MARK: - Helpers
 
+#if !os(Linux)
+
 func attempt<T>(value: T, succeed: Bool, error: NSErrorPointer) -> T? {
 	if succeed {
 		return value
@@ -154,6 +175,8 @@ func attempt<T>(value: T, succeed: Bool, error: NSErrorPointer) -> T? {
 		return nil
 	}
 }
+
+#endif
 
 func tryIsSuccess(text: String?) throws -> String {
 	guard let text = text where text == "success" else {
@@ -165,18 +188,48 @@ func tryIsSuccess(text: String?) throws -> String {
 
 extension NSError {
 	var function: String? {
-		return userInfo[Result<(), NSError>.functionKey as NSString] as? String
+		return userInfo[Result<(), NSError>.functionKey] as? String
 	}
 	
 	var file: String? {
-		return userInfo[Result<(), NSError>.fileKey as NSString] as? String
+		return userInfo[Result<(), NSError>.fileKey] as? String
 	}
 
 	var line: Int? {
-		return userInfo[Result<(), NSError>.lineKey as NSString] as? Int
+		return userInfo[Result<(), NSError>.lineKey] as? Int
 	}
 }
 
+#if os(Linux)
 
+extension ResultTests: XCTestCaseProvider {
+	var allTests: [(String, () throws -> Void)] {
+		return [
+			("testMapTransformsSuccesses", testMapTransformsSuccesses),
+			("testMapRewrapsFailures", testMapRewrapsFailures),
+			("testInitOptionalSuccess", testInitOptionalSuccess),
+			("testInitOptionalFailure", testInitOptionalFailure),
+			("testErrorsIncludeTheSourceFile", testErrorsIncludeTheSourceFile),
+			("testErrorsIncludeTheSourceLine", testErrorsIncludeTheSourceLine),
+			("testErrorsIncludeTheCallingFunction", testErrorsIncludeTheCallingFunction),
+			("testTryCatchProducesSuccesses", testTryCatchProducesSuccesses),
+			("testTryCatchProducesFailures", testTryCatchProducesFailures),
+			("testTryCatchWithFunctionProducesSuccesses", testTryCatchWithFunctionProducesSuccesses),
+			("testTryCatchWithFunctionCatchProducesFailures", testTryCatchWithFunctionCatchProducesFailures),
+			("testMaterializeProducesSuccesses", testMaterializeProducesSuccesses),
+			("testMaterializeProducesFailures", testMaterializeProducesFailures),
+//			("testTryProducesFailuresForBooleanAPIWithErrorReturnedByReference", testTryProducesFailuresForBooleanAPIWithErrorReturnedByReference),
+//			("testTryProducesFailuresForOptionalWithErrorReturnedByReference", testTryProducesFailuresForOptionalWithErrorReturnedByReference),
+//			("testTryProducesSuccessesForBooleanAPI", testTryProducesSuccessesForBooleanAPI),
+//			("testTryProducesSuccessesForOptionalAPI", testTryProducesSuccessesForOptionalAPI),
+//			("testTryMapProducesSuccess", testTryMapProducesSuccess),
+//			("testTryMapProducesFailure", testTryMapProducesFailure),
+			("testConjunctionOperator", testConjunctionOperator),
+		]
+	}
+}
+#endif
+
+import Foundation
 import Result
 import XCTest
