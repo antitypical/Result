@@ -2,8 +2,8 @@
 
 /// A type that can represent either failure with an error or success with a result value.
 public protocol ResultType {
-	typealias Value
-	typealias Error: ErrorType
+	associatedtype Value
+	associatedtype Error: ErrorType
 	
 	/// Constructs a successful result wrapping a `value`.
 	init(value: Value)
@@ -66,7 +66,7 @@ public extension ResultType {
 
 /// Protocol used to constrain `tryMap` to `Result`s with compatible `Error`s.
 public protocol ErrorTypeConvertible: ErrorType {
-	typealias ConvertibleType = Self
+	associatedtype ConvertibleType = Self
 	static func errorFromErrorType(error: ErrorType) -> ConvertibleType
 }
 
