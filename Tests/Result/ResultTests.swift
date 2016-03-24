@@ -206,8 +206,8 @@ extension NSError {
 
 #if os(Linux)
 
-extension ResultTests: XCTestCaseProvider {
-	var allTests: [(String, () throws -> Void)] {
+extension ResultTests {
+	static var allTests: [(String, ResultTests -> () throws -> Void)] {
 		return [
 			("testMapTransformsSuccesses", testMapTransformsSuccesses),
 			("testMapRewrapsFailures", testMapRewrapsFailures),
