@@ -21,17 +21,17 @@ final class ResultTests: XCTestCase {
 	// MARK: Errors
 
 	func testErrorsIncludeTheSourceFile() {
-		let file = __FILE__
+		let file = #file
 		XCTAssert(Result<(), NSError>.error().file == file)
 	}
 
 	func testErrorsIncludeTheSourceLine() {
-		let (line, error) = (__LINE__, Result<(), NSError>.error())
+		let (line, error) = (#line, Result<(), NSError>.error())
 		XCTAssertEqual(error.line ?? -1, line)
 	}
 
 	func testErrorsIncludeTheCallingFunction() {
-		let function = __FUNCTION__
+		let function = #function
 		XCTAssert(Result<(), NSError>.error().function == function)
 	}
 
@@ -45,7 +45,7 @@ final class ResultTests: XCTestCase {
 	func testTryCatchProducesFailures() {
 		#if os(Linux)
 			/// FIXME: skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-03-01-a.
-			print("Test Case `\(__FUNCTION__)` skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-03-01-a.")
+			print("Test Case `\(#function)` skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-03-01-a.")
 		#else
 			let result: Result<String, NSError> = Result(try tryIsSuccess(nil))
 			XCTAssert(result.error == error)
@@ -62,7 +62,7 @@ final class ResultTests: XCTestCase {
 	func testTryCatchWithFunctionCatchProducesFailures() {
 		#if os(Linux)
 			/// FIXME: skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-03-01-a.
-			print("Test Case `\(__FUNCTION__)` skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-03-01-a.")
+			print("Test Case `\(#function)` skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-03-01-a.")
 		#else
 			let function = { try tryIsSuccess(nil) }
 
@@ -75,19 +75,19 @@ final class ResultTests: XCTestCase {
 		let result1 = materialize(try tryIsSuccess("success"))
 		XCTAssert(result1 == success)
 
-		let result2 = materialize { try tryIsSuccess("success") }
+		let result2: Result<String, NSError> = materialize { try tryIsSuccess("success") }
 		XCTAssert(result2 == success)
 	}
 
 	func testMaterializeProducesFailures() {
 		#if os(Linux)
 			/// FIXME: skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-03-01-a.
-			print("Test Case `\(__FUNCTION__)` skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-03-01-a.")
+			print("Test Case `\(#function)` skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-03-01-a.")
 		#else
 			let result1 = materialize(try tryIsSuccess(nil))
 			XCTAssert(result1.error == error)
 
-			let result2 = materialize { try tryIsSuccess(nil) }
+			let result2: Result<String, NSError> = materialize { try tryIsSuccess(nil) }
 			XCTAssert(result2.error == error)
 		#endif
 	}
@@ -171,7 +171,11 @@ func attempt<T>(value: T, succeed: Bool, error: NSErrorPointer) -> T? {
 	if succeed {
 		return value
 	} else {
-		error.memory = Result<(), NSError>.error()
+		#if swift(>=3.0)
+			error.pointee = Result<(), NSError>.error()
+		#else
+			error.memory = Result<(), NSError>.error()
+		#endif
 		return nil
 	}
 }
@@ -202,8 +206,8 @@ extension NSError {
 
 #if os(Linux)
 
-extension ResultTests: XCTestCaseProvider {
-	var allTests: [(String, () throws -> Void)] {
+extension ResultTests {
+	static var allTests: [(String, ResultTests -> () throws -> Void)] {
 		return [
 			("testMapTransformsSuccesses", testMapTransformsSuccesses),
 			("testMapRewrapsFailures", testMapRewrapsFailures),

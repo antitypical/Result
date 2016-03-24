@@ -1,9 +1,15 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
+#if swift(>=3.0)
+	public typealias ResultErrorType = ErrorProtocol
+#else
+	public typealias ResultErrorType = ErrorType
+#endif
+
 /// A type that can represent either failure with an error or success with a result value.
 public protocol ResultType {
-	typealias Value
-	typealias Error: ErrorType
+	associatedtype Value
+	associatedtype Error: ResultErrorType
 	
 	/// Constructs a successful result wrapping a `value`.
 	init(value: Value)
@@ -65,9 +71,9 @@ public extension ResultType {
 }
 
 /// Protocol used to constrain `tryMap` to `Result`s with compatible `Error`s.
-public protocol ErrorTypeConvertible: ErrorType {
-	typealias ConvertibleType = Self
-	static func errorFromErrorType(error: ErrorType) -> ConvertibleType
+public protocol ErrorTypeConvertible: ResultErrorType {
+	associatedtype ConvertibleType = Self
+	static func errorFromErrorType(error: ResultErrorType) -> Self
 }
 
 public extension ResultType where Error: ErrorTypeConvertible {
@@ -79,7 +85,7 @@ public extension ResultType where Error: ErrorTypeConvertible {
 				return .Success(try transform(value))
 			}
 			catch {
-				let convertedError = Error.errorFromErrorType(error) as! Error
+				let convertedError = Error.errorFromErrorType(error)// as! Error, not deleting it as things might change
 				// Revisit this in a future version of Swift. https://twitter.com/jckarter/status/672931114944696321
 				return .Failure(convertedError)
 			}

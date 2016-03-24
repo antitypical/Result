@@ -1,7 +1,7 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
 /// An enum representing either a failure with an explanatory error, or a success with a result value.
-public enum Result<T, Error: ErrorType>: ResultType, CustomStringConvertible, CustomDebugStringConvertible {
+public enum Result<T, Error: ResultErrorType>: ResultType, CustomStringConvertible, CustomDebugStringConvertible {
 	case Success(T)
 	case Failure(Error)
 
@@ -96,7 +96,7 @@ public enum Result<T, Error: ErrorType>: ResultType, CustomStringConvertible, Cu
 	#endif
 
 	/// Constructs an error.
-	public static func error(message: String? = nil, function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__) -> NSError {
+	public static func error(message: String? = nil, function: String = #function, file: String = #file, line: Int = #line) -> NSError {
 		var userInfo: [String: UserInfoType] = [
 			functionKey: function,
 			fileKey: file,
@@ -177,7 +177,7 @@ public func materialize<T>(@autoclosure f: () throws -> T) -> Result<T, NSError>
 /// This is convenient for wrapping Cocoa API which returns an object or `nil` + an error, by reference. e.g.:
 ///
 ///     Result.try { NSData(contentsOfURL: URL, options: .DataReadingMapped, error: $0) }
-public func `try`<T>(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__, `try`: NSErrorPointer -> T?) -> Result<T, NSError> {
+public func `try`<T>(function: String = #function, file: String = #file, line: Int = #line, `try`: NSErrorPointer -> T?) -> Result<T, NSError> {
 	var error: NSError?
 	return `try`(&error).map(Result.Success) ?? .Failure(error ?? Result<T, NSError>.error(function: function, file: file, line: line))
 }
@@ -187,7 +187,7 @@ public func `try`<T>(function: String = __FUNCTION__, file: String = __FILE__, l
 /// This is convenient for wrapping Cocoa API which returns a `Bool` + an error, by reference. e.g.:
 ///
 ///     Result.try { NSFileManager.defaultManager().removeItemAtURL(URL, error: $0) }
-public func `try`(function: String = __FUNCTION__, file: String = __FILE__, line: Int = __LINE__, `try`: NSErrorPointer -> Bool) -> Result<(), NSError> {
+public func `try`(function: String = #function, file: String = #file, line: Int = #line, `try`: NSErrorPointer -> Bool) -> Result<(), NSError> {
 	var error: NSError?
 	return `try`(&error) ?
 		.Success(())
@@ -217,13 +217,19 @@ public func >>- <T, U, Error> (result: Result<T, Error>, @noescape transform: T 
 // MARK: - ErrorTypeConvertible conformance
 
 #if !os(Linux)
-
-/// Make NSError conform to ErrorTypeConvertible
-extension NSError: ErrorTypeConvertible {
-	public static func errorFromErrorType(error: ErrorType) -> NSError {
-		return error as NSError
+	
+	public extension ErrorTypeConvertible where Self : NSError {
+		public func force<T>() -> T {
+			return self as! T
+		}
 	}
-}
+	
+	extension NSError: ErrorTypeConvertible {
+		public static func errorFromErrorType(error: ResultErrorType) -> Self {
+			let e = error as NSError
+			return e.force()
+		}
+	}
 
 #endif
 
@@ -234,6 +240,6 @@ extension NSError: ErrorTypeConvertible {
 /// This can be used to describe `Result`s where failures will never
 /// be generated. For example, `Result<Int, NoError>` describes a result that
 /// contains an `Int`eger and is guaranteed never to be a `Failure`.
-public enum NoError: ErrorType { }
+public enum NoError: ResultErrorType { }
 
 import Foundation
