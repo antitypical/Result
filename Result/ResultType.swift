@@ -73,10 +73,10 @@ public extension ResultType {
 /// Protocol used to constrain `tryMap` to `Result`s with compatible `Error`s.
 public protocol ErrorTypeConvertible: ResultErrorType {
 	associatedtype ConvertibleType = Self
-	static func errorFromErrorType(error: ResultErrorType) -> Self
+	static func errorFromErrorType(error: ResultErrorType) -> ConvertibleType
 }
 
-public extension ResultType where Error: ErrorTypeConvertible {
+public extension ResultType where Error: ErrorTypeConvertible, Error.ConvertibleType == Error {
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or wrapping thrown errors.
 	public func tryMap<U>(@noescape transform: Value throws -> U) -> Result<U, Error> {
@@ -85,7 +85,7 @@ public extension ResultType where Error: ErrorTypeConvertible {
 				return .Success(try transform(value))
 			}
 			catch {
-				let convertedError = Error.errorFromErrorType(error)// as! Error, not deleting it as things might change
+				let convertedError = Error.errorFromErrorType(error)
 				// Revisit this in a future version of Swift. https://twitter.com/jckarter/status/672931114944696321
 				return .Failure(convertedError)
 			}

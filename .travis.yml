@@ -20,11 +20,10 @@ matrix:
       before_install:
         - wget -q -O - https://swift.org/keys/all-keys.asc | gpg --import -
         - cd ..
-        - export SWIFT_VERSION=swift-DEVELOPMENT-SNAPSHOT-2016-03-16-a
+        - export SWIFT_VERSION=swift-DEVELOPMENT-SNAPSHOT-2016-03-24-a
         - wget https://swift.org/builds/development/ubuntu1404/$SWIFT_VERSION/$SWIFT_VERSION-ubuntu14.04.tar.gz
         - tar xzf $SWIFT_VERSION-ubuntu14.04.tar.gz
         - export PATH="${PWD}/${SWIFT_VERSION}-ubuntu14.04/usr/bin:${PATH}"
-        - export LD_LIBRARY_PATH="${PWD}/${SWIFT_VERSION}-ubuntu14.04/usr/lib/swift/linux/:$LD_LIBRARY_PATH"
         - cd Result
 notifications:
   email: false
