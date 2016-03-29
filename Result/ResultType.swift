@@ -72,11 +72,10 @@ public extension ResultType {
 
 /// Protocol used to constrain `tryMap` to `Result`s with compatible `Error`s.
 public protocol ErrorTypeConvertible: ResultErrorType {
-	associatedtype ConvertibleType = Self
-	static func errorFromErrorType(error: ResultErrorType) -> ConvertibleType
+	static func errorFromErrorType(error: ResultErrorType) -> Self
 }
 
-public extension ResultType where Error: ErrorTypeConvertible, Error.ConvertibleType == Error {
+public extension ResultType where Error: ErrorTypeConvertible {
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or wrapping thrown errors.
 	public func tryMap<U>(@noescape transform: Value throws -> U) -> Result<U, Error> {

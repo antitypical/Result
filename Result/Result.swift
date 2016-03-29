@@ -219,8 +219,12 @@ public func >>- <T, U, Error> (result: Result<T, Error>, @noescape transform: T 
 #if !os(Linux)
 	
 extension NSError: ErrorTypeConvertible {
-	public static func errorFromErrorType(error: ResultErrorType) -> NSError {
-		return error as NSError
+	public static func errorFromErrorType(error: ResultErrorType) -> Self {
+		func cast<T: NSError>(error: ResultErrorType) -> T {
+			return error as! T
+		}
+
+		return cast(error)
 	}
 }
 
