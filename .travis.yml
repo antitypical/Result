@@ -17,13 +17,7 @@ matrix:
       sudo: required
       dist: trusty
       language: generic
-      before_install:
-        - wget -q -O - https://swift.org/keys/all-keys.asc | gpg --import -
-        - cd ..
-        - export SWIFT_VERSION=swift-DEVELOPMENT-SNAPSHOT-2016-03-24-a
-        - wget https://swift.org/builds/development/ubuntu1404/$SWIFT_VERSION/$SWIFT_VERSION-ubuntu14.04.tar.gz
-        - tar xzf $SWIFT_VERSION-ubuntu14.04.tar.gz
-        - export PATH="${PWD}/${SWIFT_VERSION}-ubuntu14.04/usr/bin:${PATH}"
-        - cd Result
+      install:
+        - eval "$(curl -sL https://gist.githubusercontent.com/kylef/5c0475ff02b7c7671d2a/raw/02090c7ede5a637b76e6df1710e83cd0bbe7dcdf/swiftenv-install.sh)"
 notifications:
   email: false
