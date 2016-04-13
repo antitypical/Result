@@ -167,21 +167,38 @@ let failure2 = Result<String, NSError>.Failure(error2)
 
 #if !os(Linux)
 
+
+#if swift(>=3.0)
+func attempt<T>(_ value: T, succeed: Bool, error: NSErrorPointer) -> T? {
+	if succeed {
+		return value
+	} else {
+		error?.pointee = Result<(), NSError>.error()
+		return nil
+	}
+}
+#else
 func attempt<T>(value: T, succeed: Bool, error: NSErrorPointer) -> T? {
 	if succeed {
 		return value
 	} else {
-		#if swift(>=3.0)
-			error.pointee = Result<(), NSError>.error()
-		#else
-			error.memory = Result<(), NSError>.error()
-		#endif
+		error.memory = Result<(), NSError>.error()
 		return nil
 	}
 }
+#endif
 
 #endif
 
+#if swift(>=3)
+func tryIsSuccess(_ text: String?) throws -> String {
+	guard let text = text where text == "success" else {
+		throw error
+	}
+
+	return text
+}
+#else
 func tryIsSuccess(text: String?) throws -> String {
 	guard let text = text where text == "success" else {
 		throw error
@@ -189,6 +206,7 @@ func tryIsSuccess(text: String?) throws -> String {
 	
 	return text
 }
+#endif
 
 extension NSError {
 	var function: String? {
