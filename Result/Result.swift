@@ -139,17 +139,6 @@ public enum Result<T, Error: ResultErrorType>: ResultType, CustomStringConvertib
 	}
 }
 
-
-/// Returns the value of `left` if it is a `Success`, or `right` otherwise. Short-circuits.
-public func ?? <T, Error> (left: Result<T, Error>, @autoclosure right: () -> T) -> T {
-	return left.recover(right())
-}
-
-/// Returns `left` if it is a `Success`es, or `right` otherwise. Short-circuits.
-public func ?? <T, Error> (left: Result<T, Error>, @autoclosure right: () -> Result<T, Error>) -> Result<T, Error> {
-	return left.recoverWith(right())
-}
-
 // MARK: - Derive result from failable closure
 
 #if swift(>=3)

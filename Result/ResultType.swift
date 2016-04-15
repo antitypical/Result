@@ -213,3 +213,13 @@ public func == <T: ResultType where T.Value: Equatable, T.Error: Equatable> (lef
 public func != <T: ResultType where T.Value: Equatable, T.Error: Equatable> (left: T, right: T) -> Bool {
 	return !(left == right)
 }
+
+/// Returns the value of `left` if it is a `Success`, or `right` otherwise. Short-circuits.
+public func ?? <T: ResultType> (left: T, @autoclosure right: () -> T.Value) -> T.Value {
+	return left.recover(right())
+}
+
+/// Returns `left` if it is a `Success`es, or `right` otherwise. Short-circuits.
+public func ?? <T: ResultType> (left: T, @autoclosure right: () -> T) -> T {
+	return left.recoverWith(right())
+}
