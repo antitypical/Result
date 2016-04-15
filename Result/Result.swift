@@ -168,22 +168,6 @@ public enum Result<T, Error: ResultErrorType>: ResultType, CustomStringConvertib
 }
 
 
-/// Returns `true` if `left` and `right` are both `Success`es and their values are equal, or if `left` and `right` are both `Failure`s and their errors are equal.
-public func == <T: Equatable, Error: Equatable> (left: Result<T, Error>, right: Result<T, Error>) -> Bool {
-	if let left = left.value, right = right.value {
-		return left == right
-	} else if let left = left.error, right = right.error {
-		return left == right
-	}
-	return false
-}
-
-/// Returns `true` if `left` and `right` represent different cases, or if they represent the same case but different values.
-public func != <T: Equatable, Error: Equatable> (left: Result<T, Error>, right: Result<T, Error>) -> Bool {
-	return !(left == right)
-}
-
-
 /// Returns the value of `left` if it is a `Success`, or `right` otherwise. Short-circuits.
 public func ?? <T, Error> (left: Result<T, Error>, @autoclosure right: () -> T) -> T {
 	return left.recover(right())
