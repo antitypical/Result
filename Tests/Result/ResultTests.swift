@@ -92,6 +92,47 @@ final class ResultTests: XCTestCase {
 		#endif
 	}
 
+	// MARK: Recover
+
+	func testRecoverProducesLeftForLeftSuccess() {
+		let left = Result<String, NSError>.Success("left")
+		XCTAssertEqual(left.recover("right"), "left")
+	}
+
+	func testRecoverProducesRightForLeftFailure() {
+		struct Error: ResultErrorType {}
+
+		let left = Result<String, Error>.Failure(Error())
+		XCTAssertEqual(left.recover("right"), "right")
+	}
+
+	// MARK: Recover With
+
+	func testRecoverWithProducesLeftForLeftSuccess() {
+		let left = Result<String, NSError>.Success("left")
+		let right = Result<String, NSError>.Success("right")
+
+		XCTAssertEqual(left.recoverWith(right).value, "left")
+	}
+
+	func testRecoverWithProducesRightSuccessForLeftFailureAndRightSuccess() {
+		struct Error: ResultErrorType {}
+
+		let left = Result<String, Error>.Failure(Error())
+		let right = Result<String, Error>.Success("right")
+
+		XCTAssertEqual(left.recoverWith(right).value, "right")
+	}
+
+	func testRecoverWithProducesRightFailureForLeftFailureAndRightFailure() {
+		enum Error: ResultErrorType { case Left, Right }
+
+		let left = Result<String, Error>.Failure(.Left)
+		let right = Result<String, Error>.Failure(.Right)
+
+		XCTAssertEqual(left.recoverWith(right).error, .Right)
+	}
+
 	// MARK: Cocoa API idioms
 
 	#if !os(Linux)
@@ -240,6 +281,11 @@ extension ResultTests {
 			("testTryCatchWithFunctionCatchProducesFailures", testTryCatchWithFunctionCatchProducesFailures),
 			("testMaterializeProducesSuccesses", testMaterializeProducesSuccesses),
 			("testMaterializeProducesFailures", testMaterializeProducesFailures),
+			("testRecoverProducesLeftForLeftSuccess", testRecoverProducesLeftForLeftSuccess),
+			("testRecoverProducesRightForLeftFailure", testRecoverProducesRightForLeftFailure),
+			("testRecoverWithProducesLeftForLeftSuccess", testRecoverWithProducesLeftForLeftSuccess),
+			("testRecoverWithProducesRightSuccessForLeftFailureAndRightSuccess", testRecoverWithProducesRightSuccessForLeftFailureAndRightSuccess),
+			("testRecoverWithProducesRightFailureForLeftFailureAndRightFailure", testRecoverWithProducesRightFailureForLeftFailureAndRightFailure),
 //			("testTryProducesFailuresForBooleanAPIWithErrorReturnedByReference", testTryProducesFailuresForBooleanAPIWithErrorReturnedByReference),
 //			("testTryProducesFailuresForOptionalWithErrorReturnedByReference", testTryProducesFailuresForOptionalWithErrorReturnedByReference),
 //			("testTryProducesSuccessesForBooleanAPI", testTryProducesSuccessesForBooleanAPI),
