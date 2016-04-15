@@ -199,6 +199,21 @@ public func &&& <L: ResultType, R: ResultType where L.Error == R.Error> (left: L
 	return left.flatMap { left in right().map { right in (left, right) } }
 }
 
+infix operator >>- {
+	// Left-associativity so that chaining works like you’d expect, and for consistency with Haskell, Runes, swiftz, etc.
+	associativity left
+
+	// Higher precedence than function application, but lower than function composition.
+	precedence 100
+}
+
+/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
+///
+/// This is a synonym for `flatMap`.
+public func >>- <T: ResultType, U> (result: T, @noescape transform: T.Value -> Result<U, T.Error>) -> Result<U, T.Error> {
+	return result.flatMap(transform)
+}
+
 /// Returns `true` if `left` and `right` are both `Success`es and their values are equal, or if `left` and `right` are both `Failure`s and their errors are equal.
 public func == <T: ResultType where T.Value: Equatable, T.Error: Equatable> (left: T, right: T) -> Bool {
 	if let left = left.value, right = right.value {

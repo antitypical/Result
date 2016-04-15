@@ -211,24 +211,6 @@ public func `try`(function: String = #function, file: String = #file, line: Int 
 
 #endif
 
-// MARK: - Operators
-
-infix operator >>- {
-	// Left-associativity so that chaining works like you’d expect, and for consistency with Haskell, Runes, swiftz, etc.
-	associativity left
-
-	// Higher precedence than function application, but lower than function composition.
-	precedence 100
-}
-
-/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
-///
-/// This is a synonym for `flatMap`.
-public func >>- <T, U, Error> (result: Result<T, Error>, @noescape transform: T -> Result<U, Error>) -> Result<U, Error> {
-	return result.flatMap(transform)
-}
-
-
 // MARK: - ErrorTypeConvertible conformance
 
 #if !os(Linux)
