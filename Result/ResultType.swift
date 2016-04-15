@@ -46,11 +46,13 @@ public extension ResultType {
 	}
 
 	/// Returns a new Result by mapping `Success`es’ values using `transform`, or re-wrapping `Failure`s’ errors.
+	@warn_unused_result
 	public func map<U>(@noescape transform: Value -> U) -> Result<U, Error> {
 		return flatMap { .Success(transform($0)) }
 	}
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
+	@warn_unused_result
 	public func flatMap<U>(@noescape transform: Value -> Result<U, Error>) -> Result<U, Error> {
 		return analysis(
 			ifSuccess: transform,
@@ -58,11 +60,13 @@ public extension ResultType {
 	}
 	
 	/// Returns a new Result by mapping `Failure`'s values using `transform`, or re-wrapping `Success`es’ values.
+	@warn_unused_result
 	public func mapError<Error2>(@noescape transform: Error -> Error2) -> Result<Value, Error2> {
 		return flatMapError { .Failure(transform($0)) }
 	}
 	
 	/// Returns the result of applying `transform` to `Failure`’s errors, or re-wrapping `Success`es’ values.
+	@warn_unused_result
 	public func flatMapError<Error2>(@noescape transform: Error -> Result<Value, Error2>) -> Result<Value, Error2> {
 		return analysis(
 			ifSuccess: Result<Value, Error2>.Success,
@@ -78,6 +82,7 @@ public protocol ErrorTypeConvertible: ResultErrorType {
 public extension ResultType where Error: ErrorTypeConvertible {
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or wrapping thrown errors.
+	@warn_unused_result
 	public func tryMap<U>(@noescape transform: Value throws -> U) -> Result<U, Error> {
 		return flatMap { value in
 			do {
