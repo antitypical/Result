@@ -110,6 +110,37 @@ public extension ResultType {
 #endif
 }
 
+public extension ResultType {
+
+	// MARK: Higher-order functions
+
+	/// Returns `self.value` if this result is a .Success, or the given value otherwise. Equivalent with `??`
+#if swift(>=3)
+	public func recover(@autoclosure _ value: () -> Value) -> Value {
+		return self.value ?? value()
+	}
+#else
+	public func recover(@autoclosure value: () -> Value) -> Value {
+		return self.value ?? value()
+	}
+#endif
+
+	/// Returns this result if it is a .Success, or the given result otherwise. Equivalent with `??`
+#if swift(>=3)
+	public func recoverWith(@autoclosure _ result: () -> Self) -> Self {
+		return analysis(
+			ifSuccess: { _ in self },
+			ifFailure: { _ in result() })
+	}
+#else
+	public func recoverWith(@autoclosure result: () -> Self) -> Self {
+		return analysis(
+			ifSuccess: { _ in self },
+			ifFailure: { _ in result() })
+	}
+#endif
+}
+
 /// Protocol used to constrain `tryMap` to `Result`s with compatible `Error`s.
 public protocol ErrorTypeConvertible: ResultErrorType {
 #if swift(>=3)
