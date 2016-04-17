@@ -71,34 +71,6 @@ public enum Result<T, Error: ResultErrorType>: ResultType, CustomStringConvertib
 	}
 #endif
 
-	// MARK: Higher-order functions
-	
-	/// Returns `self.value` if this result is a .Success, or the given value otherwise. Equivalent with `??`
-#if swift(>=3)
-	public func recover(@autoclosure _ value: () -> T) -> T {
-		return self.value ?? value()
-	}
-#else
-	public func recover(@autoclosure value: () -> T) -> T {
-		return self.value ?? value()
-	}
-#endif
-	
-	/// Returns this result if it is a .Success, or the given result otherwise. Equivalent with `??`
-#if swift(>=3)
-	public func recoverWith(@autoclosure _ result: () -> Result<T,Error>) -> Result<T,Error> {
-		return analysis(
-			ifSuccess: { _ in self },
-			ifFailure: { _ in result() })
-	}
-#else
-	public func recoverWith(@autoclosure result: () -> Result<T,Error>) -> Result<T,Error> {
-		return analysis(
-			ifSuccess: { _ in self },
-			ifFailure: { _ in result() })
-	}
-#endif
-
 	// MARK: Errors
 
 	/// The domain for errors constructed by Result.
@@ -165,33 +137,6 @@ public enum Result<T, Error: ResultErrorType>: ResultType, CustomStringConvertib
 	public var debugDescription: String {
 		return description
 	}
-}
-
-
-/// Returns `true` if `left` and `right` are both `Success`es and their values are equal, or if `left` and `right` are both `Failure`s and their errors are equal.
-public func == <T: Equatable, Error: Equatable> (left: Result<T, Error>, right: Result<T, Error>) -> Bool {
-	if let left = left.value, right = right.value {
-		return left == right
-	} else if let left = left.error, right = right.error {
-		return left == right
-	}
-	return false
-}
-
-/// Returns `true` if `left` and `right` represent different cases, or if they represent the same case but different values.
-public func != <T: Equatable, Error: Equatable> (left: Result<T, Error>, right: Result<T, Error>) -> Bool {
-	return !(left == right)
-}
-
-
-/// Returns the value of `left` if it is a `Success`, or `right` otherwise. Short-circuits.
-public func ?? <T, Error> (left: Result<T, Error>, @autoclosure right: () -> T) -> T {
-	return left.recover(right())
-}
-
-/// Returns `left` if it is a `Success`es, or `right` otherwise. Short-circuits.
-public func ?? <T, Error> (left: Result<T, Error>, @autoclosure right: () -> Result<T, Error>) -> Result<T, Error> {
-	return left.recoverWith(right())
 }
 
 // MARK: - Derive result from failable closure
@@ -265,24 +210,6 @@ public func `try`(function: String = #function, file: String = #file, line: Int 
 #endif
 
 #endif
-
-// MARK: - Operators
-
-infix operator >>- {
-	// Left-associativity so that chaining works like you’d expect, and for consistency with Haskell, Runes, swiftz, etc.
-	associativity left
-
-	// Higher precedence than function application, but lower than function composition.
-	precedence 100
-}
-
-/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
-///
-/// This is a synonym for `flatMap`.
-public func >>- <T, U, Error> (result: Result<T, Error>, @noescape transform: T -> Result<U, Error>) -> Result<U, Error> {
-	return result.flatMap(transform)
-}
-
 
 // MARK: - ErrorTypeConvertible conformance
 

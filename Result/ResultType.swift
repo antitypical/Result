@@ -110,6 +110,37 @@ public extension ResultType {
 #endif
 }
 
+public extension ResultType {
+
+	// MARK: Higher-order functions
+
+	/// Returns `self.value` if this result is a .Success, or the given value otherwise. Equivalent with `??`
+#if swift(>=3)
+	public func recover(@autoclosure _ value: () -> Value) -> Value {
+		return self.value ?? value()
+	}
+#else
+	public func recover(@autoclosure value: () -> Value) -> Value {
+		return self.value ?? value()
+	}
+#endif
+
+	/// Returns this result if it is a .Success, or the given result otherwise. Equivalent with `??`
+#if swift(>=3)
+	public func recoverWith(@autoclosure _ result: () -> Self) -> Self {
+		return analysis(
+			ifSuccess: { _ in self },
+			ifFailure: { _ in result() })
+	}
+#else
+	public func recoverWith(@autoclosure result: () -> Self) -> Self {
+		return analysis(
+			ifSuccess: { _ in self },
+			ifFailure: { _ in result() })
+	}
+#endif
+}
+
 /// Protocol used to constrain `tryMap` to `Result`s with compatible `Error`s.
 public protocol ErrorTypeConvertible: ResultErrorType {
 #if swift(>=3)
@@ -166,4 +197,44 @@ infix operator &&& {
 /// Returns a Result with a tuple of `left` and `right` values if both are `Success`es, or re-wrapping the error of the earlier `Failure`.
 public func &&& <L: ResultType, R: ResultType where L.Error == R.Error> (left: L, @autoclosure right: () -> R) -> Result<(L.Value, R.Value), L.Error> {
 	return left.flatMap { left in right().map { right in (left, right) } }
+}
+
+infix operator >>- {
+	// Left-associativity so that chaining works like you’d expect, and for consistency with Haskell, Runes, swiftz, etc.
+	associativity left
+
+	// Higher precedence than function application, but lower than function composition.
+	precedence 100
+}
+
+/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
+///
+/// This is a synonym for `flatMap`.
+public func >>- <T: ResultType, U> (result: T, @noescape transform: T.Value -> Result<U, T.Error>) -> Result<U, T.Error> {
+	return result.flatMap(transform)
+}
+
+/// Returns `true` if `left` and `right` are both `Success`es and their values are equal, or if `left` and `right` are both `Failure`s and their errors are equal.
+public func == <T: ResultType where T.Value: Equatable, T.Error: Equatable> (left: T, right: T) -> Bool {
+	if let left = left.value, right = right.value {
+		return left == right
+	} else if let left = left.error, right = right.error {
+		return left == right
+	}
+	return false
+}
+
+/// Returns `true` if `left` and `right` represent different cases, or if they represent the same case but different values.
+public func != <T: ResultType where T.Value: Equatable, T.Error: Equatable> (left: T, right: T) -> Bool {
+	return !(left == right)
+}
+
+/// Returns the value of `left` if it is a `Success`, or `right` otherwise. Short-circuits.
+public func ?? <T: ResultType> (left: T, @autoclosure right: () -> T.Value) -> T.Value {
+	return left.recover(right())
+}
+
+/// Returns `left` if it is a `Success`es, or `right` otherwise. Short-circuits.
+public func ?? <T: ResultType> (left: T, @autoclosure right: () -> T) -> T {
+	return left.recoverWith(right())
 }
