@@ -18,16 +18,37 @@ public enum Result<T, Error: ResultErrorType>: ResultType, CustomStringConvertib
 	}
 
 	/// Constructs a result from an Optional, failing with `Error` if `nil`.
+#if swift(>=3)
+	public init(_ value: T?, failWith: @autoclosure () -> Error) {
+		self = value.map(Result.Success) ?? .Failure(failWith())
+	}
+#else
 	public init(_ value: T?, @autoclosure failWith: () -> Error) {
 		self = value.map(Result.Success) ?? .Failure(failWith())
 	}
+#endif
 
 	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws.
+#if swift(>=3)
+	public init(_ f: @autoclosure () throws -> T) {
+		self.init(attempt: f)
+	}
+#else
 	public init(@autoclosure _ f: () throws -> T) {
 		self.init(attempt: f)
 	}
+#endif
 
 	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws.
+#if swift(>=3)
+	public init(attempt f: @noescape () throws -> T) {
+		do {
+			self = .Success(try f())
+		} catch {
+			self = .Failure(error as! Error)
+		}
+	}
+#else
 	public init(@noescape attempt f: () throws -> T) {
 		do {
 			self = .Success(try f())
@@ -35,6 +56,7 @@ public enum Result<T, Error: ResultErrorType>: ResultType, CustomStringConvertib
 			self = .Failure(error as! Error)
 		}
 	}
+#endif
 
 	// MARK: Deconstruction
 
@@ -52,7 +74,7 @@ public enum Result<T, Error: ResultErrorType>: ResultType, CustomStringConvertib
 	///
 	/// Returns the value produced by applying `ifFailure` to `Failure` Results, or `ifSuccess` to `Success` Results.
 #if swift(>=3)
-	public func analysis<Result>(@noescape ifSuccess: T -> Result, @noescape ifFailure: Error -> Result) -> Result {
+	public func analysis<Result>(ifSuccess: @noescape T -> Result, ifFailure: @noescape Error -> Result) -> Result {
 		switch self {
 		case let .Success(value):
 			return ifSuccess(value)
@@ -142,11 +164,11 @@ public enum Result<T, Error: ResultErrorType>: ResultType, CustomStringConvertib
 // MARK: - Derive result from failable closure
 
 #if swift(>=3)
-public func materialize<T>(@noescape _ f: () throws -> T) -> Result<T, NSError> {
+public func materialize<T>(_ f: @noescape () throws -> T) -> Result<T, NSError> {
 	return materialize(try f())
 }
 
-public func materialize<T>(@autoclosure _ f: () throws -> T) -> Result<T, NSError> {
+public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, NSError> {
 	do {
 		return .Success(try f())
 	} catch let error as NSError {
