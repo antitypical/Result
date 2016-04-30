@@ -21,7 +21,7 @@ public protocol ResultType {
 	///
 	/// Returns the value produced by appliying `ifFailure` to the error if self represents a failure, or `ifSuccess` to the result value if self represents a success.
 #if swift(>=3)
-	func analysis<U>(@noescape ifSuccess: Value -> U, @noescape ifFailure: Error -> U) -> U
+	func analysis<U>(ifSuccess: @noescape Value -> U, ifFailure: @noescape Error -> U) -> U
 #else
 	func analysis<U>(@noescape ifSuccess ifSuccess: Value -> U, @noescape ifFailure: Error -> U) -> U
 #endif
@@ -52,7 +52,7 @@ public extension ResultType {
 	/// Returns a new Result by mapping `Success`es’ values using `transform`, or re-wrapping `Failure`s’ errors.
 #if swift(>=3)
 	@warn_unused_result
-	public func map<U>(@noescape _ transform: Value -> U) -> Result<U, Error> {
+	public func map<U>(_ transform: @noescape Value -> U) -> Result<U, Error> {
 		return flatMap { .Success(transform($0)) }
 	}
 #else
@@ -65,7 +65,7 @@ public extension ResultType {
 	/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
 #if swift(>=3)
 	@warn_unused_result
-	public func flatMap<U>(@noescape _ transform: Value -> Result<U, Error>) -> Result<U, Error> {
+	public func flatMap<U>(_ transform: @noescape Value -> Result<U, Error>) -> Result<U, Error> {
 		return analysis(
 			ifSuccess: transform,
 			ifFailure: Result<U, Error>.Failure)
@@ -82,7 +82,7 @@ public extension ResultType {
 	/// Returns a new Result by mapping `Failure`'s values using `transform`, or re-wrapping `Success`es’ values.
 #if swift(>=3)
 	@warn_unused_result
-	public func mapError<Error2>(@noescape _ transform: Error -> Error2) -> Result<Value, Error2> {
+	public func mapError<Error2>(_ transform: @noescape Error -> Error2) -> Result<Value, Error2> {
 		return flatMapError { .Failure(transform($0)) }
 	}
 #else
@@ -95,7 +95,7 @@ public extension ResultType {
 	/// Returns the result of applying `transform` to `Failure`’s errors, or re-wrapping `Success`es’ values.
 #if swift(>=3)
 	@warn_unused_result
-	public func flatMapError<Error2>(@noescape _ transform: Error -> Result<Value, Error2>) -> Result<Value, Error2> {
+	public func flatMapError<Error2>(_ transform: @noescape Error -> Result<Value, Error2>) -> Result<Value, Error2> {
 		return analysis(
 			ifSuccess: Result<Value, Error2>.Success,
 			ifFailure: transform)
@@ -116,7 +116,7 @@ public extension ResultType {
 
 	/// Returns `self.value` if this result is a .Success, or the given value otherwise. Equivalent with `??`
 #if swift(>=3)
-	public func recover(@autoclosure _ value: () -> Value) -> Value {
+	public func recover(_ value: @autoclosure () -> Value) -> Value {
 		return self.value ?? value()
 	}
 #else
@@ -127,7 +127,7 @@ public extension ResultType {
 
 	/// Returns this result if it is a .Success, or the given result otherwise. Equivalent with `??`
 #if swift(>=3)
-	public func recoverWith(@autoclosure _ result: () -> Self) -> Self {
+	public func recoverWith(_ result: @autoclosure () -> Self) -> Self {
 		return analysis(
 			ifSuccess: { _ in self },
 			ifFailure: { _ in result() })
@@ -155,7 +155,7 @@ public extension ResultType where Error: ErrorTypeConvertible {
 	/// Returns the result of applying `transform` to `Success`es’ values, or wrapping thrown errors.
 #if swift(>=3)
 	@warn_unused_result
-	public func tryMap<U>(@noescape _ transform: Value throws -> U) -> Result<U, Error> {
+	public func tryMap<U>(_ transform: @noescape Value throws -> U) -> Result<U, Error> {
 		return flatMap { value in
 			do {
 				return .Success(try transform(value))
@@ -195,7 +195,7 @@ infix operator &&& {
 }
 
 /// Returns a Result with a tuple of `left` and `right` values if both are `Success`es, or re-wrapping the error of the earlier `Failure`.
-public func &&& <L: ResultType, R: ResultType where L.Error == R.Error> (left: L, @autoclosure right: () -> R) -> Result<(L.Value, R.Value), L.Error> {
+public func &&& <L: ResultType, R: ResultType where L.Error == R.Error> (left: L, right: @autoclosure () -> R) -> Result<(L.Value, R.Value), L.Error> {
 	return left.flatMap { left in right().map { right in (left, right) } }
 }
 
@@ -210,7 +210,7 @@ infix operator >>- {
 /// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
 ///
 /// This is a synonym for `flatMap`.
-public func >>- <T: ResultType, U> (result: T, @noescape transform: T.Value -> Result<U, T.Error>) -> Result<U, T.Error> {
+public func >>- <T: ResultType, U> (result: T, transform: @noescape T.Value -> Result<U, T.Error>) -> Result<U, T.Error> {
 	return result.flatMap(transform)
 }
 
@@ -230,11 +230,11 @@ public func != <T: ResultType where T.Value: Equatable, T.Error: Equatable> (lef
 }
 
 /// Returns the value of `left` if it is a `Success`, or `right` otherwise. Short-circuits.
-public func ?? <T: ResultType> (left: T, @autoclosure right: () -> T.Value) -> T.Value {
+public func ?? <T: ResultType> (left: T, right: @autoclosure () -> T.Value) -> T.Value {
 	return left.recover(right())
 }
 
 /// Returns `left` if it is a `Success`es, or `right` otherwise. Short-circuits.
-public func ?? <T: ResultType> (left: T, @autoclosure right: () -> T) -> T {
+public func ?? <T: ResultType> (left: T, right: @autoclosure () -> T) -> T {
 	return left.recoverWith(right())
 }
