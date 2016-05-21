@@ -251,22 +251,22 @@ func tryIsSuccess(text: String?) throws -> String {
 
 extension NSError {
 	var function: String? {
-		return userInfo[Result<(), NSError>.functionKey as NSObject] as? String
+		return userInfo[Result<(), NSError>.functionKey as NSString] as? String
 	}
 	
 	var file: String? {
-		return userInfo[Result<(), NSError>.fileKey as NSObject] as? String
+		return userInfo[Result<(), NSError>.fileKey as NSString] as? String
 	}
 
 	var line: Int? {
-		return userInfo[Result<(), NSError>.lineKey as NSObject] as? Int
+		return userInfo[Result<(), NSError>.lineKey as NSString] as? Int
 	}
 }
 
 #if os(Linux)
 
 extension ResultTests {
-	static var allTests: [(String, ResultTests -> () throws -> Void)] {
+	static var allTests: [(String, (ResultTests) -> () throws -> Void)] {
 		return [
 			("testMapTransformsSuccesses", testMapTransformsSuccesses),
 			("testMapRewrapsFailures", testMapRewrapsFailures),
