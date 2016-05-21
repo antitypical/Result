@@ -74,7 +74,7 @@ public enum Result<T, Error: ResultErrorType>: ResultType, CustomStringConvertib
 	///
 	/// Returns the value produced by applying `ifFailure` to `Failure` Results, or `ifSuccess` to `Success` Results.
 #if swift(>=3)
-	public func analysis<Result>(ifSuccess: @noescape T -> Result, ifFailure: @noescape Error -> Result) -> Result {
+	public func analysis<Result>(ifSuccess: @noescape (T) -> Result, ifFailure: @noescape (Error) -> Result) -> Result {
 		switch self {
 		case let .Success(value):
 			return ifSuccess(value)
@@ -117,13 +117,13 @@ public enum Result<T, Error: ResultErrorType>: ResultType, CustomStringConvertib
 #if swift(>=3)
 	public static func error(_ message: String? = nil, function: String = #function, file: String = #file, line: Int = #line) -> NSError {
 		var userInfo: [String: UserInfoType] = [
-		                                       	functionKey: function,
-		                                       	fileKey: file,
-		                                       	lineKey: line,
-		                                       	]
-		
+			functionKey: function as UserInfoType,
+			fileKey: file as UserInfoType,
+			lineKey: line as UserInfoType,
+		]
+
 		if let message = message {
-			userInfo[NSLocalizedDescriptionKey] = message
+			userInfo[NSLocalizedDescriptionKey] = message as UserInfoType
 		}
 		
 		return NSError(domain: errorDomain, code: 0, userInfo: userInfo)
@@ -199,7 +199,7 @@ public func materialize<T>(@autoclosure f: () throws -> T) -> Result<T, NSError>
 ///
 ///     Result.try { NSData(contentsOfURL: URL, options: .DataReadingMapped, error: $0) }
 #if swift(>=3)
-public func `try`<T>(_ function: String = #function, file: String = #file, line: Int = #line, `try`: NSErrorPointer -> T?) -> Result<T, NSError> {
+public func `try`<T>(_ function: String = #function, file: String = #file, line: Int = #line, `try`: (NSErrorPointer) -> T?) -> Result<T, NSError> {
 	var error: NSError?
 	return `try`(&error).map(Result.Success) ?? .Failure(error ?? Result<T, NSError>.error(function: function, file: file, line: line))
 }
@@ -216,7 +216,7 @@ public func `try`<T>(function: String = #function, file: String = #file, line: I
 ///
 ///     Result.try { NSFileManager.defaultManager().removeItemAtURL(URL, error: $0) }
 #if swift(>=3)
-public func `try`(_ function: String = #function, file: String = #file, line: Int = #line, `try`: NSErrorPointer -> Bool) -> Result<(), NSError> {
+public func `try`(_ function: String = #function, file: String = #file, line: Int = #line, `try`: (NSErrorPointer) -> Bool) -> Result<(), NSError> {
 	var error: NSError?
 	return `try`(&error) ?
 		.Success(())
