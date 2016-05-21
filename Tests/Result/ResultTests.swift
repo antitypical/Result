@@ -251,15 +251,15 @@ func tryIsSuccess(text: String?) throws -> String {
 
 extension NSError {
 	var function: String? {
-		return userInfo[NSString(string: Result<(), NSError>.functionKey) as NSObject] as? String
+		return userInfo[NSString(string: Result<(), NSError>.functionKey).copy() as! NSObject] as? String
 	}
 	
 	var file: String? {
-		return userInfo[NSString(string: Result<(), NSError>.fileKey) as NSObject] as? String
+		return userInfo[NSString(string: Result<(), NSError>.fileKey).copy() as! NSObject] as? String
 	}
 
 	var line: Int? {
-		return userInfo[NSString(string: Result<(), NSError>.lineKey) as NSObject] as? Int
+		return userInfo[NSString(string: Result<(), NSError>.lineKey).copy() as! NSObject] as? Int
 	}
 }
 
