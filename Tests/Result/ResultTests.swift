@@ -43,8 +43,13 @@ final class ResultTests: XCTestCase {
 	}
 	
 	func testTryCatchProducesFailures() {
-		let result: Result<String, NSError> = Result(try tryIsSuccess(nil))
-		XCTAssert(result.error == error)
+		#if os(Linux)
+			/// FIXME: skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-05-31-a.
+			print("Test Case `\(#function)` skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-05-31-a.")
+		#else
+			let result: Result<String, NSError> = Result(try tryIsSuccess(nil))
+			XCTAssert(result.error == error)
+		#endif
 	}
 
 	func testTryCatchWithFunctionProducesSuccesses() {
@@ -55,10 +60,15 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testTryCatchWithFunctionCatchProducesFailures() {
-		let function = { try tryIsSuccess(nil) }
+		#if os(Linux)
+			/// FIXME: skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-05-31-a.
+			print("Test Case `\(#function)` skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-05-31-a.")
+		#else
+			let function = { try tryIsSuccess(nil) }
 
-		let result: Result<String, NSError> = Result(attempt: function)
-		XCTAssert(result.error == error)
+			let result: Result<String, NSError> = Result(attempt: function)
+			XCTAssert(result.error == error)
+		#endif
 	}
 
 	func testMaterializeProducesSuccesses() {
@@ -70,11 +80,16 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testMaterializeProducesFailures() {
-		let result1 = materialize(try tryIsSuccess(nil))
-		XCTAssert(result1.error == error)
+		#if os(Linux)
+			/// FIXME: skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-05-31-a.
+			print("Test Case `\(#function)` skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-05-31-a.")
+		#else
+			let result1 = materialize(try tryIsSuccess(nil))
+			XCTAssert(result1.error == error)
 
-		let result2: Result<String, NSError> = materialize { try tryIsSuccess(nil) }
-		XCTAssert(result2.error == error)
+			let result2: Result<String, NSError> = materialize { try tryIsSuccess(nil) }
+			XCTAssert(result2.error == error)
+		#endif
 	}
 
 	// MARK: Recover
