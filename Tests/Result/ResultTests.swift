@@ -43,13 +43,8 @@ final class ResultTests: XCTestCase {
 	}
 	
 	func testTryCatchProducesFailures() {
-		#if os(Linux)
-			/// FIXME: skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-04-12-a.
-			print("Test Case `\(#function)` skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-04-12-a.")
-		#else
-			let result: Result<String, NSError> = Result(try tryIsSuccess(nil))
-			XCTAssert(result.error == error)
-		#endif
+		let result: Result<String, NSError> = Result(try tryIsSuccess(nil))
+		XCTAssert(result.error == error)
 	}
 
 	func testTryCatchWithFunctionProducesSuccesses() {
@@ -60,15 +55,10 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testTryCatchWithFunctionCatchProducesFailures() {
-		#if os(Linux)
-			/// FIXME: skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-04-12-a.
-			print("Test Case `\(#function)` skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-04-12-a.")
-		#else
-			let function = { try tryIsSuccess(nil) }
+		let function = { try tryIsSuccess(nil) }
 
-			let result: Result<String, NSError> = Result(attempt: function)
-			XCTAssert(result.error == error)
-		#endif
+		let result: Result<String, NSError> = Result(attempt: function)
+		XCTAssert(result.error == error)
 	}
 
 	func testMaterializeProducesSuccesses() {
@@ -80,16 +70,11 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testMaterializeProducesFailures() {
-		#if os(Linux)
-			/// FIXME: skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-04-12-a.
-			print("Test Case `\(#function)` skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-04-12-a.")
-		#else
-			let result1 = materialize(try tryIsSuccess(nil))
-			XCTAssert(result1.error == error)
+		let result1 = materialize(try tryIsSuccess(nil))
+		XCTAssert(result1.error == error)
 
-			let result2: Result<String, NSError> = materialize { try tryIsSuccess(nil) }
-			XCTAssert(result2.error == error)
-		#endif
+		let result2: Result<String, NSError> = materialize { try tryIsSuccess(nil) }
+		XCTAssert(result2.error == error)
 	}
 
 	// MARK: Recover
@@ -266,7 +251,7 @@ extension NSError {
 #if os(Linux)
 
 extension ResultTests {
-	static var allTests: [(String, ResultTests -> () throws -> Void)] {
+	static var allTests: [(String, (ResultTests) -> () throws -> Void)] {
 		return [
 			("testMapTransformsSuccesses", testMapTransformsSuccesses),
 			("testMapRewrapsFailures", testMapRewrapsFailures),
