@@ -234,8 +234,6 @@ public func `try`(function: String = #function, file: String = #file, line: Int 
 #endif
 
 // MARK: - ErrorTypeConvertible conformance
-
-#if !os(Linux)
 	
 extension NSError: ErrorTypeConvertible {
 #if swift(>=3)
@@ -256,8 +254,6 @@ extension NSError: ErrorTypeConvertible {
 	}
 #endif
 }
-
-#endif
 
 // MARK: -
 
