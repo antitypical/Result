@@ -100,7 +100,7 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testRecoverProducesRightForLeftFailure() {
-		struct Error: ResultErrorType {}
+		struct Error: ResultErrorProtocol {}
 
 		let left = Result<String, Error>.failure(Error())
 		XCTAssertEqual(left.recover("right"), "right")
@@ -116,7 +116,7 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testRecoverWithProducesRightSuccessForLeftFailureAndRightSuccess() {
-		struct Error: ResultErrorType {}
+		struct Error: ResultErrorProtocol {}
 
 		let left = Result<String, Error>.failure(Error())
 		let right = Result<String, Error>.success("right")
@@ -125,7 +125,7 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testRecoverWithProducesRightFailureForLeftFailureAndRightFailure() {
-		enum Error: ResultErrorType { case left, right }
+		enum Error: ResultErrorProtocol { case left, right }
 
 		let left = Result<String, Error>.failure(.left)
 		let right = Result<String, Error>.failure(.right)

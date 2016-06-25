@@ -1,7 +1,7 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
 /// An enum representing either a failure with an explanatory error, or a success with a result value.
-public enum Result<T, Error: ResultErrorType>: ResultProtocol, CustomStringConvertible, CustomDebugStringConvertible {
+public enum Result<T, Error: ResultErrorProtocol>: ResultProtocol, CustomStringConvertible, CustomDebugStringConvertible {
 	case success(T)
 	case failure(Error)
 
@@ -154,11 +154,11 @@ public func `try`(_ function: String = #function, file: String = #file, line: In
 
 #endif
 
-// MARK: - ErrorTypeConvertible conformance
+// MARK: - ErrorProtocolConvertible conformance
 	
-extension NSError: ErrorTypeConvertible {
-	public static func errorFromErrorType(_ error: ResultErrorType) -> Self {
-		func cast<T: NSError>(_ error: ResultErrorType) -> T {
+extension NSError: ErrorProtocolConvertible {
+	public static func errorFromErrorProtocol(_ error: ResultErrorProtocol) -> Self {
+		func cast<T: NSError>(_ error: ResultErrorProtocol) -> T {
 			return error as! T
 		}
 
@@ -173,6 +173,6 @@ extension NSError: ErrorTypeConvertible {
 /// This can be used to describe `Result`s where failures will never
 /// be generated. For example, `Result<Int, NoError>` describes a result that
 /// contains an `Int`eger and is guaranteed never to be a `Failure`.
-public enum NoError: ResultErrorType { }
+public enum NoError: ResultErrorProtocol { }
 
 import Foundation
