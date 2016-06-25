@@ -2,29 +2,29 @@
 
 /// An enum representing either a failure with an explanatory error, or a success with a result value.
 public enum Result<T, Error: ResultErrorType>: ResultType, CustomStringConvertible, CustomDebugStringConvertible {
-	case Success(T)
-	case Failure(Error)
+	case success(T)
+	case failure(Error)
 
 	// MARK: Constructors
 
 	/// Constructs a success wrapping a `value`.
 	public init(value: T) {
-		self = .Success(value)
+		self = .success(value)
 	}
 
 	/// Constructs a failure wrapping an `error`.
 	public init(error: Error) {
-		self = .Failure(error)
+		self = .failure(error)
 	}
 
 	/// Constructs a result from an Optional, failing with `Error` if `nil`.
 #if swift(>=3)
 	public init(_ value: T?, failWith: @autoclosure () -> Error) {
-		self = value.map(Result.Success) ?? .Failure(failWith())
+		self = value.map(Result.success) ?? .failure(failWith())
 	}
 #else
 	public init(_ value: T?, @autoclosure failWith: () -> Error) {
-		self = value.map(Result.Success) ?? .Failure(failWith())
+		self = value.map(Result.success) ?? .failure(failWith())
 	}
 #endif
 
@@ -43,17 +43,17 @@ public enum Result<T, Error: ResultErrorType>: ResultType, CustomStringConvertib
 #if swift(>=3)
 	public init(attempt f: @noescape () throws -> T) {
 		do {
-			self = .Success(try f())
+			self = .success(try f())
 		} catch {
-			self = .Failure(error as! Error)
+			self = .failure(error as! Error)
 		}
 	}
 #else
 	public init(@noescape attempt f: () throws -> T) {
 		do {
-			self = .Success(try f())
+			self = .success(try f())
 		} catch {
-			self = .Failure(error as! Error)
+			self = .failure(error as! Error)
 		}
 	}
 #endif
@@ -63,9 +63,9 @@ public enum Result<T, Error: ResultErrorType>: ResultType, CustomStringConvertib
 	/// Returns the value from `Success` Results or `throw`s the error.
 	public func dematerialize() throws -> T {
 		switch self {
-		case let .Success(value):
+		case let .success(value):
 			return value
-		case let .Failure(error):
+		case let .failure(error):
 			throw error
 		}
 	}
@@ -76,18 +76,18 @@ public enum Result<T, Error: ResultErrorType>: ResultType, CustomStringConvertib
 #if swift(>=3)
 	public func analysis<Result>(ifSuccess: @noescape (T) -> Result, ifFailure: @noescape (Error) -> Result) -> Result {
 		switch self {
-		case let .Success(value):
+		case let .success(value):
 			return ifSuccess(value)
-		case let .Failure(value):
+		case let .failure(value):
 			return ifFailure(value)
 		}
 	}
 #else
-	public func analysis<Result>(@noescape ifSuccess ifSuccess: T -> Result, @noescape ifFailure: Error -> Result) -> Result {
+	public func analysis<Result>(@noescape ifSuccess: (T) -> Result, @noescape ifFailure: (Error) -> Result) -> Result {
 		switch self {
-		case let .Success(value):
+		case let .success(value):
 			return ifSuccess(value)
-		case let .Failure(value):
+		case let .failure(value):
 			return ifFailure(value)
 		}
 	}
@@ -129,7 +129,7 @@ public enum Result<T, Error: ResultErrorType>: ResultType, CustomStringConvertib
 		return NSError(domain: errorDomain, code: 0, userInfo: userInfo)
 	}
 #else
-	public static func error(message: String? = nil, function: String = #function, file: String = #file, line: Int = #line) -> NSError {
+	public static func error(_ message: String? = nil, function: String = #function, file: String = #file, line: Int = #line) -> NSError {
 		var userInfo: [String: UserInfoType] = [
 			functionKey: function,
 			fileKey: file,
@@ -149,8 +149,8 @@ public enum Result<T, Error: ResultErrorType>: ResultType, CustomStringConvertib
 
 	public var description: String {
 		return analysis(
-			ifSuccess: { ".Success(\($0))" },
-			ifFailure: { ".Failure(\($0))" })
+			ifSuccess: { ".success(\($0))" },
+			ifFailure: { ".failure(\($0))" })
 	}
 
 
@@ -170,21 +170,21 @@ public func materialize<T>(_ f: @noescape () throws -> T) -> Result<T, NSError> 
 
 public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, NSError> {
 	do {
-		return .Success(try f())
+		return .success(try f())
 	} catch let error as NSError {
-		return .Failure(error)
+		return .failure(error)
 	}
 }
 #else
-public func materialize<T>(@noescape f: () throws -> T) -> Result<T, NSError> {
+public func materialize<T>(@noescape _ f: () throws -> T) -> Result<T, NSError> {
 	return materialize(try f())
 }
 	
-public func materialize<T>(@autoclosure f: () throws -> T) -> Result<T, NSError> {
+public func materialize<T>(@autoclosure _ f: () throws -> T) -> Result<T, NSError> {
 	do {
-		return .Success(try f())
+		return .success(try f())
 	} catch let error as NSError {
-		return .Failure(error)
+		return .failure(error)
 	}
 }
 #endif
@@ -201,12 +201,12 @@ public func materialize<T>(@autoclosure f: () throws -> T) -> Result<T, NSError>
 #if swift(>=3)
 public func `try`<T>(_ function: String = #function, file: String = #file, line: Int = #line, `try`: (NSErrorPointer) -> T?) -> Result<T, NSError> {
 	var error: NSError?
-	return `try`(&error).map(Result.Success) ?? .Failure(error ?? Result<T, NSError>.error(function: function, file: file, line: line))
+	return `try`(&error).map(Result.success) ?? .failure(error ?? Result<T, NSError>.error(function: function, file: file, line: line))
 }
 #else
-public func `try`<T>(function: String = #function, file: String = #file, line: Int = #line, `try`: NSErrorPointer -> T?) -> Result<T, NSError> {
+public func `try`<T>(_ function: String = #function, file: String = #file, line: Int = #line, try: (NSErrorPointer) -> T?) -> Result<T, NSError> {
 	var error: NSError?
-	return `try`(&error).map(Result.Success) ?? .Failure(error ?? Result<T, NSError>.error(function: function, file: file, line: line))
+	return `try`(&error).map(Result.success) ?? .failure(error ?? Result<T, NSError>.error(function: function, file: file, line: line))
 }
 #endif
 
@@ -219,15 +219,15 @@ public func `try`<T>(function: String = #function, file: String = #file, line: I
 public func `try`(_ function: String = #function, file: String = #file, line: Int = #line, `try`: (NSErrorPointer) -> Bool) -> Result<(), NSError> {
 	var error: NSError?
 	return `try`(&error) ?
-		.Success(())
-		:	.Failure(error ?? Result<(), NSError>.error(function: function, file: file, line: line))
+		.success(())
+	:	.failure(error ?? Result<(), NSError>.error(function: function, file: file, line: line))
 }
 #else
-public func `try`(function: String = #function, file: String = #file, line: Int = #line, `try`: NSErrorPointer -> Bool) -> Result<(), NSError> {
+public func `try`(_ function: String = #function, file: String = #file, line: Int = #line, try: (NSErrorPointer) -> Bool) -> Result<(), NSError> {
 	var error: NSError?
 	return `try`(&error) ?
-		.Success(())
-	:	.Failure(error ?? Result<(), NSError>.error(function: function, file: file, line: line))
+		.success(())
+	:	.failure(error ?? Result<(), NSError>.error(function: function, file: file, line: line))
 }
 #endif
 
@@ -245,8 +245,8 @@ extension NSError: ErrorTypeConvertible {
 		return cast(error)
 	}
 #else
-	public static func errorFromErrorType(error: ResultErrorType) -> Self {
-		func cast<T: NSError>(error: ResultErrorType) -> T {
+	public static func errorFromErrorType(_ error: ResultErrorType) -> Self {
+		func cast<T: NSError>(_ error: ResultErrorType) -> T {
 			return error as! T
 		}
 

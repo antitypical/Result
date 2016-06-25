@@ -3,7 +3,7 @@
 #if swift(>=3.0)
 	public typealias ResultErrorType = ErrorProtocol
 #else
-	public typealias ResultErrorType = ErrorType
+	public typealias ResultErrorType = ErrorProtocol
 #endif
 
 /// A type that can represent either failure with an error or success with a result value.
@@ -23,7 +23,7 @@ public protocol ResultType {
 #if swift(>=3)
 	func analysis<U>(ifSuccess: @noescape (Value) -> U, ifFailure: @noescape (Error) -> U) -> U
 #else
-	func analysis<U>(@noescape ifSuccess ifSuccess: Value -> U, @noescape ifFailure: Error -> U) -> U
+	func analysis<U>(@noescape ifSuccess: (Value) -> U, @noescape ifFailure: (Error) -> U) -> U
 #endif
 
 	/// Returns the value if self represents a success, `nil` otherwise.
@@ -53,12 +53,12 @@ public extension ResultType {
 #if swift(>=3)
 	@warn_unused_result
 	public func map<U>(_ transform: @noescape (Value) -> U) -> Result<U, Error> {
-		return flatMap { .Success(transform($0)) }
+		return flatMap { .success(transform($0)) }
 	}
 #else
 	@warn_unused_result
-	public func map<U>(@noescape transform: Value -> U) -> Result<U, Error> {
-		return flatMap { .Success(transform($0)) }
+	public func map<U>(@noescape _ transform: (Value) -> U) -> Result<U, Error> {
+		return flatMap { .success(transform($0)) }
 	}
 #endif
 
@@ -68,14 +68,14 @@ public extension ResultType {
 	public func flatMap<U>(_ transform: @noescape (Value) -> Result<U, Error>) -> Result<U, Error> {
 		return analysis(
 			ifSuccess: transform,
-			ifFailure: Result<U, Error>.Failure)
+			ifFailure: Result<U, Error>.failure)
 	}
 #else
 	@warn_unused_result
-	public func flatMap<U>(@noescape transform: Value -> Result<U, Error>) -> Result<U, Error> {
+	public func flatMap<U>(@noescape _ transform: (Value) -> Result<U, Error>) -> Result<U, Error> {
 		return analysis(
 			ifSuccess: transform,
-			ifFailure: Result<U, Error>.Failure)
+			ifFailure: Result<U, Error>.failure)
 	}
 #endif
 	
@@ -83,12 +83,12 @@ public extension ResultType {
 #if swift(>=3)
 	@warn_unused_result
 	public func mapError<Error2>(_ transform: @noescape (Error) -> Error2) -> Result<Value, Error2> {
-		return flatMapError { .Failure(transform($0)) }
+		return flatMapError { .failure(transform($0)) }
 	}
 #else
 	@warn_unused_result
-	public func mapError<Error2>(@noescape transform: Error -> Error2) -> Result<Value, Error2> {
-		return flatMapError { .Failure(transform($0)) }
+	public func mapError<Error2>(@noescape _ transform: (Error) -> Error2) -> Result<Value, Error2> {
+		return flatMapError { .failure(transform($0)) }
 	}
 #endif
 
@@ -97,14 +97,14 @@ public extension ResultType {
 	@warn_unused_result
 	public func flatMapError<Error2>(_ transform: @noescape (Error) -> Result<Value, Error2>) -> Result<Value, Error2> {
 		return analysis(
-			ifSuccess: Result<Value, Error2>.Success,
+			ifSuccess: Result<Value, Error2>.success,
 			ifFailure: transform)
 	}
 #else
 	@warn_unused_result
-	public func flatMapError<Error2>(@noescape transform: Error -> Result<Value, Error2>) -> Result<Value, Error2> {
+	public func flatMapError<Error2>(@noescape _ transform: (Error) -> Result<Value, Error2>) -> Result<Value, Error2> {
 		return analysis(
-			ifSuccess: Result<Value, Error2>.Success,
+			ifSuccess: Result<Value, Error2>.success,
 			ifFailure: transform)
 	}
 #endif
@@ -120,7 +120,7 @@ public extension ResultType {
 		return self.value ?? value()
 	}
 #else
-	public func recover(@autoclosure value: () -> Value) -> Value {
+	public func recover(@autoclosure _ value: () -> Value) -> Value {
 		return self.value ?? value()
 	}
 #endif
@@ -133,7 +133,7 @@ public extension ResultType {
 			ifFailure: { _ in result() })
 	}
 #else
-	public func recoverWith(@autoclosure result: () -> Self) -> Self {
+	public func recoverWith(@autoclosure _ result: () -> Self) -> Self {
 		return analysis(
 			ifSuccess: { _ in self },
 			ifFailure: { _ in result() })
@@ -146,7 +146,7 @@ public protocol ErrorTypeConvertible: ResultErrorType {
 #if swift(>=3)
 	static func errorFromErrorType(_ error: ResultErrorType) -> Self
 #else
-	static func errorFromErrorType(error: ResultErrorType) -> Self
+	static func errorFromErrorType(_ error: ResultErrorType) -> Self
 #endif
 }
 
@@ -158,26 +158,26 @@ public extension ResultType where Error: ErrorTypeConvertible {
 	public func tryMap<U>(_ transform: @noescape (Value) throws -> U) -> Result<U, Error> {
 		return flatMap { value in
 			do {
-				return .Success(try transform(value))
+				return .success(try transform(value))
 			}
 			catch {
 				let convertedError = Error.errorFromErrorType(error)
 				// Revisit this in a future version of Swift. https://twitter.com/jckarter/status/672931114944696321
-				return .Failure(convertedError)
+				return .failure(convertedError)
 			}
 		}
 	}
 #else
 	@warn_unused_result
-	public func tryMap<U>(@noescape transform: Value throws -> U) -> Result<U, Error> {
+	public func tryMap<U>(@noescape _ transform: (Value) throws -> U) -> Result<U, Error> {
 		return flatMap { value in
 			do {
-				return .Success(try transform(value))
+				return .success(try transform(value))
 			}
 			catch {
 				let convertedError = Error.errorFromErrorType(error)
 				// Revisit this in a future version of Swift. https://twitter.com/jckarter/status/672931114944696321
-				return .Failure(convertedError)
+				return .failure(convertedError)
 			}
 		}
 	}
@@ -221,7 +221,7 @@ public func >>- <T: ResultType, U> (result: T, transform: @noescape (T.Value) ->
 	return result.flatMap(transform)
 }
 #else
-public func >>- <T: ResultType, U> (result: T, @noescape transform: T.Value -> Result<U, T.Error>) -> Result<U, T.Error> {
+public func >>- <T: ResultType, U> (result: T, @noescape transform: (T.Value) -> Result<U, T.Error>) -> Result<U, T.Error> {
 	return result.flatMap(transform)
 }
 #endif
