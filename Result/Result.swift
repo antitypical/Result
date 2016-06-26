@@ -175,4 +175,24 @@ extension NSError: ErrorProtocolConvertible {
 /// contains an `Int`eger and is guaranteed never to be a `Failure`.
 public enum NoError: ErrorProtocol { }
 
+// MARK: - migration support
+extension Result {
+	@available(*, unavailable, renamed: "success")
+	public static func Success(_: T) -> Result<T, Error> {
+		fatalError()
+	}
+
+	@available(*, unavailable, renamed: "failure")
+	public static func Failure(_: Error) -> Result<T, Error> {
+		fatalError()
+	}
+}
+
+extension NSError {
+	@available(*, unavailable, renamed: "error(from:)")
+	public static func errorFromErrorType(_ error: ErrorProtocol) -> Self {
+		fatalError()
+	}
+}
+
 import Foundation

@@ -162,3 +162,24 @@ public func ?? <T: ResultProtocol> (left: T, right: @autoclosure () -> T.Value) 
 public func ?? <T: ResultProtocol> (left: T, right: @autoclosure () -> T) -> T {
 	return left.recover(with: right())
 }
+
+// MARK: - migration support
+@available(*, unavailable, renamed: "ErrorProtocol")
+public typealias ResultErrorType = ErrorProtocol
+
+@available(*, unavailable, renamed: "ErrorProtocolConvertible")
+public typealias ErrorTypeConvertible = ErrorProtocolConvertible
+
+extension ResultProtocol {
+	@available(*, unavailable, renamed: "recover(with:)")
+	public func recoverWith(_ result: @autoclosure () -> Self) -> Self {
+		fatalError()
+	}
+}
+
+extension ErrorProtocolConvertible {
+	@available(*, unavailable, renamed: "error(from:)")
+	public static func errorFromErrorType(_ error: ErrorProtocol) -> Self {
+		fatalError()
+	}
+}
