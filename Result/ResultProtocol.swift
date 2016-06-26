@@ -78,7 +78,7 @@ public extension ResultProtocol {
 	}
 
 	/// Returns this result if it is a .Success, or the given result otherwise. Equivalent with `??`
-	public func recoverWith(_ result: @autoclosure () -> Self) -> Self {
+	public func recover(with result: @autoclosure () -> Self) -> Self {
 		return analysis(
 			ifSuccess: { _ in self },
 			ifFailure: { _ in result() })
@@ -87,7 +87,7 @@ public extension ResultProtocol {
 
 /// Protocol used to constrain `tryMap` to `Result`s with compatible `Error`s.
 public protocol ErrorProtocolConvertible: ErrorProtocol {
-	static func errorFromErrorProtocol(_ error: ErrorProtocol) -> Self
+	static func error(from error: ErrorProtocol) -> Self
 }
 
 public extension ResultProtocol where Error: ErrorProtocolConvertible {
@@ -100,7 +100,7 @@ public extension ResultProtocol where Error: ErrorProtocolConvertible {
 				return .success(try transform(value))
 			}
 			catch {
-				let convertedError = Error.errorFromErrorProtocol(error)
+				let convertedError = Error.error(from: error)
 				// Revisit this in a future version of Swift. https://twitter.com/jckarter/status/672931114944696321
 				return .failure(convertedError)
 			}
@@ -160,5 +160,5 @@ public func ?? <T: ResultProtocol> (left: T, right: @autoclosure () -> T.Value) 
 
 /// Returns `left` if it is a `Success`es, or `right` otherwise. Short-circuits.
 public func ?? <T: ResultProtocol> (left: T, right: @autoclosure () -> T) -> T {
-	return left.recoverWith(right())
+	return left.recover(with: right())
 }

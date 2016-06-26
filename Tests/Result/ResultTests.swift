@@ -112,7 +112,7 @@ final class ResultTests: XCTestCase {
 		let left = Result<String, NSError>.success("left")
 		let right = Result<String, NSError>.success("right")
 
-		XCTAssertEqual(left.recoverWith(right).value, "left")
+		XCTAssertEqual(left.recover(with: right).value, "left")
 	}
 
 	func testRecoverWithProducesRightSuccessForLeftFailureAndRightSuccess() {
@@ -121,7 +121,7 @@ final class ResultTests: XCTestCase {
 		let left = Result<String, Error>.failure(Error())
 		let right = Result<String, Error>.success("right")
 
-		XCTAssertEqual(left.recoverWith(right).value, "right")
+		XCTAssertEqual(left.recover(with: right).value, "right")
 	}
 
 	func testRecoverWithProducesRightFailureForLeftFailureAndRightFailure() {
@@ -130,7 +130,7 @@ final class ResultTests: XCTestCase {
 		let left = Result<String, Error>.failure(.left)
 		let right = Result<String, Error>.failure(.right)
 
-		XCTAssertEqual(left.recoverWith(right).error, .right)
+		XCTAssertEqual(left.recover(with: right).error, .right)
 	}
 
 	// MARK: Cocoa API idioms

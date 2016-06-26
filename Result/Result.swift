@@ -157,7 +157,7 @@ public func `try`(_ function: String = #function, file: String = #file, line: In
 // MARK: - ErrorProtocolConvertible conformance
 	
 extension NSError: ErrorProtocolConvertible {
-	public static func errorFromErrorProtocol(_ error: ErrorProtocol) -> Self {
+	public static func error(from error: ErrorProtocol) -> Self {
 		func cast<T: NSError>(_ error: ErrorProtocol) -> T {
 			return error as! T
 		}
