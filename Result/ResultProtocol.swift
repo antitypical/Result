@@ -164,6 +164,9 @@ public func ?? <T: ResultProtocol> (left: T, right: @autoclosure () -> T) -> T {
 }
 
 // MARK: - migration support
+@available(*, unavailable, renamed: "ResultProtocol")
+public typealias ResultType = ResultProtocol
+
 @available(*, unavailable, renamed: "ErrorProtocol")
 public typealias ResultErrorType = ErrorProtocol
 
