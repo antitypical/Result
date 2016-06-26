@@ -1,11 +1,9 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
-public typealias ResultErrorProtocol = ErrorProtocol
-
 /// A type that can represent either failure with an error or success with a result value.
 public protocol ResultProtocol {
 	associatedtype Value
-	associatedtype Error: ResultErrorProtocol
+	associatedtype Error: ErrorProtocol
 	
 	/// Constructs a successful result wrapping a `value`.
 	init(value: Value)
@@ -88,8 +86,8 @@ public extension ResultProtocol {
 }
 
 /// Protocol used to constrain `tryMap` to `Result`s with compatible `Error`s.
-public protocol ErrorProtocolConvertible: ResultErrorProtocol {
-	static func errorFromErrorProtocol(_ error: ResultErrorProtocol) -> Self
+public protocol ErrorProtocolConvertible: ErrorProtocol {
+	static func errorFromErrorProtocol(_ error: ErrorProtocol) -> Self
 }
 
 public extension ResultProtocol where Error: ErrorProtocolConvertible {
