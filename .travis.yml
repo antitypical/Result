@@ -2,8 +2,8 @@ matrix:
   include:
     - script:
         - xcodebuild test -scheme Result-Mac
-        - xcodebuild test -scheme Result-iOS -sdk iphonesimulator
-        - xcodebuild test -scheme Result-tvOS -sdk appletvsimulator
+        - xcodebuild test -scheme Result-iOS -sdk iphonesimulator -destination "name=iPhone SE"
+        - xcodebuild test -scheme Result-tvOS -sdk appletvsimulator -destination "name=Apple TV 1080p"
         - xcodebuild build -scheme Result-watchOS -sdk watchsimulator
         # - pod lib lint
       env: JOB=Xcode
