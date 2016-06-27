@@ -5,7 +5,7 @@ matrix:
         - xcodebuild test -scheme Result-iOS -sdk iphonesimulator
         - xcodebuild test -scheme Result-tvOS -sdk appletvsimulator
         - xcodebuild build -scheme Result-watchOS -sdk watchsimulator
-        - pod lib lint
+        # - pod lib lint
       env: JOB=Xcode
       os: osx
       osx_image: xcode8
