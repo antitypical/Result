@@ -89,7 +89,6 @@ public protocol ErrorProtocolConvertible: ErrorProtocol {
 public extension ResultProtocol where Error: ErrorProtocolConvertible {
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or wrapping thrown errors.
-	@warn_unused_result
 	public func tryMap<U>(_ transform: @noescape (Value) throws -> U) -> Result<U, Error> {
 		return flatMap { value in
 			do {
