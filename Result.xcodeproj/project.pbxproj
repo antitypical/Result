@@ -401,17 +401,27 @@
 					57FCDE491BA280E000130C48 = {
 						LastSwiftMigration = 0800;
 					};
+					D03579991B2B788F005D26AE = {
+						LastSwiftMigration = 0800;
+					};
+					D03579A51B2B78A1005D26AE = {
+						LastSwiftMigration = 0800;
+					};
 					D45480561A9572F5009D7229 = {
 						CreatedOnToolsVersion = 6.3;
+						LastSwiftMigration = 0800;
 					};
 					D45480661A9572F5009D7229 = {
 						CreatedOnToolsVersion = 6.3;
+						LastSwiftMigration = 0800;
 					};
 					D454807C1A957361009D7229 = {
 						CreatedOnToolsVersion = 6.3;
+						LastSwiftMigration = 0800;
 					};
 					D45480861A957362009D7229 = {
 						CreatedOnToolsVersion = 6.3;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
