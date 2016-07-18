@@ -135,9 +135,9 @@ public func >>- <T: ResultProtocol, U> (result: T, transform: @noescape (T.Value
 
 /// Returns `true` if `left` and `right` are both `Success`es and their values are equal, or if `left` and `right` are both `Failure`s and their errors are equal.
 public func == <T: ResultProtocol where T.Value: Equatable, T.Error: Equatable> (left: T, right: T) -> Bool {
-	if let left = left.value, right = right.value {
+	if let left = left.value, let right = right.value {
 		return left == right
-	} else if let left = left.error, right = right.error {
+	} else if let left = left.error, let right = right.error {
 		return left == right
 	}
 	return false
