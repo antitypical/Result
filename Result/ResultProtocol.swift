@@ -82,11 +82,11 @@ public extension ResultProtocol {
 }
 
 /// Protocol used to constrain `tryMap` to `Result`s with compatible `ErrorType`s.
-public protocol ErrorProtocolConvertible: Error {
+public protocol ErrorConvertible: Error {
 	static func error(from error: Error) -> Self
 }
 
-public extension ResultProtocol where ErrorType: ErrorProtocolConvertible {
+public extension ResultProtocol where ErrorType: ErrorConvertible {
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or wrapping thrown errors.
 	public func tryMap<U>(_ transform: @noescape (Value) throws -> U) -> Result<U, ErrorType> {
@@ -165,8 +165,8 @@ public typealias ResultType = ResultProtocol
 @available(*, unavailable, renamed: "Error")
 public typealias ResultErrorType = Error
 
-@available(*, unavailable, renamed: "ErrorProtocolConvertible")
-public typealias ErrorTypeConvertible = ErrorProtocolConvertible
+@available(*, unavailable, renamed: "ErrorConvertible")
+public typealias ErrorTypeConvertible = ErrorConvertible
 
 extension ResultProtocol {
 	@available(*, unavailable, renamed: "recover(with:)")
@@ -175,7 +175,7 @@ extension ResultProtocol {
 	}
 }
 
-extension ErrorProtocolConvertible {
+extension ErrorConvertible {
 	@available(*, unavailable, renamed: "error(from:)")
 	public static func errorFromErrorType(_ error: Error) -> Self {
 		fatalError()
