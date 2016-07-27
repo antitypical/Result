@@ -44,8 +44,8 @@ final class ResultTests: XCTestCase {
 	
 	func testTryCatchProducesFailures() {
 		#if os(Linux)
-			/// FIXME: skipped on Linux because of crash with swift-3.0-preview-1.
-			print("Test Case `\(#function)` skipped on Linux because of crash with swift-3.0-preview-1.")
+			/// FIXME: skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-07-25-a.
+			print("Test Case `\(#function)` skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-07-25-a.")
 		#else
 			let result: Result<String, NSError> = Result(try tryIsSuccess(nil))
 			XCTAssert(result.error == error)
@@ -61,8 +61,8 @@ final class ResultTests: XCTestCase {
 
 	func testTryCatchWithFunctionCatchProducesFailures() {
 		#if os(Linux)
-			/// FIXME: skipped on Linux because of crash with swift-3.0-preview-1.
-			print("Test Case `\(#function)` skipped on Linux because of crash with swift-3.0-preview-1.")
+			/// FIXME: skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-07-25-a.
+			print("Test Case `\(#function)` skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-07-25-a.")
 		#else
 			let function = { try tryIsSuccess(nil) }
 
@@ -81,8 +81,8 @@ final class ResultTests: XCTestCase {
 
 	func testMaterializeProducesFailures() {
 		#if os(Linux)
-			/// FIXME: skipped on Linux because of crash with swift-3.0-preview-1.
-			print("Test Case `\(#function)` skipped on Linux because of crash with swift-3.0-preview-1.")
+			/// FIXME: skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-07-25-a.
+			print("Test Case `\(#function)` skipped on Linux because of crash with swift-DEVELOPMENT-SNAPSHOT-2016-07-25-a.")
 		#else
 			let result1 = materialize(try tryIsSuccess(nil))
 			XCTAssert(result1.error == error)
@@ -100,9 +100,9 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testRecoverProducesRightForLeftFailure() {
-		struct Error: ErrorProtocol {}
+		struct MyError: Error {}
 
-		let left = Result<String, Error>.failure(Error())
+		let left = Result<String, MyError>.failure(MyError())
 		XCTAssertEqual(left.recover("right"), "right")
 	}
 
@@ -116,19 +116,19 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testRecoverWithProducesRightSuccessForLeftFailureAndRightSuccess() {
-		struct Error: ErrorProtocol {}
+		struct MyError: Error {}
 
-		let left = Result<String, Error>.failure(Error())
-		let right = Result<String, Error>.success("right")
+		let left = Result<String, MyError>.failure(MyError())
+		let right = Result<String, MyError>.success("right")
 
 		XCTAssertEqual(left.recover(with: right).value, "right")
 	}
 
 	func testRecoverWithProducesRightFailureForLeftFailureAndRightFailure() {
-		enum Error: ErrorProtocol { case left, right }
+		enum MyError: Error { case left, right }
 
-		let left = Result<String, Error>.failure(.left)
-		let right = Result<String, Error>.failure(.right)
+		let left = Result<String, MyError>.failure(.left)
+		let right = Result<String, MyError>.failure(.right)
 
 		XCTAssertEqual(left.recover(with: right).error, .right)
 	}
@@ -220,7 +220,7 @@ func attempt<T>(_ value: T, succeed: Bool, error: NSErrorPointer) -> T? {
 #endif
 
 func tryIsSuccess(_ text: String?) throws -> String {
-	guard let text = text where text == "success" else {
+	guard let text = text, text == "success" else {
 		throw error
 	}
 

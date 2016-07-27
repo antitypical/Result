@@ -3,18 +3,18 @@
 /// A type that can represent either failure with an error or success with a result value.
 public protocol ResultProtocol {
 	associatedtype Value
-	associatedtype Error: ErrorProtocol
+	associatedtype ErrorType: Error
 	
 	/// Constructs a successful result wrapping a `value`.
 	init(value: Value)
 
 	/// Constructs a failed result wrapping an `error`.
-	init(error: Error)
+	init(error: ErrorType)
 	
 	/// Case analysis for ResultProtocol.
 	///
 	/// Returns the value produced by appliying `ifFailure` to the error if self represents a failure, or `ifSuccess` to the result value if self represents a success.
-	func analysis<U>(ifSuccess: @noescape (Value) -> U, ifFailure: @noescape (Error) -> U) -> U
+	func analysis<U>(ifSuccess: @noescape (Value) -> U, ifFailure: @noescape (ErrorType) -> U) -> U
 
 	/// Returns the value if self represents a success, `nil` otherwise.
 	///
@@ -24,7 +24,7 @@ public protocol ResultProtocol {
 	/// Returns the error if self represents a failure, `nil` otherwise.
 	///
 	/// A default implementation is provided by a protocol extension. Conforming types may specialize it.
-	var error: Error? { get }
+	var error: ErrorType? { get }
 }
 
 public extension ResultProtocol {
@@ -35,29 +35,29 @@ public extension ResultProtocol {
 	}
 	
 	/// Returns the error if self represents a failure, `nil` otherwise.
-	public var error: Error? {
+	public var error: ErrorType? {
 		return analysis(ifSuccess: { _ in nil }, ifFailure: { $0 })
 	}
 
 	/// Returns a new Result by mapping `Success`es’ values using `transform`, or re-wrapping `Failure`s’ errors.
-	public func map<U>(_ transform: @noescape (Value) -> U) -> Result<U, Error> {
+	public func map<U>(_ transform: @noescape (Value) -> U) -> Result<U, ErrorType> {
 		return flatMap { .success(transform($0)) }
 	}
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
-	public func flatMap<U>(_ transform: @noescape (Value) -> Result<U, Error>) -> Result<U, Error> {
+	public func flatMap<U>(_ transform: @noescape (Value) -> Result<U, ErrorType>) -> Result<U, ErrorType> {
 		return analysis(
 			ifSuccess: transform,
-			ifFailure: Result<U, Error>.failure)
+			ifFailure: Result<U, ErrorType>.failure)
 	}
 
 	/// Returns a new Result by mapping `Failure`'s values using `transform`, or re-wrapping `Success`es’ values.
-	public func mapError<Error2>(_ transform: @noescape (Error) -> Error2) -> Result<Value, Error2> {
+	public func mapError<Error2>(_ transform: @noescape (ErrorType) -> Error2) -> Result<Value, Error2> {
 		return flatMapError { .failure(transform($0)) }
 	}
 
 	/// Returns the result of applying `transform` to `Failure`’s errors, or re-wrapping `Success`es’ values.
-	public func flatMapError<Error2>(_ transform: @noescape (Error) -> Result<Value, Error2>) -> Result<Value, Error2> {
+	public func flatMapError<Error2>(_ transform: @noescape (ErrorType) -> Result<Value, Error2>) -> Result<Value, Error2> {
 		return analysis(
 			ifSuccess: Result<Value, Error2>.success,
 			ifFailure: transform)
@@ -81,21 +81,21 @@ public extension ResultProtocol {
 	}
 }
 
-/// Protocol used to constrain `tryMap` to `Result`s with compatible `Error`s.
-public protocol ErrorProtocolConvertible: ErrorProtocol {
-	static func error(from error: ErrorProtocol) -> Self
+/// Protocol used to constrain `tryMap` to `Result`s with compatible `ErrorType`s.
+public protocol ErrorConvertible: Error {
+	static func error(from error: Error) -> Self
 }
 
-public extension ResultProtocol where Error: ErrorProtocolConvertible {
+public extension ResultProtocol where ErrorType: ErrorConvertible {
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or wrapping thrown errors.
-	public func tryMap<U>(_ transform: @noescape (Value) throws -> U) -> Result<U, Error> {
+	public func tryMap<U>(_ transform: @noescape (Value) throws -> U) -> Result<U, ErrorType> {
 		return flatMap { value in
 			do {
 				return .success(try transform(value))
 			}
 			catch {
-				let convertedError = Error.error(from: error)
+				let convertedError = ErrorType.error(from: error)
 				// Revisit this in a future version of Swift. https://twitter.com/jckarter/status/672931114944696321
 				return .failure(convertedError)
 			}
@@ -114,7 +114,7 @@ infix operator &&& {
 }
 
 /// Returns a Result with a tuple of `left` and `right` values if both are `Success`es, or re-wrapping the error of the earlier `Failure`.
-public func &&& <L: ResultProtocol, R: ResultProtocol where L.Error == R.Error> (left: L, right: @autoclosure () -> R) -> Result<(L.Value, R.Value), L.Error> {
+public func &&& <L: ResultProtocol, R: ResultProtocol where L.ErrorType == R.ErrorType> (left: L, right: @autoclosure () -> R) -> Result<(L.Value, R.Value), L.ErrorType> {
 	return left.flatMap { left in right().map { right in (left, right) } }
 }
 
@@ -129,22 +129,22 @@ infix operator >>- {
 /// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
 ///
 /// This is a synonym for `flatMap`.
-public func >>- <T: ResultProtocol, U> (result: T, transform: @noescape (T.Value) -> Result<U, T.Error>) -> Result<U, T.Error> {
+public func >>- <T: ResultProtocol, U> (result: T, transform: @noescape (T.Value) -> Result<U, T.ErrorType>) -> Result<U, T.ErrorType> {
 	return result.flatMap(transform)
 }
 
 /// Returns `true` if `left` and `right` are both `Success`es and their values are equal, or if `left` and `right` are both `Failure`s and their errors are equal.
-public func == <T: ResultProtocol where T.Value: Equatable, T.Error: Equatable> (left: T, right: T) -> Bool {
-	if let left = left.value, right = right.value {
+public func == <T: ResultProtocol where T.Value: Equatable, T.ErrorType: Equatable> (left: T, right: T) -> Bool {
+	if let left = left.value, let right = right.value {
 		return left == right
-	} else if let left = left.error, right = right.error {
+	} else if let left = left.error, let right = right.error {
 		return left == right
 	}
 	return false
 }
 
 /// Returns `true` if `left` and `right` represent different cases, or if they represent the same case but different values.
-public func != <T: ResultProtocol where T.Value: Equatable, T.Error: Equatable> (left: T, right: T) -> Bool {
+public func != <T: ResultProtocol where T.Value: Equatable, T.ErrorType: Equatable> (left: T, right: T) -> Bool {
 	return !(left == right)
 }
 
@@ -162,11 +162,11 @@ public func ?? <T: ResultProtocol> (left: T, right: @autoclosure () -> T) -> T {
 @available(*, unavailable, renamed: "ResultProtocol")
 public typealias ResultType = ResultProtocol
 
-@available(*, unavailable, renamed: "ErrorProtocol")
-public typealias ResultErrorType = ErrorProtocol
+@available(*, unavailable, renamed: "Error")
+public typealias ResultErrorType = Error
 
-@available(*, unavailable, renamed: "ErrorProtocolConvertible")
-public typealias ErrorTypeConvertible = ErrorProtocolConvertible
+@available(*, unavailable, renamed: "ErrorConvertible")
+public typealias ErrorTypeConvertible = ErrorConvertible
 
 extension ResultProtocol {
 	@available(*, unavailable, renamed: "recover(with:)")
@@ -175,9 +175,9 @@ extension ResultProtocol {
 	}
 }
 
-extension ErrorProtocolConvertible {
+extension ErrorConvertible {
 	@available(*, unavailable, renamed: "error(from:)")
-	public static func errorFromErrorType(_ error: ErrorProtocol) -> Self {
+	public static func errorFromErrorType(_ error: Error) -> Self {
 		fatalError()
 	}
 }
