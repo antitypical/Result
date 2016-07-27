@@ -1,6 +1,7 @@
 matrix:
   include:
     - script:
+        - export TOOLCHAINS=org.swift.3020160725a
         - xcodebuild test -scheme Result-Mac
         - xcodebuild test -scheme Result-iOS -sdk iphonesimulator -destination "name=iPhone SE"
         - xcodebuild test -scheme Result-tvOS -sdk appletvsimulator -destination "name=Apple TV 1080p"
@@ -11,6 +12,7 @@ matrix:
       osx_image: xcode8
       language: objective-c
     - script:
+        - export TOOLCHAINS=org.swift.3020160725a
         - swift build
         - swift test
       env: JOB=SPM
@@ -24,7 +26,7 @@ matrix:
       sudo: required
       dist: trusty
       language: generic
-      install:
-        - eval "$(curl -sL https://gist.githubusercontent.com/kylef/5c0475ff02b7c7671d2a/raw/9f442512a46d7a2af7b850d65a7e9bd31edfb09b/swiftenv-install.sh)"
+install:
+  - eval "$(curl -sL https://gist.githubusercontent.com/kylef/5c0475ff02b7c7671d2a/raw/9f442512a46d7a2af7b850d65a7e9bd31edfb09b/swiftenv-install.sh)"
 notifications:
   email: false
