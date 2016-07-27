@@ -1,10 +1,11 @@
 matrix:
   include:
     - script:
-        - xcodebuild $XCODE_ACTION -scheme Result-Mac
-        - xcodebuild $XCODE_ACTION -scheme Result-iOS -sdk iphonesimulator -destination "name=iPhone SE"
-        - xcodebuild $XCODE_ACTION -scheme Result-tvOS -sdk appletvsimulator -destination "name=Apple TV 1080p"
-        - xcodebuild build -scheme Result-watchOS -sdk watchsimulator
+        - set -o pipefail
+        - xcodebuild $XCODE_ACTION -scheme Result-Mac | xcpretty
+        - xcodebuild $XCODE_ACTION -scheme Result-iOS -sdk iphonesimulator -destination "name=iPhone SE" | xcpretty
+        - xcodebuild $XCODE_ACTION -scheme Result-tvOS -sdk appletvsimulator -destination "name=Apple TV 1080p" | xcpretty
+        - xcodebuild build -scheme Result-watchOS -sdk watchsimulator | xcpretty
         # - pod lib lint
       env:
         - JOB=Xcode
