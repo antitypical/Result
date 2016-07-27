@@ -157,7 +157,7 @@ public func `try`(_ function: String = #function, file: String = #file, line: In
 // MARK: - ErrorConvertible conformance
 	
 extension NSError: ErrorConvertible {
-	public static func error(from error: Error) -> Self {
+	@nonobjc public static func error(from error: Error) -> Self {
 		func cast<T: NSError>(_ error: Error) -> T {
 			return error as! T
 		}
@@ -190,7 +190,7 @@ extension Result {
 
 extension NSError {
 	@available(*, unavailable, renamed: "error(from:)")
-	public static func errorFromErrorType(_ error: Error) -> Self {
+	@nonobjc public static func errorFromErrorType(_ error: Error) -> Self {
 		fatalError()
 	}
 }
