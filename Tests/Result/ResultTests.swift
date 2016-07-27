@@ -220,7 +220,7 @@ func attempt<T>(_ value: T, succeed: Bool, error: NSErrorPointer) -> T? {
 #endif
 
 func tryIsSuccess(_ text: String?) throws -> String {
-	guard let text = text where text == "success" else {
+	guard let text = text, text == "success" else {
 		throw error
 	}
 
