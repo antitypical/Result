@@ -1,9 +1,9 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
 /// An enum representing either a failure with an explanatory error, or a success with a result value.
-public enum Result<T, Error: ErrorProtocol>: ResultProtocol, CustomStringConvertible, CustomDebugStringConvertible {
+public enum Result<T, ErrorType: ErrorProtocol>: ResultProtocol, CustomStringConvertible, CustomDebugStringConvertible {
 	case success(T)
-	case failure(Error)
+	case failure(ErrorType)
 
 	// MARK: Constructors
 
@@ -13,26 +13,26 @@ public enum Result<T, Error: ErrorProtocol>: ResultProtocol, CustomStringConvert
 	}
 
 	/// Constructs a failure wrapping an `error`.
-	public init(error: Error) {
+	public init(error: ErrorType) {
 		self = .failure(error)
 	}
 
-	/// Constructs a result from an Optional, failing with `Error` if `nil`.
-	public init(_ value: T?, failWith: @autoclosure () -> Error) {
+	/// Constructs a result from an Optional, failing with `ErrorType` if `nil`.
+	public init(_ value: T?, failWith: @autoclosure () -> ErrorType) {
 		self = value.map(Result.success) ?? .failure(failWith())
 	}
 
-	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws.
+	/// Constructs a result from a function that uses `throw`, failing with `ErrorType` if throws.
 	public init(_ f: @autoclosure () throws -> T) {
 		self.init(attempt: f)
 	}
 
-	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws.
+	/// Constructs a result from a function that uses `throw`, failing with `ErrorType` if throws.
 	public init(attempt f: @noescape () throws -> T) {
 		do {
 			self = .success(try f())
 		} catch {
-			self = .failure(error as! Error)
+			self = .failure(error as! ErrorType)
 		}
 	}
 
@@ -51,7 +51,7 @@ public enum Result<T, Error: ErrorProtocol>: ResultProtocol, CustomStringConvert
 	/// Case analysis for Result.
 	///
 	/// Returns the value produced by applying `ifFailure` to `Failure` Results, or `ifSuccess` to `Success` Results.
-	public func analysis<Result>(ifSuccess: @noescape (T) -> Result, ifFailure: @noescape (Error) -> Result) -> Result {
+	public func analysis<Result>(ifSuccess: @noescape (T) -> Result, ifFailure: @noescape (ErrorType) -> Result) -> Result {
 		switch self {
 		case let .success(value):
 			return ifSuccess(value)
@@ -178,12 +178,12 @@ public enum NoError: ErrorProtocol { }
 // MARK: - migration support
 extension Result {
 	@available(*, unavailable, renamed: "success")
-	public static func Success(_: T) -> Result<T, Error> {
+	public static func Success(_: T) -> Result<T, ErrorType> {
 		fatalError()
 	}
 
 	@available(*, unavailable, renamed: "failure")
-	public static func Failure(_: Error) -> Result<T, Error> {
+	public static func Failure(_: ErrorType) -> Result<T, ErrorType> {
 		fatalError()
 	}
 }

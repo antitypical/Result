@@ -100,9 +100,9 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testRecoverProducesRightForLeftFailure() {
-		struct Error: ErrorProtocol {}
+		struct MyError: ErrorProtocol {}
 
-		let left = Result<String, Error>.failure(Error())
+		let left = Result<String, MyError>.failure(MyError())
 		XCTAssertEqual(left.recover("right"), "right")
 	}
 
@@ -116,19 +116,19 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testRecoverWithProducesRightSuccessForLeftFailureAndRightSuccess() {
-		struct Error: ErrorProtocol {}
+		struct MyError: ErrorProtocol {}
 
-		let left = Result<String, Error>.failure(Error())
-		let right = Result<String, Error>.success("right")
+		let left = Result<String, MyError>.failure(MyError())
+		let right = Result<String, MyError>.success("right")
 
 		XCTAssertEqual(left.recover(with: right).value, "right")
 	}
 
 	func testRecoverWithProducesRightFailureForLeftFailureAndRightFailure() {
-		enum Error: ErrorProtocol { case left, right }
+		enum MyError: ErrorProtocol { case left, right }
 
-		let left = Result<String, Error>.failure(.left)
-		let right = Result<String, Error>.failure(.right)
+		let left = Result<String, MyError>.failure(.left)
+		let right = Result<String, MyError>.failure(.right)
 
 		XCTAssertEqual(left.recover(with: right).error, .right)
 	}
