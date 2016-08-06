@@ -3,7 +3,7 @@
 /// A type that can represent either failure with an error or success with a result value.
 public protocol ResultProtocol {
 	associatedtype Value
-	associatedtype Error: ErrorProtocol
+	associatedtype Error: Swift.Error
 	
 	/// Constructs a successful result wrapping a `value`.
 	init(value: Value)
@@ -82,8 +82,8 @@ public extension ResultProtocol {
 }
 
 /// Protocol used to constrain `tryMap` to `Result`s with compatible `Error`s.
-public protocol ErrorProtocolConvertible: ErrorProtocol {
-	static func error(from error: ErrorProtocol) -> Self
+public protocol ErrorProtocolConvertible: Swift.Error {
+	static func error(from error: Swift.Error) -> Self
 }
 
 public extension ResultProtocol where Error: ErrorProtocolConvertible {
@@ -135,9 +135,9 @@ public func >>- <T: ResultProtocol, U> (result: T, transform: @noescape (T.Value
 
 /// Returns `true` if `left` and `right` are both `Success`es and their values are equal, or if `left` and `right` are both `Failure`s and their errors are equal.
 public func == <T: ResultProtocol where T.Value: Equatable, T.Error: Equatable> (left: T, right: T) -> Bool {
-	if let left = left.value, right = right.value {
+	if let left = left.value, let right = right.value {
 		return left == right
-	} else if let left = left.error, right = right.error {
+	} else if let left = left.error, let right = right.error {
 		return left == right
 	}
 	return false
@@ -163,7 +163,7 @@ public func ?? <T: ResultProtocol> (left: T, right: @autoclosure () -> T) -> T {
 public typealias ResultType = ResultProtocol
 
 @available(*, unavailable, renamed: "ErrorProtocol")
-public typealias ResultErrorType = ErrorProtocol
+public typealias ResultErrorType = Swift.Error
 
 @available(*, unavailable, renamed: "ErrorProtocolConvertible")
 public typealias ErrorTypeConvertible = ErrorProtocolConvertible
@@ -177,7 +177,7 @@ extension ResultProtocol {
 
 extension ErrorProtocolConvertible {
 	@available(*, unavailable, renamed: "error(from:)")
-	public static func errorFromErrorType(_ error: ErrorProtocol) -> Self {
+	public static func errorFromErrorType(_ error: Swift.Error) -> Self {
 		fatalError()
 	}
 }
