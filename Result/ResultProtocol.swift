@@ -162,7 +162,7 @@ public func ?? <T: ResultProtocol> (left: T, right: @autoclosure () -> T) -> T {
 @available(*, unavailable, renamed: "ResultProtocol")
 public typealias ResultType = ResultProtocol
 
-@available(*, unavailable, renamed: "ErrorProtocol")
+@available(*, unavailable, renamed: "Error")
 public typealias ResultErrorType = Swift.Error
 
 @available(*, unavailable, renamed: "ErrorProtocolConvertible")
