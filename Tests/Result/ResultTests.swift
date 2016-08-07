@@ -44,8 +44,8 @@ final class ResultTests: XCTestCase {
 	
 	func testTryCatchProducesFailures() {
 		#if os(Linux)
-			/// FIXME: skipped on Linux because of crash with swift-3.0-preview-1.
-			print("Test Case `\(#function)` skipped on Linux because of crash with swift-3.0-preview-1.")
+			/// FIXME: skipped on Linux because of crash with swift-3.0-PREVIEW-4.
+			print("Test Case `\(#function)` skipped on Linux because of crash with swift-3.0-PREVIEW-4.")
 		#else
 			let result: Result<String, NSError> = Result(try tryIsSuccess(nil))
 			XCTAssert(result.error == error)
@@ -61,8 +61,8 @@ final class ResultTests: XCTestCase {
 
 	func testTryCatchWithFunctionCatchProducesFailures() {
 		#if os(Linux)
-			/// FIXME: skipped on Linux because of crash with swift-3.0-preview-1.
-			print("Test Case `\(#function)` skipped on Linux because of crash with swift-3.0-preview-1.")
+			/// FIXME: skipped on Linux because of crash with swift-3.0-PREVIEW-4.
+			print("Test Case `\(#function)` skipped on Linux because of crash with swift-3.0-PREVIEW-4.")
 		#else
 			let function = { try tryIsSuccess(nil) }
 
@@ -81,8 +81,8 @@ final class ResultTests: XCTestCase {
 
 	func testMaterializeProducesFailures() {
 		#if os(Linux)
-			/// FIXME: skipped on Linux because of crash with swift-3.0-preview-1.
-			print("Test Case `\(#function)` skipped on Linux because of crash with swift-3.0-preview-1.")
+			/// FIXME: skipped on Linux because of crash with swift-3.0-PREVIEW-4.
+			print("Test Case `\(#function)` skipped on Linux because of crash with swift-3.0-PREVIEW-4.")
 		#else
 			let result1 = materialize(try tryIsSuccess(nil))
 			XCTAssert(result1.error == error)
@@ -161,17 +161,22 @@ final class ResultTests: XCTestCase {
 		XCTAssertNil(result.error)
 	}
 
+	#endif
+
 	func testTryMapProducesSuccess() {
 		let result = success.tryMap(tryIsSuccess)
 		XCTAssert(result == success)
 	}
 
 	func testTryMapProducesFailure() {
-		let result = Result<String, NSError>.success("fail").tryMap(tryIsSuccess)
-		XCTAssert(result == failure)
+		#if os(Linux)
+			/// FIXME: skipped on Linux because of crash with swift-3.0-PREVIEW-4.
+			print("Test Case `\(#function)` skipped on Linux because of crash with swift-3.0-PREVIEW-4.")
+		#else
+			let result = Result<String, NSError>.success("fail").tryMap(tryIsSuccess)
+			XCTAssert(result == failure)
+		#endif
 	}
-
-	#endif
 
 	// MARK: Operators
 
@@ -268,8 +273,8 @@ extension ResultTests {
 //			("testTryProducesFailuresForOptionalWithErrorReturnedByReference", testTryProducesFailuresForOptionalWithErrorReturnedByReference),
 //			("testTryProducesSuccessesForBooleanAPI", testTryProducesSuccessesForBooleanAPI),
 //			("testTryProducesSuccessesForOptionalAPI", testTryProducesSuccessesForOptionalAPI),
-//			("testTryMapProducesSuccess", testTryMapProducesSuccess),
-//			("testTryMapProducesFailure", testTryMapProducesFailure),
+			("testTryMapProducesSuccess", testTryMapProducesSuccess),
+			("testTryMapProducesFailure", testTryMapProducesFailure),
 			("testConjunctionOperator", testConjunctionOperator),
 		]
 	}
