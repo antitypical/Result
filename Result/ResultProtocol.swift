@@ -14,7 +14,7 @@ public protocol ResultProtocol {
 	/// Case analysis for ResultProtocol.
 	///
 	/// Returns the value produced by appliying `ifFailure` to the error if self represents a failure, or `ifSuccess` to the result value if self represents a success.
-	func analysis<U>(ifSuccess: @noescape (Value) -> U, ifFailure: @noescape (Error) -> U) -> U
+	func analysis<U>(ifSuccess: (Value) -> U, ifFailure: (Error) -> U) -> U
 
 	/// Returns the value if self represents a success, `nil` otherwise.
 	///
@@ -40,24 +40,24 @@ public extension ResultProtocol {
 	}
 
 	/// Returns a new Result by mapping `Success`es’ values using `transform`, or re-wrapping `Failure`s’ errors.
-	public func map<U>(_ transform: @noescape (Value) -> U) -> Result<U, Error> {
+	public func map<U>(_ transform: (Value) -> U) -> Result<U, Error> {
 		return flatMap { .success(transform($0)) }
 	}
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
-	public func flatMap<U>(_ transform: @noescape (Value) -> Result<U, Error>) -> Result<U, Error> {
+	public func flatMap<U>(_ transform: (Value) -> Result<U, Error>) -> Result<U, Error> {
 		return analysis(
 			ifSuccess: transform,
 			ifFailure: Result<U, Error>.failure)
 	}
 
 	/// Returns a new Result by mapping `Failure`'s values using `transform`, or re-wrapping `Success`es’ values.
-	public func mapError<Error2>(_ transform: @noescape (Error) -> Error2) -> Result<Value, Error2> {
+	public func mapError<Error2>(_ transform: (Error) -> Error2) -> Result<Value, Error2> {
 		return flatMapError { .failure(transform($0)) }
 	}
 
 	/// Returns the result of applying `transform` to `Failure`’s errors, or re-wrapping `Success`es’ values.
-	public func flatMapError<Error2>(_ transform: @noescape (Error) -> Result<Value, Error2>) -> Result<Value, Error2> {
+	public func flatMapError<Error2>(_ transform: (Error) -> Result<Value, Error2>) -> Result<Value, Error2> {
 		return analysis(
 			ifSuccess: Result<Value, Error2>.success,
 			ifFailure: transform)
@@ -89,7 +89,7 @@ public protocol ErrorProtocolConvertible: Swift.Error {
 public extension ResultProtocol where Error: ErrorProtocolConvertible {
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or wrapping thrown errors.
-	public func tryMap<U>(_ transform: @noescape (Value) throws -> U) -> Result<U, Error> {
+	public func tryMap<U>(_ transform: (Value) throws -> U) -> Result<U, Error> {
 		return flatMap { value in
 			do {
 				return .success(try transform(value))
@@ -114,7 +114,9 @@ infix operator &&& {
 }
 
 /// Returns a Result with a tuple of `left` and `right` values if both are `Success`es, or re-wrapping the error of the earlier `Failure`.
-public func &&& <L: ResultProtocol, R: ResultProtocol where L.Error == R.Error> (left: L, right: @autoclosure () -> R) -> Result<(L.Value, R.Value), L.Error> {
+public func &&& <L: ResultProtocol, R: ResultProtocol> (left: L, right: @autoclosure () -> R) -> Result<(L.Value, R.Value), L.Error>
+	where L.Error == R.Error
+{
 	return left.flatMap { left in right().map { right in (left, right) } }
 }
 
@@ -129,12 +131,14 @@ infix operator >>- {
 /// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
 ///
 /// This is a synonym for `flatMap`.
-public func >>- <T: ResultProtocol, U> (result: T, transform: @noescape (T.Value) -> Result<U, T.Error>) -> Result<U, T.Error> {
+public func >>- <T: ResultProtocol, U> (result: T, transform: (T.Value) -> Result<U, T.Error>) -> Result<U, T.Error> {
 	return result.flatMap(transform)
 }
 
 /// Returns `true` if `left` and `right` are both `Success`es and their values are equal, or if `left` and `right` are both `Failure`s and their errors are equal.
-public func == <T: ResultProtocol where T.Value: Equatable, T.Error: Equatable> (left: T, right: T) -> Bool {
+public func == <T: ResultProtocol> (left: T, right: T) -> Bool
+	where T.Value: Equatable, T.Error: Equatable
+{
 	if let left = left.value, let right = right.value {
 		return left == right
 	} else if let left = left.error, let right = right.error {
@@ -144,7 +148,9 @@ public func == <T: ResultProtocol where T.Value: Equatable, T.Error: Equatable> 
 }
 
 /// Returns `true` if `left` and `right` represent different cases, or if they represent the same case but different values.
-public func != <T: ResultProtocol where T.Value: Equatable, T.Error: Equatable> (left: T, right: T) -> Bool {
+public func != <T: ResultProtocol> (left: T, right: T) -> Bool
+	where T.Value: Equatable, T.Error: Equatable
+{
 	return !(left == right)
 }
 

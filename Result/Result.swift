@@ -28,7 +28,7 @@ public enum Result<T, Error: Swift.Error>: ResultProtocol, CustomStringConvertib
 	}
 
 	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws.
-	public init(attempt f: @noescape () throws -> T) {
+	public init(attempt f: () throws -> T) {
 		do {
 			self = .success(try f())
 		} catch {
@@ -51,7 +51,7 @@ public enum Result<T, Error: Swift.Error>: ResultProtocol, CustomStringConvertib
 	/// Case analysis for Result.
 	///
 	/// Returns the value produced by applying `ifFailure` to `Failure` Results, or `ifSuccess` to `Success` Results.
-	public func analysis<Result>(ifSuccess: @noescape (T) -> Result, ifFailure: @noescape (Error) -> Result) -> Result {
+	public func analysis<Result>(ifSuccess: (T) -> Result, ifFailure: (Error) -> Result) -> Result {
 		switch self {
 		case let .success(value):
 			return ifSuccess(value)
@@ -74,11 +74,7 @@ public enum Result<T, Error: Swift.Error>: ResultProtocol, CustomStringConvertib
 	/// The userInfo key for source file line numbers in errors constructed by Result.
 	public static var lineKey: String { return "\(errorDomain).line" }
 
-	#if os(Linux)
 	private typealias UserInfoType = Any
-	#else
-	private typealias UserInfoType = AnyObject
-	#endif
 
 	/// Constructs an error.
 	public static func error(_ message: String? = nil, function: String = #function, file: String = #file, line: Int = #line) -> NSError {
@@ -114,7 +110,7 @@ public enum Result<T, Error: Swift.Error>: ResultProtocol, CustomStringConvertib
 
 // MARK: - Derive result from failable closure
 
-public func materialize<T>(_ f: @noescape () throws -> T) -> Result<T, NSError> {
+public func materialize<T>(_ f: () throws -> T) -> Result<T, NSError> {
 	return materialize(try f())
 }
 
