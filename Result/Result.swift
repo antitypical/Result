@@ -76,20 +76,18 @@ public enum Result<T, Error: Swift.Error>: ResultProtocol, CustomStringConvertib
 	/// The userInfo key for source file line numbers in errors constructed by Result.
 	public static var lineKey: String { return "\(errorDomain).line" }
 
-	private typealias UserInfoType = Any
-
 	/// Constructs an error.
 	public static func error(_ message: String? = nil, function: String = #function, file: String = #file, line: Int = #line) -> NSError {
-		var userInfo: [String: UserInfoType] = [
-		                                       	functionKey: function,
-		                                       	fileKey: file,
-		                                       	lineKey: line,
-		                                       	]
-		
+		var userInfo: [String: Any] = [
+			functionKey: function,
+			fileKey: file,
+			lineKey: line,
+		]
+
 		if let message = message {
 			userInfo[NSLocalizedDescriptionKey] = message
 		}
-		
+
 		return NSError(domain: errorDomain, code: 0, userInfo: userInfo)
 	}
 
