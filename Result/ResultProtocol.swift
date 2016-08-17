@@ -105,13 +105,7 @@ public extension ResultProtocol where Error: ErrorProtocolConvertible {
 
 // MARK: - Operators
 
-infix operator &&& {
-	/// Same associativity as &&.
-	associativity left
-
-	/// Same precedence as &&.
-	precedence 120
-}
+infix operator &&& : LogicalConjunctionPrecedence
 
 /// Returns a Result with a tuple of `left` and `right` values if both are `Success`es, or re-wrapping the error of the earlier `Failure`.
 public func &&& <L: ResultProtocol, R: ResultProtocol> (left: L, right: @autoclosure () -> R) -> Result<(L.Value, R.Value), L.Error>
@@ -120,13 +114,12 @@ public func &&& <L: ResultProtocol, R: ResultProtocol> (left: L, right: @autoclo
 	return left.flatMap { left in right().map { right in (left, right) } }
 }
 
-infix operator >>- {
-	// Left-associativity so that chaining works like you’d expect, and for consistency with Haskell, Runes, swiftz, etc.
-	associativity left
-
-	// Higher precedence than function application, but lower than function composition.
-	precedence 100
+precedencegroup ChainingPrecedence {
+	associativity: left
+	higherThan: TernaryPrecedence
 }
+
+infix operator >>- : ChainingPrecedence
 
 /// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
 ///
