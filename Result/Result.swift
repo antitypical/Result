@@ -38,7 +38,6 @@ public enum Result<T, Error: Swift.Error>: ResultProtocol, CustomStringConvertib
 
 	// MARK: Deconstruction
 
-	#if !os(Linux)
 	/// Returns the value from `Success` Results or `throw`s the error.
 	public func dematerialize() throws -> T {
 		switch self {
@@ -48,7 +47,6 @@ public enum Result<T, Error: Swift.Error>: ResultProtocol, CustomStringConvertib
 			throw error
 		}
 	}
-	#endif
 
 	/// Case analysis for Result.
 	///
