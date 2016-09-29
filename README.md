@@ -84,7 +84,30 @@ An in depth discussion of `map` and `flatMap` is beyond the scope of this docume
 
 ## Integration
 
+### Carthage
+
 1. Add this repository as a submodule and/or [add it to your Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile) if you’re using [carthage](https://github.com/Carthage/Carthage/) to manage your dependencies.
 2. Drag `Result.xcodeproj` into your project or workspace.
 3. Link your target against `Result.framework`.
 4. Application targets should ensure that the framework gets copied into their application bundle. (Framework targets should instead require the application linking them to include Result.)
+
+### Cocoapods
+
+````
+pod 'Result', '~> 3.0.0'
+````
+
+### Swift Package Manager
+
+````
+import PackageDescription
+
+let package = Package(
+    name: "MyProject",
+    targets: [],
+    dependencies: [
+        .Package(url: "https://github.com/antitypical/Result.git",
+                 majorVersion: 3)
+    ]
+)
+````
