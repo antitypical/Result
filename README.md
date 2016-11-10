@@ -16,7 +16,7 @@ Using this µframework instead of rolling your own `Result` type allows you to e
 Use `Result` whenever an operation has the possibility of failure. Consider the following example of a function that tries to extract a `String` for a given key from a JSON `Dictionary`.
 
 ```swift
-typealias JSONObject = [String: AnyObject]
+typealias JSONObject = [String: Any]
 
 enum JSONError: Error {
     case noSuchKey(String)
@@ -37,7 +37,7 @@ func stringForKey(json: JSONObject, key: String) -> Result<String, JSONError> {
 }
 ```
 
-This function provides a more robust wrapper around the default subscripting provided by `Dictionary`. Rather than return `AnyObject?`, it returns a `Result` that either contains the `String` value for the given key, or an `ErrorType` detailing what went wrong.
+This function provides a more robust wrapper around the default subscripting provided by `Dictionary`. Rather than return `Any?`, it returns a `Result` that either contains the `String` value for the given key, or an `ErrorType` detailing what went wrong.
 
 One simple way to handle a `Result` is to deconstruct it using a `switch` statement.
 
