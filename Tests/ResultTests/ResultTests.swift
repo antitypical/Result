@@ -38,71 +38,54 @@ final class ResultTests: XCTestCase {
 	// MARK: Try - Catch
 	
 	func testTryCatchProducesSuccesses() {
-		let result: Result<String, NSError> = Result(try tryIsSuccess("success"))
+		let result: Result<String, AnyError> = Result(try tryIsSuccess("success"))
 		XCTAssert(result == success)
 	}
 	
 	func testTryCatchProducesFailures() {
-		#if os(Linux)
-			/// FIXME: skipped on Linux because of crash with swift-3.0-PREVIEW-4.
-			print("Test Case `\(#function)` skipped on Linux because of crash with swift-3.0-PREVIEW-4.")
-		#else
-			let result: Result<String, NSError> = Result(try tryIsSuccess(nil))
-			XCTAssert(result.error == error)
-		#endif
+		let result: Result<String, AnyError> = Result(try tryIsSuccess(nil))
+		XCTAssert(result.error == error)
 	}
 
 	func testTryCatchWithFunctionProducesSuccesses() {
 		let function = { try tryIsSuccess("success") }
 
-		let result: Result<String, NSError> = Result(attempt: function)
+		let result: Result<String, AnyError> = Result(attempt: function)
 		XCTAssert(result == success)
 	}
 
 	func testTryCatchWithFunctionCatchProducesFailures() {
-		#if os(Linux)
-			/// FIXME: skipped on Linux because of crash with swift-3.0-PREVIEW-4.
-			print("Test Case `\(#function)` skipped on Linux because of crash with swift-3.0-PREVIEW-4.")
-		#else
-			let function = { try tryIsSuccess(nil) }
+		let function = { try tryIsSuccess(nil) }
 
-			let result: Result<String, NSError> = Result(attempt: function)
-			XCTAssert(result.error == error)
-		#endif
+		let result: Result<String, AnyError> = Result(attempt: function)
+		XCTAssert(result.error == error)
 	}
 
 	func testMaterializeProducesSuccesses() {
-		let result1 = materialize(try tryIsSuccess("success"))
+		let result1: Result<String, AnyError> = materialize(try tryIsSuccess("success"))
 		XCTAssert(result1 == success)
 
-		let result2: Result<String, NSError> = materialize { try tryIsSuccess("success") }
+		let result2: Result<String, AnyError> = materialize { try tryIsSuccess("success") }
 		XCTAssert(result2 == success)
 	}
 
 	func testMaterializeProducesFailures() {
-		#if os(Linux)
-			/// FIXME: skipped on Linux because of crash with swift-3.0-PREVIEW-4.
-			print("Test Case `\(#function)` skipped on Linux because of crash with swift-3.0-PREVIEW-4.")
-		#else
-			let result1 = materialize(try tryIsSuccess(nil))
-			XCTAssert(result1.error == error)
+		let result1: Result<String, AnyError> = materialize(try tryIsSuccess(nil))
+		XCTAssert(result1.error == error)
 
-			let result2: Result<String, NSError> = materialize { try tryIsSuccess(nil) }
-			XCTAssert(result2.error == error)
-		#endif
+		let result2: Result<String, AnyError> = materialize { try tryIsSuccess(nil) }
+		XCTAssert(result2.error == error)
 	}
 
 	// MARK: Recover
 
 	func testRecoverProducesLeftForLeftSuccess() {
-		let left = Result<String, NSError>.success("left")
+		let left = Result<String, Error>.success("left")
 		XCTAssertEqual(left.recover("right"), "left")
 	}
 
 	func testRecoverProducesRightForLeftFailure() {
-		struct Error: Swift.Error {}
-
-		let left = Result<String, Error>.failure(Error())
+		let left = Result<String, Error>.failure(Error.a)
 		XCTAssertEqual(left.recover("right"), "right")
 	}
 
@@ -169,13 +152,8 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testTryMapProducesFailure() {
-		#if os(Linux)
-			/// FIXME: skipped on Linux because of crash with swift-3.0-PREVIEW-4.
-			print("Test Case `\(#function)` skipped on Linux because of crash with swift-3.0-PREVIEW-4.")
-		#else
-			let result = Result<String, NSError>.success("fail").tryMap(tryIsSuccess)
-			XCTAssert(result == failure)
-		#endif
+		let result = Result<String, AnyError>.success("fail").tryMap(tryIsSuccess)
+		XCTAssert(result == failure)
 	}
 
 	// MARK: Operators
@@ -202,11 +180,15 @@ final class ResultTests: XCTestCase {
 
 // MARK: - Fixtures
 
-let success = Result<String, NSError>.success("success")
-let error = NSError(domain: "com.antitypical.Result", code: 1, userInfo: nil)
-let error2 = NSError(domain: "com.antitypical.Result", code: 2, userInfo: nil)
-let failure = Result<String, NSError>.failure(error)
-let failure2 = Result<String, NSError>.failure(error2)
+private enum Error: Swift.Error {
+	case a, b
+}
+
+let success = Result<String, AnyError>.success("success")
+let error = AnyError(Error.a)
+let error2 = AnyError(Error.b)
+let failure = Result<String, AnyError>.failure(error)
+let failure2 = Result<String, AnyError>.failure(error2)
 
 
 // MARK: - Helpers

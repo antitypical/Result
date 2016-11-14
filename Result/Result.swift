@@ -108,10 +108,26 @@ public enum Result<T, Error: Swift.Error>: ResultProtocol, CustomStringConvertib
 
 // MARK: - Derive result from failable closure
 
+public func materialize<T>(_ f: () throws -> T) -> Result<T, AnyError> {
+	return materialize(try f())
+}
+
+public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, AnyError> {
+	do {
+		return .success(try f())
+	} catch let error as AnyError {
+		return .failure(error)
+	} catch {
+		return .failure(AnyError(error))
+	}
+}
+
+@available(*, deprecated, message: "Use the overroad which returns `Result<T, AnyError>` instead")
 public func materialize<T>(_ f: () throws -> T) -> Result<T, NSError> {
 	return materialize(try f())
 }
 
+@available(*, deprecated, message: "Use the overroad which returns `Result<T, AnyError>` instead")
 public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, NSError> {
 	do {
 		return .success(try f())
@@ -160,7 +176,7 @@ extension NSError: ErrorProtocolConvertible {
 	}
 }
 
-// MARK: -
+// MARK: - Errors
 
 /// An “error” that is impossible to construct.
 ///
@@ -168,6 +184,29 @@ extension NSError: ErrorProtocolConvertible {
 /// be generated. For example, `Result<Int, NoError>` describes a result that
 /// contains an `Int`eger and is guaranteed never to be a `failure`.
 public enum NoError: Swift.Error { }
+
+/// A type-erased error which wraps an arbitrary error instance. This should be
+/// useful for generic contexts.
+public struct AnyError: Swift.Error, ErrorProtocolConvertible, Equatable {
+	/// The underlying error.
+	public let error: Swift.Error
+
+	public init(_ error: Swift.Error) {
+		self.error = error
+	}
+
+	public static func error(from error: Error) -> AnyError {
+		if let anyError = error as? AnyError {
+			return anyError
+		}
+		return AnyError(error)
+	}
+
+	public static func ==(lhs: AnyError, rhs: AnyError) -> Bool {
+		return lhs.error._code == rhs.error._code
+			&& lhs.error._domain == rhs.error._domain
+	}
+}
 
 // MARK: - migration support
 extension Result {
