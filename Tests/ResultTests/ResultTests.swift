@@ -193,6 +193,13 @@ let failure2 = Result<String, AnyError>.failure(error2)
 
 // MARK: - Helpers
 
+extension AnyError: Equatable {
+	public static func ==(lhs: AnyError, rhs: AnyError) -> Bool {
+		return lhs.error._code == rhs.error._code
+			&& lhs.error._domain == rhs.error._domain
+	}
+}
+
 #if !os(Linux)
 
 func attempt<T>(_ value: T, succeed: Bool, error: NSErrorPointer) -> T? {
