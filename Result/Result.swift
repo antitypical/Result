@@ -115,8 +115,6 @@ public func materialize<T>(_ f: () throws -> T) -> Result<T, AnyError> {
 public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, AnyError> {
 	do {
 		return .success(try f())
-	} catch let error as AnyError {
-		return .failure(error)
 	} catch {
 		return .failure(AnyError(error))
 	}
@@ -192,13 +190,14 @@ public struct AnyError: Swift.Error, ErrorProtocolConvertible, CustomStringConve
 	public let error: Swift.Error
 
 	public init(_ error: Swift.Error) {
-		self.error = error
+		if let anyError = error as? AnyError {
+			self = anyError
+		} else {
+			self.error = error
+		}
 	}
 
 	public static func error(from error: Error) -> AnyError {
-		if let anyError = error as? AnyError {
-			return anyError
-		}
 		return AnyError(error)
 	}
 
