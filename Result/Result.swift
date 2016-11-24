@@ -262,6 +262,10 @@ extension NSError: ErrorTypeConvertible {
 /// This can be used to describe `Result`s where failures will never
 /// be generated. For example, `Result<Int, NoError>` describes a result that
 /// contains an `Int`eger and is guaranteed never to be a `Failure`.
-public enum NoError: ResultErrorType { }
+public enum NoError: ResultErrorType, Equatable { }
+
+public func ==(lhs: NoError, rhs: NoError) -> Bool {
+	return true
+}
 
 import Foundation
