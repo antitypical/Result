@@ -185,7 +185,7 @@ public enum NoError: Swift.Error { }
 
 /// A type-erased error which wraps an arbitrary error instance. This should be
 /// useful for generic contexts.
-public struct AnyError: Swift.Error, ErrorProtocolConvertible, CustomStringConvertible {
+public struct AnyError: Swift.Error {
 	/// The underlying error.
 	public let error: Swift.Error
 
@@ -196,11 +196,15 @@ public struct AnyError: Swift.Error, ErrorProtocolConvertible, CustomStringConve
 			self.error = error
 		}
 	}
+}
 
+extension AnyError: ErrorProtocolConvertible {
 	public static func error(from error: Error) -> AnyError {
 		return AnyError(error)
 	}
+}
 
+extension AnyError: CustomStringConvertible {
 	public var description: String {
 		return String(describing: error)
 	}
