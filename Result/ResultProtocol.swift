@@ -62,6 +62,14 @@ public extension ResultProtocol {
 			ifSuccess: Result<Value, Error2>.success,
 			ifFailure: transform)
 	}
+
+	/// Returns a new Result by mapping `Success`es’ values using `success`, and by mapping `Failure`'s values using `failure`.
+	func bimap<U, Error2>(success: (Value) -> U, failure: (Error) -> Error2) -> Result<U, Error2> {
+		return analysis(
+			ifSuccess: { .success(success($0)) },
+			ifFailure: { .failure(failure($0)) }
+		)
+	}
 }
 
 public extension ResultProtocol {
