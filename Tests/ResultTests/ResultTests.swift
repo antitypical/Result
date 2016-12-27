@@ -17,6 +17,24 @@ final class ResultTests: XCTestCase {
 		XCTAssert(Result(nil, failWith: error) == failure)
 	}
 
+	func testFanout() {
+		let resultSuccess = success.fanout(success)
+		if let (x, y) = resultSuccess.value {
+			XCTAssertTrue(x == "success" && y == "success")
+		} else {
+			XCTFail()
+		}
+
+		let resultFailureBoth = failure.fanout(failure2)
+		XCTAssert(resultFailureBoth.error == error)
+
+		let resultFailureLeft = failure.fanout(success)
+		XCTAssert(resultFailureLeft.error == error)
+
+		let resultFailureRight = success.fanout(failure2)
+		XCTAssert(resultFailureRight.error == error2)
+	}
+
 	func testBimapTransformsSuccesses() {
 		XCTAssertEqual(success.bimap(
 			success: { $0.characters.count },
@@ -168,26 +186,6 @@ final class ResultTests: XCTestCase {
 		let result = Result<String, AnyError>.success("fail").tryMap(tryIsSuccess)
 		XCTAssert(result == failure)
 	}
-
-	// MARK: Operators
-
-	func testConjunctionOperator() {
-		let resultSuccess = success &&& success
-		if let (x, y) = resultSuccess.value {
-			XCTAssertTrue(x == "success" && y == "success")
-		} else {
-			XCTFail()
-		}
-
-		let resultFailureBoth = failure &&& failure2
-		XCTAssert(resultFailureBoth.error == error)
-
-		let resultFailureLeft = failure &&& success
-		XCTAssert(resultFailureLeft.error == error)
-
-		let resultFailureRight = success &&& failure2
-		XCTAssert(resultFailureRight.error == error2)
-	}
 }
 
 final class NoErrorTests: XCTestCase {
@@ -269,6 +267,7 @@ extension ResultTests {
 			("testMapRewrapsFailures", testMapRewrapsFailures),
 			("testInitOptionalSuccess", testInitOptionalSuccess),
 			("testInitOptionalFailure", testInitOptionalFailure),
+			("testFanout", testFanout),
 			("testErrorsIncludeTheSourceFile", testErrorsIncludeTheSourceFile),
 			("testErrorsIncludeTheSourceLine", testErrorsIncludeTheSourceLine),
 			("testErrorsIncludeTheCallingFunction", testErrorsIncludeTheCallingFunction),
@@ -289,7 +288,6 @@ extension ResultTests {
 //			("testTryProducesSuccessesForOptionalAPI", testTryProducesSuccessesForOptionalAPI),
 			("testTryMapProducesSuccess", testTryMapProducesSuccess),
 			("testTryMapProducesFailure", testTryMapProducesFailure),
-			("testConjunctionOperator", testConjunctionOperator),
 		]
 	}
 }
