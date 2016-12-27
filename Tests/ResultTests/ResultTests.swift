@@ -269,6 +269,8 @@ extension ResultTests {
 			("testMapRewrapsFailures", testMapRewrapsFailures),
 			("testInitOptionalSuccess", testInitOptionalSuccess),
 			("testInitOptionalFailure", testInitOptionalFailure),
+			("testBimapTransformsSuccesses", testBimapTransformsSuccesses),
+			("testBimapTransformsFailures", testBimapTransformsFailures),
 			("testErrorsIncludeTheSourceFile", testErrorsIncludeTheSourceFile),
 			("testErrorsIncludeTheSourceLine", testErrorsIncludeTheSourceLine),
 			("testErrorsIncludeTheCallingFunction", testErrorsIncludeTheCallingFunction),
