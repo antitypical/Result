@@ -268,6 +268,8 @@ extension ResultTests {
 			("testInitOptionalSuccess", testInitOptionalSuccess),
 			("testInitOptionalFailure", testInitOptionalFailure),
 			("testFanout", testFanout),
+			("testBimapTransformsSuccesses", testBimapTransformsSuccesses),
+			("testBimapTransformsFailures", testBimapTransformsFailures),
 			("testErrorsIncludeTheSourceFile", testErrorsIncludeTheSourceFile),
 			("testErrorsIncludeTheSourceLine", testErrorsIncludeTheSourceLine),
 			("testErrorsIncludeTheCallingFunction", testErrorsIncludeTheCallingFunction),
