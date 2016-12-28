@@ -51,6 +51,14 @@ public extension ResultProtocol {
 			ifFailure: Result<U, Error>.failure)
 	}
 
+	/// Returns a Result with a tuple of the receiver and `other` values if both
+	/// are `Success`es, or re-wrapping the error of the earlier `Failure`.
+	public func fanout<R: ResultProtocol>(_ other: @autoclosure () -> R) -> Result<(Value, R.Value), Error>
+		where Error == R.Error
+	{
+		return self.flatMap { left in other().map { right in (left, right) } }
+	}
+
 	/// Returns a new Result by mapping `Failure`'s values using `transform`, or re-wrapping `Success`es’ values.
 	public func mapError<Error2>(_ transform: (Error) -> Error2) -> Result<Value, Error2> {
 		return flatMapError { .failure(transform($0)) }
@@ -119,7 +127,7 @@ infix operator &&& : LogicalConjunctionPrecedence
 public func &&& <L: ResultProtocol, R: ResultProtocol> (left: L, right: @autoclosure () -> R) -> Result<(L.Value, R.Value), L.Error>
 	where L.Error == R.Error
 {
-	return left.flatMap { left in right().map { right in (left, right) } }
+	return left.fanout(right)
 }
 
 precedencegroup ChainingPrecedence {
