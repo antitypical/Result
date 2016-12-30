@@ -124,6 +124,7 @@ public extension ResultProtocol where Error: ErrorProtocolConvertible {
 infix operator &&& : LogicalConjunctionPrecedence
 
 /// Returns a Result with a tuple of `left` and `right` values if both are `Success`es, or re-wrapping the error of the earlier `Failure`.
+@available(*, deprecated, renamed: "ResultProtocol.fanout(self:_:)")
 public func &&& <L: ResultProtocol, R: ResultProtocol> (left: L, right: @autoclosure () -> R) -> Result<(L.Value, R.Value), L.Error>
 	where L.Error == R.Error
 {
@@ -140,6 +141,7 @@ infix operator >>- : ChainingPrecedence
 /// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
 ///
 /// This is a synonym for `flatMap`.
+@available(*, deprecated, renamed: "ResultProtocol.flatMap(self:_:)")
 public func >>- <T: ResultProtocol, U> (result: T, transform: (T.Value) -> Result<U, T.Error>) -> Result<U, T.Error> {
 	return result.flatMap(transform)
 }
