@@ -66,6 +66,25 @@ final class ResultTests: XCTestCase {
 		XCTAssert(Result<(), NSError>.error().function == function)
 	}
 
+	func testAnyErrorDelegatesLocalizedDescriptionToUnderlyingError() {
+		XCTAssertEqual(error.errorDescription, "localized description")
+		XCTAssertEqual(error.localizedDescription, "localized description")
+		XCTAssertEqual(error3.errorDescription, "localized description")
+		XCTAssertEqual(error3.localizedDescription, "localized description")
+	}
+
+	func testAnyErrorDelegatesLocalizedFailureReasonToUnderlyingError() {
+		XCTAssertEqual(error.failureReason, "failure reason")
+	}
+
+	func testAnyErrorDelegatesLocalizedRecoverySuggestionToUnderlyingError() {
+		XCTAssertEqual(error.recoverySuggestion, "recovery suggestion")
+	}
+
+	func testAnyErrorDelegatesLocalizedHelpAnchorToUnderlyingError() {
+		XCTAssertEqual(error.helpAnchor, "help anchor")
+	}
+
 	// MARK: Try - Catch
 	
 	func testTryCatchProducesSuccesses() {
@@ -203,16 +222,32 @@ final class NoErrorTests: XCTestCase {
 
 // MARK: - Fixtures
 
-private enum Error: Swift.Error {
+private enum Error: Swift.Error, LocalizedError {
 	case a, b
+
+	var errorDescription: String? {
+		return "localized description"
+	}
+
+	var failureReason: String? {
+		return "failure reason"
+	}
+
+	var helpAnchor: String? {
+		return "help anchor"
+	}
+
+	var recoverySuggestion: String? {
+		return "recovery suggestion"
+	}
 }
 
 let success = Result<String, AnyError>.success("success")
 let error = AnyError(Error.a)
 let error2 = AnyError(Error.b)
+let error3 = AnyError(NSError(domain: "Result", code: 42, userInfo: [NSLocalizedDescriptionKey: "localized description"]))
 let failure = Result<String, AnyError>.failure(error)
 let failure2 = Result<String, AnyError>.failure(error2)
-
 
 // MARK: - Helpers
 
