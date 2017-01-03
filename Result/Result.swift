@@ -214,6 +214,24 @@ extension AnyError: CustomStringConvertible {
 	}
 }
 
+extension AnyError: LocalizedError {
+	public var errorDescription: String? {
+		return error.localizedDescription
+	}
+
+	public var failureReason: String? {
+		return (error as? LocalizedError)?.failureReason
+	}
+
+	public var helpAnchor: String? {
+		return (error as? LocalizedError)?.helpAnchor
+	}
+
+	public var recoverySuggestion: String? {
+		return (error as? LocalizedError)?.recoverySuggestion
+	}
+}
+
 // MARK: - migration support
 extension Result {
 	@available(*, unavailable, renamed: "success")
