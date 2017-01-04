@@ -325,6 +325,10 @@ extension ResultTests {
 //			("testTryProducesSuccessesForOptionalAPI", testTryProducesSuccessesForOptionalAPI),
 			("testTryMapProducesSuccess", testTryMapProducesSuccess),
 			("testTryMapProducesFailure", testTryMapProducesFailure),
+			("testAnyErrorDelegatesLocalizedDescriptionToUnderlyingError", testAnyErrorDelegatesLocalizedDescriptionToUnderlyingError),
+			("testAnyErrorDelegatesLocalizedFailureReasonToUnderlyingError", testAnyErrorDelegatesLocalizedFailureReasonToUnderlyingError),
+			("testAnyErrorDelegatesLocalizedRecoverySuggestionToUnderlyingError", testAnyErrorDelegatesLocalizedRecoverySuggestionToUnderlyingError),
+			("testAnyErrorDelegatesLocalizedHelpAnchorToUnderlyingError", testAnyErrorDelegatesLocalizedHelpAnchorToUnderlyingError),
 		]
 	}
 }
