@@ -214,6 +214,11 @@ extension AnyError: CustomStringConvertible {
 	}
 }
 
+// There appears to be a bug in Foundation on Linux which prevents this from working:
+// https://bugs.swift.org/browse/SR-3565
+// Don't forget to comment the tests back in when removing this check when it's fixed!
+#if !os(Linux)
+
 extension AnyError: LocalizedError {
 	public var errorDescription: String? {
 		return error.localizedDescription
@@ -231,6 +236,8 @@ extension AnyError: LocalizedError {
 		return (error as? LocalizedError)?.recoverySuggestion
 	}
 }
+
+#endif
 
 // MARK: - migration support
 extension Result {
