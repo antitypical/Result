@@ -122,16 +122,12 @@ public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, AnyErr
 
 @available(*, deprecated, message: "Use the overload which returns `Result<T, AnyError>` instead")
 public func materialize<T>(_ f: () throws -> T) -> Result<T, NSError> {
-	return materialize(try f())
+	fatalError("unreachable")
 }
 
 @available(*, deprecated, message: "Use the overload which returns `Result<T, AnyError>` instead")
 public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, NSError> {
-	do {
-		return .success(try f())
-	} catch let error as NSError {
-		return .failure(error)
-	}
+	fatalError("unreachable")
 }
 
 // MARK: - Cocoa API conveniences
