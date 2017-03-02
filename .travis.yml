@@ -30,9 +30,15 @@ matrix:
       install:
         - eval "$(curl -sL https://gist.githubusercontent.com/kylef/5c0475ff02b7c7671d2a/raw/9f442512a46d7a2af7b850d65a7e9bd31edfb09b/swiftenv-install.sh)"
     - script:
-        - docker run -v `pwd`:`pwd` -w `pwd` norionomura/swift:3120170205a swift test
-      env: JOB=Linux-Swift3.1
+        - swift build
+        - swift test
+      env:
+        - JOB=Linux
+        - SWIFT_VERSION=3.1-DEVELOPMENT-SNAPSHOT-2017-03-01-a
       sudo: required
-      services: docker
+      dist: trusty
+      language: generic
+      install:
+        - eval "$(curl -sL https://gist.githubusercontent.com/kylef/5c0475ff02b7c7671d2a/raw/9f442512a46d7a2af7b850d65a7e9bd31edfb09b/swiftenv-install.sh)"
 notifications:
   email: false
