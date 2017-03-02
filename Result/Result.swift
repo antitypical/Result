@@ -130,6 +130,8 @@ public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, NSErro
 	do {
 		return .success(try f())
 	} catch {
+// This isn't great, but it lets us maintain compatibility until this deprecated
+// method can be removed.
 #if _runtime(_ObjC)
 		return .failure(error as NSError)
 #else
