@@ -129,8 +129,17 @@ public func materialize<T>(_ f: () throws -> T) -> Result<T, NSError> {
 public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, NSError> {
 	do {
 		return .success(try f())
-	} catch let error as NSError {
-		return .failure(error)
+	} catch {
+// This isn't great, but it lets us maintain compatibility until this deprecated
+// method can be removed.
+#if _runtime(_ObjC)
+		return .failure(error as NSError)
+#else
+		// https://github.com/apple/swift-corelibs-foundation/blob/swift-3.0.2-RELEASE/Foundation/NSError.swift#L314
+		let userInfo = _swift_Foundation_getErrorDefaultUserInfo(error) as? [String: Any]
+		let nsError = NSError(domain: error._domain, code: error._code, userInfo: userInfo)
+		return .failure(nsError)
+#endif
 	}
 }
 
