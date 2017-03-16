@@ -222,7 +222,7 @@ extension AnyError: LocalizedError {
 	public var failureReason: String? {
 		return (error as? LocalizedError)?.failureReason
 	}
-
+	
 	public var helpAnchor: String? {
 		return (error as? LocalizedError)?.helpAnchor
 	}
