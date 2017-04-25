@@ -120,29 +120,6 @@ public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, AnyErr
 	}
 }
 
-@available(*, deprecated, message: "Use the overload which returns `Result<T, AnyError>` instead")
-public func materialize<T>(_ f: () throws -> T) -> Result<T, NSError> {
-	return materialize(try f())
-}
-
-@available(*, deprecated, message: "Use the overload which returns `Result<T, AnyError>` instead")
-public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, NSError> {
-	do {
-		return .success(try f())
-	} catch {
-// This isn't great, but it lets us maintain compatibility until this deprecated
-// method can be removed.
-#if _runtime(_ObjC)
-		return .failure(error as NSError)
-#else
-		// https://github.com/apple/swift-corelibs-foundation/blob/swift-3.0.2-RELEASE/Foundation/NSError.swift#L314
-		let userInfo = _swift_Foundation_getErrorDefaultUserInfo(error) as? [String: Any]
-		let nsError = NSError(domain: error._domain, code: error._code, userInfo: userInfo)
-		return .failure(nsError)
-#endif
-	}
-}
-
 // MARK: - Cocoa API conveniences
 
 #if !os(Linux)
@@ -249,6 +226,7 @@ extension AnyError: LocalizedError {
 #endif
 
 // MARK: - migration support
+
 extension Result {
 	@available(*, unavailable, renamed: "success")
 	public static func Success(_: T) -> Result<T, Error> {
@@ -267,5 +245,17 @@ extension NSError {
 		fatalError()
 	}
 }
+
+@available(*, unavailable, message: "Use the overload which returns `Result<T, AnyError>` instead")
+public func materialize<T>(_ f: () throws -> T) -> Result<T, NSError> {
+	fatalError()
+}
+
+@available(*, unavailable, message: "Use the overload which returns `Result<T, AnyError>` instead")
+public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, NSError> {
+	fatalError()
+}
+
+// MARK: -
 
 import Foundation
