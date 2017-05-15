@@ -117,6 +117,14 @@ final class ResultTests: XCTestCase {
 		XCTAssert(result.error == error)
 	}
 
+	func testTryCatchWithFunctionThrowingNonAnyErrorCanProducesAnyErrorFailures() {
+		let nsError = NSError(domain: "", code: 0)
+		let function: () throws -> String = { throw nsError }
+
+		let result: Result<String, AnyError> = Result(attempt: function)
+		XCTAssert(result.error == AnyError(nsError))
+	}
+
 	func testMaterializeProducesSuccesses() {
 		let result1: Result<String, AnyError> = materialize(try tryIsSuccess("success"))
 		XCTAssert(result1 == success)
@@ -222,6 +230,19 @@ final class NoErrorTests: XCTestCase {
 		let foo = Result<Int, NoError>(1)
 		let bar = Result<Int, NoError>(1)
 		XCTAssertTrue(foo == bar)
+	}
+}
+
+final class AnyErrorTests: XCTestCase {
+	static var allTests: [(String, (AnyErrorTests) -> () throws -> Void)] {
+		return [ ("testAnyError", testAnyError) ]
+	}
+
+	func testAnyError() {
+		let error = Error.a
+		let anyErrorFromError = AnyError(error)
+		let anyErrorFromAnyError = AnyError(anyErrorFromError)
+		XCTAssertTrue(anyErrorFromError == anyErrorFromAnyError)
 	}
 }
 
