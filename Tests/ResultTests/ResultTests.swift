@@ -66,10 +66,6 @@ final class ResultTests: XCTestCase {
 		XCTAssert(Result<(), NSError>.error().function == function)
 	}
 
-//	These tests fail on linux, root cause possibly https://bugs.swift.org/browse/SR-3565
-//  Try again when it's fixed
-	#if !os(Linux)
-
 	func testAnyErrorDelegatesLocalizedDescriptionToUnderlyingError() {
 		XCTAssertEqual(error.errorDescription, "localized description")
 		XCTAssertEqual(error.localizedDescription, "localized description")
@@ -88,8 +84,6 @@ final class ResultTests: XCTestCase {
 	func testAnyErrorDelegatesLocalizedHelpAnchorToUnderlyingError() {
 		XCTAssertEqual(error.helpAnchor, "help anchor")
 	}
-
-	#endif
 
 	// MARK: Try - Catch
 	
@@ -353,12 +347,10 @@ extension ResultTests {
 			("testTryMapProducesSuccess", testTryMapProducesSuccess),
 			("testTryMapProducesFailure", testTryMapProducesFailure),
 
-//			These tests fail on linux, root cause possibly https://bugs.swift.org/browse/SR-3565
-//          Try again when it's fixed
-//			("testAnyErrorDelegatesLocalizedDescriptionToUnderlyingError", testAnyErrorDelegatesLocalizedDescriptionToUnderlyingError),
-//			("testAnyErrorDelegatesLocalizedFailureReasonToUnderlyingError", testAnyErrorDelegatesLocalizedFailureReasonToUnderlyingError),
-//			("testAnyErrorDelegatesLocalizedRecoverySuggestionToUnderlyingError", testAnyErrorDelegatesLocalizedRecoverySuggestionToUnderlyingError),
-//			("testAnyErrorDelegatesLocalizedHelpAnchorToUnderlyingError", testAnyErrorDelegatesLocalizedHelpAnchorToUnderlyingError),
+			("testAnyErrorDelegatesLocalizedDescriptionToUnderlyingError", testAnyErrorDelegatesLocalizedDescriptionToUnderlyingError),
+			("testAnyErrorDelegatesLocalizedFailureReasonToUnderlyingError", testAnyErrorDelegatesLocalizedFailureReasonToUnderlyingError),
+			("testAnyErrorDelegatesLocalizedRecoverySuggestionToUnderlyingError", testAnyErrorDelegatesLocalizedRecoverySuggestionToUnderlyingError),
+			("testAnyErrorDelegatesLocalizedHelpAnchorToUnderlyingError", testAnyErrorDelegatesLocalizedHelpAnchorToUnderlyingError),
 		]
 	}
 }
