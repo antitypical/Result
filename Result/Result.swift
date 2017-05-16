@@ -31,7 +31,10 @@ public enum Result<T, Error: Swift.Error>: ResultProtocol, CustomStringConvertib
 	public init(attempt f: () throws -> T) {
 		do {
 			self = .success(try f())
-		} catch {
+		} catch var error {
+			if Error.self == AnyError.self {
+				error = AnyError(error)
+			}
 			self = .failure(error as! Error)
 		}
 	}
