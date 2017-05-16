@@ -151,25 +151,3 @@ extension ResultProtocol {
 }
 
 // MARK: - migration support
-@available(*, unavailable, renamed: "ResultProtocol")
-public typealias ResultType = ResultProtocol
-
-@available(*, unavailable, renamed: "Error")
-public typealias ResultErrorType = Swift.Error
-
-@available(*, unavailable, renamed: "ErrorProtocolConvertible")
-public typealias ErrorTypeConvertible = ErrorProtocolConvertible
-
-extension ResultProtocol {
-	@available(*, unavailable, renamed: "recover(with:)")
-	public func recoverWith(_ result: @autoclosure () -> Self) -> Self {
-		fatalError()
-	}
-}
-
-extension ErrorProtocolConvertible {
-	@available(*, unavailable, renamed: "error(from:)")
-	public static func errorFromErrorType(_ error: Swift.Error) -> Self {
-		fatalError()
-	}
-}
