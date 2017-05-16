@@ -230,25 +230,6 @@ extension AnyError: LocalizedError {
 
 // MARK: - migration support
 
-extension Result {
-	@available(*, unavailable, renamed: "success")
-	public static func Success(_: T) -> Result<T, Error> {
-		fatalError()
-	}
-
-	@available(*, unavailable, renamed: "failure")
-	public static func Failure(_: Error) -> Result<T, Error> {
-		fatalError()
-	}
-}
-
-extension NSError {
-	@available(*, unavailable, renamed: "error(from:)")
-	public static func errorFromErrorType(_ error: Swift.Error) -> Self {
-		fatalError()
-	}
-}
-
 @available(*, unavailable, message: "Use the overload which returns `Result<T, AnyError>` instead")
 public func materialize<T>(_ f: () throws -> T) -> Result<T, NSError> {
 	fatalError()
