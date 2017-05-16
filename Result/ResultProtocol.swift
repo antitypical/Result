@@ -121,33 +121,33 @@ public extension ResultProtocol where Error: ErrorProtocolConvertible {
 
 // MARK: - Operators
 
-/// Returns `true` if `left` and `right` are both `Success`es and their values are equal, or if `left` and `right` are both `Failure`s and their errors are equal.
-public func == <T: ResultProtocol> (left: T, right: T) -> Bool
-	where T.Value: Equatable, T.Error: Equatable
-{
-	if let left = left.value, let right = right.value {
-		return left == right
-	} else if let left = left.error, let right = right.error {
-		return left == right
+extension ResultProtocol where Value: Equatable, Error: Equatable {
+	/// Returns `true` if `left` and `right` are both `Success`es and their values are equal, or if `left` and `right` are both `Failure`s and their errors are equal.
+	public static func ==(left: Self, right: Self) -> Bool {
+		if let left = left.value, let right = right.value {
+			return left == right
+		} else if let left = left.error, let right = right.error {
+			return left == right
+		}
+		return false
 	}
-	return false
+
+	/// Returns `true` if `left` and `right` represent different cases, or if they represent the same case but different values.
+	public static func !=(left: Self, right: Self) -> Bool {
+		return !(left == right)
+	}
 }
 
-/// Returns `true` if `left` and `right` represent different cases, or if they represent the same case but different values.
-public func != <T: ResultProtocol> (left: T, right: T) -> Bool
-	where T.Value: Equatable, T.Error: Equatable
-{
-	return !(left == right)
-}
+extension ResultProtocol {
+	/// Returns the value of `left` if it is a `Success`, or `right` otherwise. Short-circuits.
+	public static func ??(left: Self, right: @autoclosure () -> Value) -> Value {
+		return left.recover(right())
+	}
 
-/// Returns the value of `left` if it is a `Success`, or `right` otherwise. Short-circuits.
-public func ?? <T: ResultProtocol> (left: T, right: @autoclosure () -> T.Value) -> T.Value {
-	return left.recover(right())
-}
-
-/// Returns `left` if it is a `Success`es, or `right` otherwise. Short-circuits.
-public func ?? <T: ResultProtocol> (left: T, right: @autoclosure () -> T) -> T {
-	return left.recover(with: right())
+	/// Returns `left` if it is a `Success`es, or `right` otherwise. Short-circuits.
+	public static func ??(left: Self, right: @autoclosure () -> Self) -> Self {
+		return left.recover(with: right())
+	}
 }
 
 // MARK: - migration support
