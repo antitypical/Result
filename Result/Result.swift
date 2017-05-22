@@ -203,14 +203,21 @@ extension AnyError: CustomStringConvertible {
 	}
 }
 
-// There appears to be a bug in Foundation on Linux which prevents this from working:
-// https://bugs.swift.org/browse/SR-3565
-// Don't forget to comment the tests back in when removing this check when it's fixed!
-#if !os(Linux)
-
 extension AnyError: LocalizedError {
 	public var errorDescription: String? {
-		return error.localizedDescription
+		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+			return error.localizedDescription
+		#else
+			#if swift(>=4.0)
+				// The workaround below is not needed for Swift 4.0 thanks to
+				// https://github.com/apple/swift-corelibs-foundation/pull/967.
+			#else
+				if let nsError = error as? NSError {
+					return nsError.localizedDescription
+				}
+			#endif
+			return error.localizedDescription
+		#endif
 	}
 
 	public var failureReason: String? {
@@ -225,8 +232,6 @@ extension AnyError: LocalizedError {
 		return (error as? LocalizedError)?.recoverySuggestion
 	}
 }
-
-#endif
 
 // MARK: - migration support
 
