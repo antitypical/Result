@@ -215,23 +215,10 @@ final class ResultTests: XCTestCase {
 	}
 }
 
-final class AnyErrorTests: XCTestCase {
-	static var allTests: [(String, (AnyErrorTests) -> () throws -> Void)] {
-		return [ ("testAnyError", testAnyError) ]
-	}
-
-	func testAnyError() {
-		let error = Error.a
-		let anyErrorFromError = AnyError(error)
-		let anyErrorFromAnyError = AnyError(anyErrorFromError)
-		XCTAssertTrue(anyErrorFromError == anyErrorFromAnyError)
-	}
-}
-
 
 // MARK: - Fixtures
 
-private enum Error: Swift.Error, LocalizedError {
+enum Error: Swift.Error, LocalizedError {
 	case a, b
 
 	var errorDescription: String? {
