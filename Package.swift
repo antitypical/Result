@@ -6,5 +6,6 @@ let package = Package(
         Target(
             name: "Result"
         )
-    ]
+    ],
+    swiftLanguageVersions: [3, 4]
 )
