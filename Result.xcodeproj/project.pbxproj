@@ -17,6 +17,10 @@
 		CD333EF31ED50550004D9C5D /* NoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF11ED50550004D9C5D /* NoError.swift */; };
 		CD333EF41ED50550004D9C5D /* NoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF11ED50550004D9C5D /* NoError.swift */; };
 		CD333EF51ED50550004D9C5D /* NoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF11ED50550004D9C5D /* NoError.swift */; };
+		CD333EF71ED505D7004D9C5D /* AnyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF61ED505D7004D9C5D /* AnyError.swift */; };
+		CD333EF81ED505D7004D9C5D /* AnyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF61ED505D7004D9C5D /* AnyError.swift */; };
+		CD333EF91ED505D7004D9C5D /* AnyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF61ED505D7004D9C5D /* AnyError.swift */; };
+		CD333EFA1ED505D7004D9C5D /* AnyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF61ED505D7004D9C5D /* AnyError.swift */; };
 		D035799B1B2B788F005D26AE /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45480961A957465009D7229 /* Result.swift */; };
 		D035799E1B2B788F005D26AE /* Result.h in Headers */ = {isa = PBXBuildFile; fileRef = D454805C1A9572F5009D7229 /* Result.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D454805D1A9572F5009D7229 /* Result.h in Headers */ = {isa = PBXBuildFile; fileRef = D454805C1A9572F5009D7229 /* Result.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -60,6 +64,7 @@
 		57FCDE541BA280E000130C48 /* Result-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Result-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD261ACF1DECFE3400A8863C /* LinuxMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LinuxMain.swift; path = ../LinuxMain.swift; sourceTree = "<group>"; };
 		CD333EF11ED50550004D9C5D /* NoError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoError.swift; sourceTree = "<group>"; };
+		CD333EF61ED505D7004D9C5D /* AnyError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyError.swift; sourceTree = "<group>"; };
 		D03579A31B2B788F005D26AE /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D45480571A9572F5009D7229 /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D454805B1A9572F5009D7229 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -156,6 +161,7 @@
 		D45480591A9572F5009D7229 /* Result */ = {
 			isa = PBXGroup;
 			children = (
+				CD333EF61ED505D7004D9C5D /* AnyError.swift */,
 				CD333EF11ED50550004D9C5D /* NoError.swift */,
 				D454805C1A9572F5009D7229 /* Result.h */,
 				D45480961A957465009D7229 /* Result.swift */,
@@ -476,6 +482,7 @@
 				CD333EF41ED50550004D9C5D /* NoError.swift in Sources */,
 				57FCDE3E1BA280DC00130C48 /* ResultProtocol.swift in Sources */,
 				57FCDE3F1BA280DC00130C48 /* Result.swift in Sources */,
+				CD333EF91ED505D7004D9C5D /* AnyError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -494,6 +501,7 @@
 				CD333EF51ED50550004D9C5D /* NoError.swift in Sources */,
 				45AE89E61B3A6564007B99D7 /* ResultProtocol.swift in Sources */,
 				D035799B1B2B788F005D26AE /* Result.swift in Sources */,
+				CD333EFA1ED505D7004D9C5D /* AnyError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -504,6 +512,7 @@
 				CD333EF21ED50550004D9C5D /* NoError.swift in Sources */,
 				E93621461B35596200948F2A /* ResultProtocol.swift in Sources */,
 				D45480971A957465009D7229 /* Result.swift in Sources */,
+				CD333EF71ED505D7004D9C5D /* AnyError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -522,6 +531,7 @@
 				CD333EF31ED50550004D9C5D /* NoError.swift in Sources */,
 				E93621471B35596200948F2A /* ResultProtocol.swift in Sources */,
 				D45480981A957465009D7229 /* Result.swift in Sources */,
+				CD333EF81ED505D7004D9C5D /* AnyError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
