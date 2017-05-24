@@ -215,18 +215,6 @@ final class ResultTests: XCTestCase {
 	}
 }
 
-final class NoErrorTests: XCTestCase {
-	static var allTests: [(String, (NoErrorTests) -> () throws -> Void)] {
-		return [ ("testEquatable", testEquatable) ]
-	}
-
-	func testEquatable() {
-		let foo = Result<Int, NoError>(1)
-		let bar = Result<Int, NoError>(1)
-		XCTAssertTrue(foo == bar)
-	}
-}
-
 final class AnyErrorTests: XCTestCase {
 	static var allTests: [(String, (AnyErrorTests) -> () throws -> Void)] {
 		return [ ("testAnyError", testAnyError) ]
