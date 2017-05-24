@@ -13,6 +13,10 @@
 		57FCDE421BA280DC00130C48 /* Result.h in Headers */ = {isa = PBXBuildFile; fileRef = D454805C1A9572F5009D7229 /* Result.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		57FCDE4D1BA280E000130C48 /* ResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D454806E1A9572F5009D7229 /* ResultTests.swift */; };
 		57FCDE561BA2814300130C48 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57FCDE471BA280DC00130C48 /* Result.framework */; };
+		CD333EF21ED50550004D9C5D /* NoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF11ED50550004D9C5D /* NoError.swift */; };
+		CD333EF31ED50550004D9C5D /* NoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF11ED50550004D9C5D /* NoError.swift */; };
+		CD333EF41ED50550004D9C5D /* NoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF11ED50550004D9C5D /* NoError.swift */; };
+		CD333EF51ED50550004D9C5D /* NoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF11ED50550004D9C5D /* NoError.swift */; };
 		D035799B1B2B788F005D26AE /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45480961A957465009D7229 /* Result.swift */; };
 		D035799E1B2B788F005D26AE /* Result.h in Headers */ = {isa = PBXBuildFile; fileRef = D454805C1A9572F5009D7229 /* Result.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D454805D1A9572F5009D7229 /* Result.h in Headers */ = {isa = PBXBuildFile; fileRef = D454805C1A9572F5009D7229 /* Result.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -55,6 +59,7 @@
 		57FCDE471BA280DC00130C48 /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		57FCDE541BA280E000130C48 /* Result-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Result-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD261ACF1DECFE3400A8863C /* LinuxMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LinuxMain.swift; path = ../LinuxMain.swift; sourceTree = "<group>"; };
+		CD333EF11ED50550004D9C5D /* NoError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoError.swift; sourceTree = "<group>"; };
 		D03579A31B2B788F005D26AE /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D45480571A9572F5009D7229 /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D454805B1A9572F5009D7229 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -151,6 +156,7 @@
 		D45480591A9572F5009D7229 /* Result */ = {
 			isa = PBXGroup;
 			children = (
+				CD333EF11ED50550004D9C5D /* NoError.swift */,
 				D454805C1A9572F5009D7229 /* Result.h */,
 				D45480961A957465009D7229 /* Result.swift */,
 				E93621451B35596200948F2A /* ResultProtocol.swift */,
@@ -467,6 +473,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD333EF41ED50550004D9C5D /* NoError.swift in Sources */,
 				57FCDE3E1BA280DC00130C48 /* ResultProtocol.swift in Sources */,
 				57FCDE3F1BA280DC00130C48 /* Result.swift in Sources */,
 			);
@@ -484,6 +491,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD333EF51ED50550004D9C5D /* NoError.swift in Sources */,
 				45AE89E61B3A6564007B99D7 /* ResultProtocol.swift in Sources */,
 				D035799B1B2B788F005D26AE /* Result.swift in Sources */,
 			);
@@ -493,6 +501,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD333EF21ED50550004D9C5D /* NoError.swift in Sources */,
 				E93621461B35596200948F2A /* ResultProtocol.swift in Sources */,
 				D45480971A957465009D7229 /* Result.swift in Sources */,
 			);
@@ -510,6 +519,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD333EF31ED50550004D9C5D /* NoError.swift in Sources */,
 				E93621471B35596200948F2A /* ResultProtocol.swift in Sources */,
 				D45480981A957465009D7229 /* Result.swift in Sources */,
 			);
