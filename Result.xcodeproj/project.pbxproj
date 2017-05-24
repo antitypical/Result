@@ -13,6 +13,20 @@
 		57FCDE421BA280DC00130C48 /* Result.h in Headers */ = {isa = PBXBuildFile; fileRef = D454805C1A9572F5009D7229 /* Result.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		57FCDE4D1BA280E000130C48 /* ResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D454806E1A9572F5009D7229 /* ResultTests.swift */; };
 		57FCDE561BA2814300130C48 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57FCDE471BA280DC00130C48 /* Result.framework */; };
+		CD333EF21ED50550004D9C5D /* NoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF11ED50550004D9C5D /* NoError.swift */; };
+		CD333EF31ED50550004D9C5D /* NoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF11ED50550004D9C5D /* NoError.swift */; };
+		CD333EF41ED50550004D9C5D /* NoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF11ED50550004D9C5D /* NoError.swift */; };
+		CD333EF51ED50550004D9C5D /* NoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF11ED50550004D9C5D /* NoError.swift */; };
+		CD333EF71ED505D7004D9C5D /* AnyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF61ED505D7004D9C5D /* AnyError.swift */; };
+		CD333EF81ED505D7004D9C5D /* AnyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF61ED505D7004D9C5D /* AnyError.swift */; };
+		CD333EF91ED505D7004D9C5D /* AnyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF61ED505D7004D9C5D /* AnyError.swift */; };
+		CD333EFA1ED505D7004D9C5D /* AnyError.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EF61ED505D7004D9C5D /* AnyError.swift */; };
+		CD333EFC1ED50699004D9C5D /* NoErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EFB1ED50699004D9C5D /* NoErrorTests.swift */; };
+		CD333EFD1ED50699004D9C5D /* NoErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EFB1ED50699004D9C5D /* NoErrorTests.swift */; };
+		CD333EFE1ED50699004D9C5D /* NoErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EFB1ED50699004D9C5D /* NoErrorTests.swift */; };
+		CD333F001ED5074F004D9C5D /* AnyErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EFF1ED5074F004D9C5D /* AnyErrorTests.swift */; };
+		CD333F011ED5074F004D9C5D /* AnyErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EFF1ED5074F004D9C5D /* AnyErrorTests.swift */; };
+		CD333F021ED5074F004D9C5D /* AnyErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD333EFF1ED5074F004D9C5D /* AnyErrorTests.swift */; };
 		D035799B1B2B788F005D26AE /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45480961A957465009D7229 /* Result.swift */; };
 		D035799E1B2B788F005D26AE /* Result.h in Headers */ = {isa = PBXBuildFile; fileRef = D454805C1A9572F5009D7229 /* Result.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D454805D1A9572F5009D7229 /* Result.h in Headers */ = {isa = PBXBuildFile; fileRef = D454805C1A9572F5009D7229 /* Result.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -55,6 +69,10 @@
 		57FCDE471BA280DC00130C48 /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		57FCDE541BA280E000130C48 /* Result-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Result-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD261ACF1DECFE3400A8863C /* LinuxMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LinuxMain.swift; path = ../LinuxMain.swift; sourceTree = "<group>"; };
+		CD333EF11ED50550004D9C5D /* NoError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoError.swift; sourceTree = "<group>"; };
+		CD333EF61ED505D7004D9C5D /* AnyError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyError.swift; sourceTree = "<group>"; };
+		CD333EFB1ED50699004D9C5D /* NoErrorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoErrorTests.swift; sourceTree = "<group>"; };
+		CD333EFF1ED5074F004D9C5D /* AnyErrorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyErrorTests.swift; sourceTree = "<group>"; };
 		D03579A31B2B788F005D26AE /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D45480571A9572F5009D7229 /* Result.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D454805B1A9572F5009D7229 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -151,6 +169,8 @@
 		D45480591A9572F5009D7229 /* Result */ = {
 			isa = PBXGroup;
 			children = (
+				CD333EF61ED505D7004D9C5D /* AnyError.swift */,
+				CD333EF11ED50550004D9C5D /* NoError.swift */,
 				D454805C1A9572F5009D7229 /* Result.h */,
 				D45480961A957465009D7229 /* Result.swift */,
 				E93621451B35596200948F2A /* ResultProtocol.swift */,
@@ -170,6 +190,8 @@
 		D454806B1A9572F5009D7229 /* ResultTests */ = {
 			isa = PBXGroup;
 			children = (
+				CD333EFF1ED5074F004D9C5D /* AnyErrorTests.swift */,
+				CD333EFB1ED50699004D9C5D /* NoErrorTests.swift */,
 				D454806E1A9572F5009D7229 /* ResultTests.swift */,
 				D454806C1A9572F5009D7229 /* Supporting Files */,
 			);
@@ -467,8 +489,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD333EF41ED50550004D9C5D /* NoError.swift in Sources */,
 				57FCDE3E1BA280DC00130C48 /* ResultProtocol.swift in Sources */,
 				57FCDE3F1BA280DC00130C48 /* Result.swift in Sources */,
+				CD333EF91ED505D7004D9C5D /* AnyError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -477,6 +501,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				57FCDE4D1BA280E000130C48 /* ResultTests.swift in Sources */,
+				CD333F021ED5074F004D9C5D /* AnyErrorTests.swift in Sources */,
+				CD333EFE1ED50699004D9C5D /* NoErrorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -484,8 +510,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD333EF51ED50550004D9C5D /* NoError.swift in Sources */,
 				45AE89E61B3A6564007B99D7 /* ResultProtocol.swift in Sources */,
 				D035799B1B2B788F005D26AE /* Result.swift in Sources */,
+				CD333EFA1ED505D7004D9C5D /* AnyError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -493,8 +521,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD333EF21ED50550004D9C5D /* NoError.swift in Sources */,
 				E93621461B35596200948F2A /* ResultProtocol.swift in Sources */,
 				D45480971A957465009D7229 /* Result.swift in Sources */,
+				CD333EF71ED505D7004D9C5D /* AnyError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -503,6 +533,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D454806F1A9572F5009D7229 /* ResultTests.swift in Sources */,
+				CD333F001ED5074F004D9C5D /* AnyErrorTests.swift in Sources */,
+				CD333EFC1ED50699004D9C5D /* NoErrorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -510,8 +542,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD333EF31ED50550004D9C5D /* NoError.swift in Sources */,
 				E93621471B35596200948F2A /* ResultProtocol.swift in Sources */,
 				D45480981A957465009D7229 /* Result.swift in Sources */,
+				CD333EF81ED505D7004D9C5D /* AnyError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -520,6 +554,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D45480991A9574B8009D7229 /* ResultTests.swift in Sources */,
+				CD333F011ED5074F004D9C5D /* AnyErrorTests.swift in Sources */,
+				CD333EFD1ED50699004D9C5D /* NoErrorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
