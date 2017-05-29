@@ -1,7 +1,7 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
 /// An enum representing either a failure with an explanatory error, or a success with a result value.
-public enum Result<T, Error: Swift.Error>: ResultProtocol, CustomStringConvertible, CustomDebugStringConvertible {
+public enum Result<T, Error: Swift.Error>: CustomStringConvertible, CustomDebugStringConvertible {
 	case success(T)
 	case failure(Error)
 
