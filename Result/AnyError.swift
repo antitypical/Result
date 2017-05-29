@@ -15,7 +15,7 @@ public struct AnyError: Swift.Error {
 	}
 }
 
-extension AnyError: ErrorProtocolConvertible {
+extension AnyError: ErrorConvertible {
 	public static func error(from error: Error) -> AnyError {
 		return AnyError(error)
 	}
