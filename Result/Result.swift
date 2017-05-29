@@ -24,11 +24,18 @@ public enum Result<T, Error: Swift.Error>: ResultProtocol, CustomStringConvertib
 
 	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws.
 	public init(_ f: @autoclosure () throws -> T) {
-		self.init(attempt: f)
+		self.init(_attempt: f)
 	}
 
-	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws.
+	@available(*, deprecated, renamed:"init(_:)")
 	public init(attempt f: () throws -> T) {
+		self.init(_attempt: f)
+	}
+
+	// The implementation of all initializers accepting a throwing closure. The distinct
+	// name was made to provide all initializers an unambiguous access, which would
+	// otherwise be ambiguous due to overloading.
+	fileprivate init(_attempt f: () throws -> T) {
 		do {
 			self = .success(try f())
 		} catch var error {
@@ -109,18 +116,25 @@ public enum Result<T, Error: Swift.Error>: ResultProtocol, CustomStringConvertib
 	}
 }
 
-// MARK: - Derive result from failable closure
+extension Result where Error == AnyError {
+	// MARK: - Derive result from failable closure
+	public init(_ f: () throws -> T) {
+		self.init(_attempt: f)
+	}
 
-public func materialize<T>(_ f: () throws -> T) -> Result<T, AnyError> {
-	return materialize(try f())
+	public init(_ f: @autoclosure () throws -> T) {
+		self.init(_attempt: f)
+	}
 }
 
+@available(*, deprecated, renamed: "Result.init(attempt:)")
+public func materialize<T>(_ f: () throws -> T) -> Result<T, AnyError> {
+	return Result(_attempt: f)
+}
+
+@available(*, deprecated, renamed: "Result.init(_:)")
 public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, AnyError> {
-	do {
-		return .success(try f())
-	} catch {
-		return .failure(AnyError(error))
-	}
+	return Result(_attempt: f)
 }
 
 // MARK: - Cocoa API conveniences

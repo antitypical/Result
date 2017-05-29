@@ -100,14 +100,14 @@ final class ResultTests: XCTestCase {
 	func testTryCatchWithFunctionProducesSuccesses() {
 		let function = { try tryIsSuccess("success") }
 
-		let result: Result<String, AnyError> = Result(attempt: function)
+		let result: Result<String, AnyError> = Result(function)
 		XCTAssert(result == success)
 	}
 
 	func testTryCatchWithFunctionCatchProducesFailures() {
 		let function = { try tryIsSuccess(nil) }
 
-		let result: Result<String, AnyError> = Result(attempt: function)
+		let result: Result<String, AnyError> = Result(function)
 		XCTAssert(result.error == error)
 	}
 
@@ -120,19 +120,24 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testMaterializeProducesSuccesses() {
-		let result1: Result<String, AnyError> = materialize(try tryIsSuccess("success"))
+		let result1: Result<String, AnyError> = Result(try tryIsSuccess("success"))
 		XCTAssert(result1 == success)
 
-		let result2: Result<String, AnyError> = materialize { try tryIsSuccess("success") }
+		let result2: Result<String, AnyError> = Result { try tryIsSuccess("success") }
 		XCTAssert(result2 == success)
 	}
 
 	func testMaterializeProducesFailures() {
-		let result1: Result<String, AnyError> = materialize(try tryIsSuccess(nil))
+		let result1: Result<String, AnyError> = Result(try tryIsSuccess(nil))
 		XCTAssert(result1.error == error)
 
-		let result2: Result<String, AnyError> = materialize { try tryIsSuccess(nil) }
+		let result2: Result<String, AnyError> = Result { try tryIsSuccess(nil) }
 		XCTAssert(result2.error == error)
+	}
+
+	func testMaterializeInferrence() {
+		let result = Result { try tryIsSuccess(nil) }
+		XCTAssert((type(of: result) as Any.Type) is Result<() throws -> String, AnyError>.Type)
 	}
 
 	// MARK: Recover
@@ -214,7 +219,6 @@ final class ResultTests: XCTestCase {
 		XCTAssert(result == failure)
 	}
 }
-
 
 // MARK: - Fixtures
 
