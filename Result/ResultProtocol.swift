@@ -98,11 +98,11 @@ public extension ResultProtocol {
 }
 
 /// Protocol used to constrain `tryMap` to `Result`s with compatible `Error`s.
-public protocol ErrorProtocolConvertible: Swift.Error {
+public protocol ErrorConvertible: Swift.Error {
 	static func error(from error: Swift.Error) -> Self
 }
 
-public extension ResultProtocol where Error: ErrorProtocolConvertible {
+public extension ResultProtocol where Error: ErrorConvertible {
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or wrapping thrown errors.
 	public func tryMap<U>(_ transform: (Value) throws -> U) -> Result<U, Error> {
@@ -151,3 +151,6 @@ extension ResultProtocol {
 }
 
 // MARK: - migration support
+
+@available(*, unavailable, renamed: "ErrorConvertible")
+public protocol ErrorProtocolConvertible: ErrorConvertible {}
