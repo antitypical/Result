@@ -1,14 +1,14 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
 /// An enum representing either a failure with an explanatory error, or a success with a result value.
-public enum Result<T, Error: Swift.Error>: ResultProtocol, CustomStringConvertible, CustomDebugStringConvertible {
-	case success(T)
+public enum Result<Value, Error: Swift.Error>: ResultProtocol, CustomStringConvertible, CustomDebugStringConvertible {
+	case success(Value)
 	case failure(Error)
 
 	// MARK: Constructors
 
 	/// Constructs a success wrapping a `value`.
-	public init(value: T) {
+	public init(value: Value) {
 		self = .success(value)
 	}
 
@@ -18,17 +18,17 @@ public enum Result<T, Error: Swift.Error>: ResultProtocol, CustomStringConvertib
 	}
 
 	/// Constructs a result from an `Optional`, failing with `Error` if `nil`.
-	public init(_ value: T?, failWith: @autoclosure () -> Error) {
+	public init(_ value: Value?, failWith: @autoclosure () -> Error) {
 		self = value.map(Result.success) ?? .failure(failWith())
 	}
 
 	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws.
-	public init(_ f: @autoclosure () throws -> T) {
+	public init(_ f: @autoclosure () throws -> Value) {
 		self.init(attempt: f)
 	}
 
 	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws.
-	public init(attempt f: () throws -> T) {
+	public init(attempt f: () throws -> Value) {
 		do {
 			self = .success(try f())
 		} catch var error {
@@ -42,7 +42,7 @@ public enum Result<T, Error: Swift.Error>: ResultProtocol, CustomStringConvertib
 	// MARK: Deconstruction
 
 	/// Returns the value from `success` Results or `throw`s the error.
-	public func dematerialize() throws -> T {
+	public func dematerialize() throws -> Value {
 		switch self {
 		case let .success(value):
 			return value
@@ -54,7 +54,7 @@ public enum Result<T, Error: Swift.Error>: ResultProtocol, CustomStringConvertib
 	/// Case analysis for Result.
 	///
 	/// Returns the value produced by applying `ifFailure` to `failure` Results, or `ifSuccess` to `success` Results.
-	public func analysis<Result>(ifSuccess: (T) -> Result, ifFailure: (Error) -> Result) -> Result {
+	public func analysis<Result>(ifSuccess: (Value) -> Result, ifFailure: (Error) -> Result) -> Result {
 		switch self {
 		case let .success(value):
 			return ifSuccess(value)
@@ -106,6 +106,11 @@ public enum Result<T, Error: Swift.Error>: ResultProtocol, CustomStringConvertib
 
 	public var debugDescription: String {
 		return description
+	}
+
+	// MARK: ResultProtocol
+	public var result: Result<Value, Error> {
+		return self
 	}
 }
 

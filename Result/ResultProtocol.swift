@@ -1,34 +1,14 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
-/// A type that can represent either failure with an error or success with a result value.
+/// A protocol that can be used to constrain associated types as `Result`.
 public protocol ResultProtocol {
 	associatedtype Value
 	associatedtype Error: Swift.Error
-	
-	/// Constructs a successful result wrapping a `value`.
-	init(value: Value)
 
-	/// Constructs a failed result wrapping an `error`.
-	init(error: Error)
-	
-	/// Case analysis for ResultProtocol.
-	///
-	/// Returns the value produced by appliying `ifFailure` to the error if self represents a failure, or `ifSuccess` to the result value if self represents a success.
-	func analysis<U>(ifSuccess: (Value) -> U, ifFailure: (Error) -> U) -> U
-
-	/// Returns the value if self represents a success, `nil` otherwise.
-	///
-	/// A default implementation is provided by a protocol extension. Conforming types may specialize it.
-	var value: Value? { get }
-
-	/// Returns the error if self represents a failure, `nil` otherwise.
-	///
-	/// A default implementation is provided by a protocol extension. Conforming types may specialize it.
-	var error: Error? { get }
+	var result: Result<Value, Error> { get }
 }
 
-public extension ResultProtocol {
-	
+public extension Result {
 	/// Returns the value if self represents a success, `nil` otherwise.
 	public var value: Value? {
 		return analysis(ifSuccess: { $0 }, ifFailure: { _ in nil })
@@ -53,9 +33,7 @@ public extension ResultProtocol {
 
 	/// Returns a Result with a tuple of the receiver and `other` values if both
 	/// are `Success`es, or re-wrapping the error of the earlier `Failure`.
-	public func fanout<R: ResultProtocol>(_ other: @autoclosure () -> R) -> Result<(Value, R.Value), Error>
-		where Error == R.Error
-	{
+	public func fanout<U>(_ other: @autoclosure () -> Result<U, Error>) -> Result<(Value, U), Error> {
 		return self.flatMap { left in other().map { right in (left, right) } }
 	}
 
@@ -80,7 +58,7 @@ public extension ResultProtocol {
 	}
 }
 
-public extension ResultProtocol {
+public extension Result {
 
 	// MARK: Higher-order functions
 
@@ -90,7 +68,7 @@ public extension ResultProtocol {
 	}
 
 	/// Returns this result if it is a .Success, or the given result otherwise. Equivalent with `??`
-	public func recover(with result: @autoclosure () -> Self) -> Self {
+	public func recover(with result: @autoclosure () -> Result<Value, Error>) -> Result<Value, Error> {
 		return analysis(
 			ifSuccess: { _ in self },
 			ifFailure: { _ in result() })
@@ -102,7 +80,7 @@ public protocol ErrorConvertible: Swift.Error {
 	static func error(from error: Swift.Error) -> Self
 }
 
-public extension ResultProtocol where Error: ErrorConvertible {
+public extension Result where Error: ErrorConvertible {
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or wrapping thrown errors.
 	public func tryMap<U>(_ transform: (Value) throws -> U) -> Result<U, Error> {
@@ -121,9 +99,9 @@ public extension ResultProtocol where Error: ErrorConvertible {
 
 // MARK: - Operators
 
-extension ResultProtocol where Value: Equatable, Error: Equatable {
+extension Result where Value: Equatable, Error: Equatable {
 	/// Returns `true` if `left` and `right` are both `Success`es and their values are equal, or if `left` and `right` are both `Failure`s and their errors are equal.
-	public static func ==(left: Self, right: Self) -> Bool {
+	public static func ==(left: Result<Value, Error>, right: Result<Value, Error>) -> Bool {
 		if let left = left.value, let right = right.value {
 			return left == right
 		} else if let left = left.error, let right = right.error {
@@ -133,19 +111,19 @@ extension ResultProtocol where Value: Equatable, Error: Equatable {
 	}
 
 	/// Returns `true` if `left` and `right` represent different cases, or if they represent the same case but different values.
-	public static func !=(left: Self, right: Self) -> Bool {
+	public static func !=(left: Result<Value, Error>, right: Result<Value, Error>) -> Bool {
 		return !(left == right)
 	}
 }
 
-extension ResultProtocol {
+extension Result {
 	/// Returns the value of `left` if it is a `Success`, or `right` otherwise. Short-circuits.
-	public static func ??(left: Self, right: @autoclosure () -> Value) -> Value {
+	public static func ??(left: Result<Value, Error>, right: @autoclosure () -> Value) -> Value {
 		return left.recover(right())
 	}
 
 	/// Returns `left` if it is a `Success`es, or `right` otherwise. Short-circuits.
-	public static func ??(left: Self, right: @autoclosure () -> Self) -> Self {
+	public static func ??(left: Result<Value, Error>, right: @autoclosure () -> Result<Value, Error>) -> Result<Value, Error> {
 		return left.recover(with: right())
 	}
 }
