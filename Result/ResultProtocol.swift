@@ -1,6 +1,6 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
-// A protocol that can be used to constrain associated types as `Result`.
+/// A protocol that can be used to constrain associated types as `Result`.
 public protocol ResultProtocol {
 	associatedtype Value
 	associatedtype Error: Swift.Error
