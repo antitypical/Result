@@ -135,6 +135,11 @@ final class ResultTests: XCTestCase {
 		XCTAssert(result2.error == error)
 	}
 
+	func testMaterializeInferrence() {
+		let result = Result(attempt: { try tryIsSuccess(nil) })
+		XCTAssert((type(of: result) as Any.Type) is Result<String, AnyError>.Type)
+	}
+
 	// MARK: Recover
 
 	func testRecoverProducesLeftForLeftSuccess() {
