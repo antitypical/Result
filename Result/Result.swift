@@ -114,18 +114,30 @@ public enum Result<Value, Error: Swift.Error>: ResultProtocol, CustomStringConve
 	}
 }
 
+extension Result where Error == AnyError {
+	/// Constructs a result from an expression that uses `throw`, failing with `AnyError` if throws.
+	public init(_ f: @autoclosure () throws -> Value) {
+		self.init(attempt: f)
+	}
+
+	/// Constructs a result from a closure that uses `throw`, failing with `AnyError` if throws.
+	public init(attempt f: () throws -> Value) {
+		do {
+			self = .success(try f())
+		} catch {
+			self = .failure(AnyError(error))
+		}
+	}
+}
+
 // MARK: - Derive result from failable closure
 
 public func materialize<T>(_ f: () throws -> T) -> Result<T, AnyError> {
-	return materialize(try f())
+	return Result(attempt: f)
 }
 
 public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, AnyError> {
-	do {
-		return .success(try f())
-	} catch {
-		return .failure(AnyError(error))
-	}
+	return Result(f)
 }
 
 // MARK: - Cocoa API conveniences
