@@ -120,18 +120,18 @@ final class ResultTests: XCTestCase {
 	}
 
 	func testMaterializeProducesSuccesses() {
-		let result1: Result<String, AnyError> = materialize(try tryIsSuccess("success"))
+		let result1: Result<String, AnyError> = Result(try tryIsSuccess("success"))
 		XCTAssert(result1 == success)
 
-		let result2: Result<String, AnyError> = materialize { try tryIsSuccess("success") }
+		let result2: Result<String, AnyError> = Result(attempt: { try tryIsSuccess("success") })
 		XCTAssert(result2 == success)
 	}
 
 	func testMaterializeProducesFailures() {
-		let result1: Result<String, AnyError> = materialize(try tryIsSuccess(nil))
+		let result1: Result<String, AnyError> = Result(try tryIsSuccess(nil))
 		XCTAssert(result1.error == error)
 
-		let result2: Result<String, AnyError> = materialize { try tryIsSuccess(nil) }
+		let result2: Result<String, AnyError> = Result(attempt: { try tryIsSuccess(nil) })
 		XCTAssert(result2.error == error)
 	}
 
