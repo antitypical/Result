@@ -132,10 +132,12 @@ extension Result where Error == AnyError {
 
 // MARK: - Derive result from failable closure
 
+@available(*, deprecated, renamed: "Result.init(attempt:)")
 public func materialize<T>(_ f: () throws -> T) -> Result<T, AnyError> {
 	return Result(attempt: f)
 }
 
+@available(*, deprecated, renamed: "Result.init(_:)")
 public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, AnyError> {
 	return Result(f)
 }
