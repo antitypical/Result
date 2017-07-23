@@ -5,6 +5,9 @@ public protocol ResultProtocol {
 	associatedtype Value
 	associatedtype Error: Swift.Error
 
+	init(value: Value)
+	init(error: Error)
+	
 	var result: Result<Value, Error> { get }
 }
 
