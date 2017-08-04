@@ -78,7 +78,7 @@ let idResult = intForKey(json, key:"id").map { id in String(id) }
 
 Here, the final result is either the id as a `String`, or carries over the `failure` from the previous result.
 
-`flatMap` is similar to `map` in that in transforms the `Result` into another `Result`. However, the function passed into `flatMap` must return a `Result`.
+`flatMap` is similar to `map` in that it transforms the `Result` into another `Result`. However, the function passed into `flatMap` must return a `Result`.
 
 An in depth discussion of `map` and `flatMap` is beyond the scope of this documentation. If you would like a deeper understanding, read about functors and monads. This article is a good place to [start](http://www.javiersoto.me/post/106875422394).
 
