@@ -58,7 +58,7 @@ matrix:
         - swift test
       env:
         - JOB=Linux
-        - SWIFT_VERSION=4.0-DEVELOPMENT-SNAPSHOT-2017-06-25-a
+        - SWIFT_VERSION=4.0-DEVELOPMENT-SNAPSHOT-2017-08-04-a
       sudo: required
       dist: trusty
       language: generic
