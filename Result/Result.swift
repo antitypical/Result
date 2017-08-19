@@ -96,9 +96,10 @@ public enum Result<Value, Error: Swift.Error>: ResultProtocol, CustomStringConve
 	// MARK: CustomStringConvertible
 
 	public var description: String {
-		return analysis(
-			ifSuccess: { ".success(\($0))" },
-			ifFailure: { ".failure(\($0))" })
+		switch self {
+		case let .success(value): return ".success(\(value))"
+		case let .failure(error): return ".failure(\(error))"
+		}
 	}
 
 
