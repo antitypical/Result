@@ -14,12 +14,18 @@ public protocol ResultProtocol {
 public extension Result {
 	/// Returns the value if self represents a success, `nil` otherwise.
 	public var value: Value? {
-		return analysis(ifSuccess: { $0 }, ifFailure: { _ in nil })
+		switch self {
+		case let .success(value): return value
+		case .failure: return nil
+		}
 	}
 	
 	/// Returns the error if self represents a failure, `nil` otherwise.
 	public var error: Error? {
-		return analysis(ifSuccess: { _ in nil }, ifFailure: { $0 })
+		switch self {
+		case .success: return nil
+		case let .failure(error): return error
+		}
 	}
 
 	/// Returns a new Result by mapping `Success`es’ values using `transform`, or re-wrapping `Failure`s’ errors.
@@ -29,9 +35,10 @@ public extension Result {
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or re-wrapping `Failure`’s errors.
 	public func flatMap<U>(_ transform: (Value) -> Result<U, Error>) -> Result<U, Error> {
-		return analysis(
-			ifSuccess: transform,
-			ifFailure: Result<U, Error>.failure)
+		switch self {
+		case let .success(value): return transform(value)
+		case let .failure(error): return .failure(error)
+		}
 	}
 
 	/// Returns a Result with a tuple of the receiver and `other` values if both
@@ -47,17 +54,18 @@ public extension Result {
 
 	/// Returns the result of applying `transform` to `Failure`’s errors, or re-wrapping `Success`es’ values.
 	public func flatMapError<Error2>(_ transform: (Error) -> Result<Value, Error2>) -> Result<Value, Error2> {
-		return analysis(
-			ifSuccess: Result<Value, Error2>.success,
-			ifFailure: transform)
+		switch self {
+		case let .success(value): return .success(value)
+		case let .failure(error): return transform(error)
+		}
 	}
 
 	/// Returns a new Result by mapping `Success`es’ values using `success`, and by mapping `Failure`'s values using `failure`.
 	public func bimap<U, Error2>(success: (Value) -> U, failure: (Error) -> Error2) -> Result<U, Error2> {
-		return analysis(
-			ifSuccess: { .success(success($0)) },
-			ifFailure: { .failure(failure($0)) }
-		)
+		switch self {
+		case let .success(value): return .success(success(value))
+		case let .failure(error): return .failure(failure(error))
+		}
 	}
 }
 
@@ -72,9 +80,10 @@ public extension Result {
 
 	/// Returns this result if it is a .Success, or the given result otherwise. Equivalent with `??`
 	public func recover(with result: @autoclosure () -> Result<Value, Error>) -> Result<Value, Error> {
-		return analysis(
-			ifSuccess: { _ in self },
-			ifFailure: { _ in result() })
+		switch self {
+		case .success: return self
+		case .failure: return result()
+		}
 	}
 }
 
