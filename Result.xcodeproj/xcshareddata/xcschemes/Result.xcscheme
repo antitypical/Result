@@ -14,9 +14,23 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "57FCDE3C1BA280DC00130C48"
+               BlueprintIdentifier = "D45480561A9572F5009D7229"
                BuildableName = "Result.framework"
-               BlueprintName = "Result-tvOS"
+               BlueprintName = "Result"
+               ReferencedContainer = "container:Result.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "D45480661A9572F5009D7229"
+               BuildableName = "ResultTests.xctest"
+               BlueprintName = "ResultTests"
                ReferencedContainer = "container:Result.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -33,9 +47,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "57FCDE491BA280E000130C48"
-               BuildableName = "Result-tvOSTests.xctest"
-               BlueprintName = "Result-tvOSTests"
+               BlueprintIdentifier = "D45480661A9572F5009D7229"
+               BuildableName = "ResultTests.xctest"
+               BlueprintName = "ResultTests"
                ReferencedContainer = "container:Result.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -43,9 +57,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "57FCDE3C1BA280DC00130C48"
+            BlueprintIdentifier = "D45480561A9572F5009D7229"
             BuildableName = "Result.framework"
-            BlueprintName = "Result-tvOS"
+            BlueprintName = "Result"
             ReferencedContainer = "container:Result.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -66,9 +80,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "57FCDE3C1BA280DC00130C48"
+            BlueprintIdentifier = "D45480561A9572F5009D7229"
             BuildableName = "Result.framework"
-            BlueprintName = "Result-tvOS"
+            BlueprintName = "Result"
             ReferencedContainer = "container:Result.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -84,9 +98,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "57FCDE3C1BA280DC00130C48"
+            BlueprintIdentifier = "D45480561A9572F5009D7229"
             BuildableName = "Result.framework"
-            BlueprintName = "Result-tvOS"
+            BlueprintName = "Result"
             ReferencedContainer = "container:Result.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

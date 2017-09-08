@@ -1,0 +1,53 @@
+PRODUCT_NAME = $(TARGET_NAME)
+SUPPORTED_PLATFORMS = macosx iphoneos iphonesimulator appletvos appletvsimulator watchos watchsimulator
+FRAMEWORK_SEARCH_PATHS = $(inherited) '$(PLATFORM_DIR)/Developer/Library/Frameworks'
+DYLIB_INSTALL_NAME_BASE = @rpath
+OTHER_SWIFT_FLAGS = -DXcode
+
+// macOS:
+
+COMBINE_HIDPI_IMAGES[sdk=macosx*] = YES
+ENABLE_BITCODE[sdk=macosx*] = NO
+FRAMEWORK_VERSION[sdk=macosx*] = A
+LD_RUNPATH_SEARCH_PATHS[sdk=macosx*] = $(inherited) @executable_path/../Frameworks @loader_path/../Frameworks
+MACOSX_DEPLOYMENT_TARGET = 10.9
+SDKROOT[sdk=macosx*] = macosx
+VALID_ARCHS[sdk=macosx*] = i386 x86_64
+VALID_ARCHS[sdk=macosx*] = x86_64
+
+// iOS:
+
+ENABLE_BITCODE[sdk=iphone*] = YES
+ENABLE_BITCODE[sdk=iphonesimulator*] = YES
+CODE_SIGN_IDENTITY[sdk=iphoneos*] = iPhone Developer
+IPHONEOS_DEPLOYMENT_TARGET = 8.0
+LD_RUNPATH_SEARCH_PATHS[sdk=iphoneos*] = $(inherited) @executable_path/Frameworks @loader_path/Frameworks
+LD_RUNPATH_SEARCH_PATHS[sdk=iphonesimulator*] = $(inherited) @executable_path/Frameworks @loader_path/Frameworks
+SDKROOT[sdk=iphone*] = iphoneos
+TARGETED_DEVICE_FAMILY[sdk=iphoneos*] = 1,2
+VALID_ARCHS[sdk=iphoneos*] = arm64 armv7 armv7s
+VALID_ARCHS[sdk=iphonesimulator*] = i386 x86_64
+
+// watchOS:
+
+ENABLE_BITCODE[sdk=watchos*] = YES
+ENABLE_BITCODE[sdk=watchsimulator*] = YES
+LD_RUNPATH_SEARCH_PATHS[sdk=watchos*] = $(inherited) @executable_path/Frameworks @loader_path/Frameworks
+LD_RUNPATH_SEARCH_PATHS[sdk=watchsimulator*] = $(inherited) @executable_path/Frameworks @loader_path/Frameworks
+SDKROOT[sdk=watch*] = watchos
+TARGETED_DEVICE_FAMILY[sdk=watch*] = 4
+VALID_ARCHS[sdk=watchos*] = armv7k
+VALID_ARCHS[sdk=watchsimulator*] = i386
+WATCHOS_DEPLOYMENT_TARGET = 2.0
+
+// tvOS:
+
+ENABLE_BITCODE[sdk=appletvos*] = YES
+ENABLE_BITCODE[sdk=appletvsimulator*] = YES
+LD_RUNPATH_SEARCH_PATHS[sdk=appletvos*] = $(inherited) @executable_path/Frameworks @loader_path/Frameworks
+LD_RUNPATH_SEARCH_PATHS[sdk=appletvsimulator*] = $(inherited) @executable_path/Frameworks @loader_path/Frameworks
+SDKROOT[sdk=appletv*] = appletvos
+TARGETED_DEVICE_FAMILY[sdk=appletvos*] = 3
+TVOS_DEPLOYMENT_TARGET = 9.0
+VALID_ARCHS[sdk=appletv*] = arm64
+VALID_ARCHS[sdk=appletvsimulator*] = x86_64
