@@ -2,11 +2,11 @@
 
 final class ResultTests: XCTestCase {
 	func testMapTransformsSuccesses() {
-		XCTAssertEqual(success.map { $0.characters.count } ?? 0, 7)
+		XCTAssertEqual(success.map { $0.count } ?? 0, 7)
 	}
 
 	func testMapRewrapsFailures() {
-		XCTAssertEqual(failure.map { $0.characters.count } ?? 0, 0)
+		XCTAssertEqual(failure.map { $0.count } ?? 0, 0)
 	}
 
 	func testInitOptionalSuccess() {
@@ -37,7 +37,7 @@ final class ResultTests: XCTestCase {
 
 	func testBimapTransformsSuccesses() {
 		XCTAssertEqual(success.bimap(
-			success: { $0.characters.count },
+			success: { $0.count },
 			failure: { $0 }
 		) ?? 0, 7)
 	}

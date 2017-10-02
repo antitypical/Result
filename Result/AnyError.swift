@@ -29,13 +29,6 @@ extension AnyError: CustomStringConvertible {
 
 extension AnyError: LocalizedError {
 	public var errorDescription: String? {
-		#if !(swift(>=4.0) || os(macOS) || os(iOS) || os(tvOS) || os(watchOS))
-			// This workaround below is not needed for Swift 4.0 thanks to
-			// https://github.com/apple/swift-corelibs-foundation/pull/967.
-			if let nsError = error as? NSError {
-				return nsError.localizedDescription
-			}
-		#endif
 		return error.localizedDescription
 	}
 
