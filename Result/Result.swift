@@ -143,34 +143,6 @@ public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, AnyErr
 	return Result(f)
 }
 
-// MARK: - Cocoa API conveniences
-
-#if !os(Linux)
-
-/// Constructs a `Result` with the result of calling `try` with an error pointer.
-///
-/// This is convenient for wrapping Cocoa API which returns an object or `nil` + an error, by reference. e.g.:
-///
-///     Result.try { NSData(contentsOfURL: URL, options: .dataReadingMapped, error: $0) }
-public func `try`<T>(_ function: String = #function, file: String = #file, line: Int = #line, `try`: (NSErrorPointer) -> T?) -> Result<T, NSError> {
-	var error: NSError?
-	return `try`(&error).map(Result.success) ?? .failure(error ?? Result<T, NSError>.error(function: function, file: file, line: line))
-}
-
-/// Constructs a `Result` with the result of calling `try` with an error pointer.
-///
-/// This is convenient for wrapping Cocoa API which returns a `Bool` + an error, by reference. e.g.:
-///
-///     Result.try { NSFileManager.defaultManager().removeItemAtURL(URL, error: $0) }
-public func `try`(_ function: String = #function, file: String = #file, line: Int = #line, `try`: (NSErrorPointer) -> Bool) -> Result<(), NSError> {
-	var error: NSError?
-	return `try`(&error) ?
-		.success(())
-	:	.failure(error ?? Result<(), NSError>.error(function: function, file: file, line: line))
-}
-
-#endif
-
 // MARK: - ErrorConvertible conformance
 	
 extension NSError: ErrorConvertible {
@@ -194,6 +166,30 @@ public func materialize<T>(_ f: () throws -> T) -> Result<T, NSError> {
 public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, NSError> {
 	fatalError()
 }
+
+#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+
+/// Constructs a `Result` with the result of calling `try` with an error pointer.
+///
+/// This is convenient for wrapping Cocoa API which returns an object or `nil` + an error, by reference. e.g.:
+///
+///     Result.try { NSData(contentsOfURL: URL, options: .dataReadingMapped, error: $0) }
+@available(*, unavailable, message: "This has been removed. Use `Result.init(attempt:)` instead. See https://github.com/antitypical/Result/issues/85 for the details.")
+public func `try`<T>(_ function: String = #function, file: String = #file, line: Int = #line, `try`: (NSErrorPointer) -> T?) -> Result<T, NSError> {
+	fatalError()
+}
+
+/// Constructs a `Result` with the result of calling `try` with an error pointer.
+///
+/// This is convenient for wrapping Cocoa API which returns a `Bool` + an error, by reference. e.g.:
+///
+///     Result.try { NSFileManager.defaultManager().removeItemAtURL(URL, error: $0) }
+@available(*, unavailable, message: "This has been removed. Use `Result.init(attempt:)` instead. See https://github.com/antitypical/Result/issues/85 for the details.")
+public func `try`(_ function: String = #function, file: String = #file, line: Int = #line, `try`: (NSErrorPointer) -> Bool) -> Result<(), NSError> {
+	fatalError()
+}
+
+#endif
 
 // MARK: -
 
