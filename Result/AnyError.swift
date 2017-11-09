@@ -1,8 +1,13 @@
 import Foundation
 
+/// Protocol used to define a wrapper for arbitrary `Error`s.
+public protocol ErrorInitializing: Swift.Error {
+	init(_ error: Swift.Error)
+}
+
 /// A type-erased error which wraps an arbitrary error instance. This should be
 /// useful for generic contexts.
-public struct AnyError: Swift.Error {
+public struct AnyError: Swift.Error : ErrorInitializing {
 	/// The underlying error.
 	public let error: Swift.Error
 
@@ -12,12 +17,6 @@ public struct AnyError: Swift.Error {
 		} else {
 			self.error = error
 		}
-	}
-}
-
-extension AnyError: ErrorConvertible {
-	public static func error(from error: Error) -> AnyError {
-		return AnyError(error)
 	}
 }
 
@@ -44,3 +43,13 @@ extension AnyError: LocalizedError {
 		return (error as? LocalizedError)?.recoverySuggestion
 	}
 }
+
+public protocol NSErrorInitializing : ErrorInitializing {}
+
+extension NSErrorInitializing {
+	public init(_ error: Swift.Error) {
+		self = error as! Self
+	}
+}
+
+extension NSError : NSErrorInitializing {}

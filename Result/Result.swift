@@ -22,23 +22,6 @@ public enum Result<Value, Error: Swift.Error>: ResultProtocol, CustomStringConve
 		self = value.map(Result.success) ?? .failure(failWith())
 	}
 
-	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws.
-	public init(_ f: @autoclosure () throws -> Value) {
-		self.init(attempt: f)
-	}
-
-	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws.
-	public init(attempt f: () throws -> Value) {
-		do {
-			self = .success(try f())
-		} catch var error {
-			if Error.self == AnyError.self {
-				error = AnyError(error)
-			}
-			self = .failure(error as! Error)
-		}
-	}
-
 	// MARK: Deconstruction
 
 	/// Returns the value from `success` Results or `throw`s the error.
@@ -115,18 +98,22 @@ public enum Result<Value, Error: Swift.Error>: ResultProtocol, CustomStringConve
 	}
 }
 
-extension Result where Error == AnyError {
-	/// Constructs a result from an expression that uses `throw`, failing with `AnyError` if throws.
+extension Result where Error: ErrorInitializing {
+	/// Constructs a result from an expression that uses `throw`, failing with `Error` if throws.
 	public init(_ f: @autoclosure () throws -> Value) {
 		self.init(attempt: f)
 	}
 
-	/// Constructs a result from a closure that uses `throw`, failing with `AnyError` if throws.
+	/// Constructs a result from a closure that uses `throw`, failing with `Error` if throws.
 	public init(attempt f: () throws -> Value) {
 		do {
 			self = .success(try f())
 		} catch {
-			self = .failure(AnyError(error))
+			if let wrappedError = error as? Error {
+				self = .failure(wrappedError)
+			} else {
+				self = .failure(Error.init(error))
+			}
 		}
 	}
 }
@@ -141,18 +128,6 @@ public func materialize<T>(_ f: () throws -> T) -> Result<T, AnyError> {
 @available(*, deprecated, renamed: "Result.init(_:)")
 public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, AnyError> {
 	return Result(f)
-}
-
-// MARK: - ErrorConvertible conformance
-	
-extension NSError: ErrorConvertible {
-	public static func error(from error: Swift.Error) -> Self {
-		func cast<T: NSError>(_ error: Swift.Error) -> T {
-			return error as! T
-		}
-
-		return cast(error)
-	}
 }
 
 // MARK: - migration support

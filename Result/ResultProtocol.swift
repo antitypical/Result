@@ -87,12 +87,7 @@ public extension Result {
 	}
 }
 
-/// Protocol used to constrain `tryMap` to `Result`s with compatible `Error`s.
-public protocol ErrorConvertible: Swift.Error {
-	static func error(from error: Swift.Error) -> Self
-}
-
-public extension Result where Error: ErrorConvertible {
+public extension Result where Error: ErrorInitializing {
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or wrapping thrown errors.
 	public func tryMap<U>(_ transform: (Value) throws -> U) -> Result<U, Error> {
@@ -101,9 +96,10 @@ public extension Result where Error: ErrorConvertible {
 				return .success(try transform(value))
 			}
 			catch {
-				let convertedError = Error.error(from: error)
-				// Revisit this in a future version of Swift. https://twitter.com/jckarter/status/672931114944696321
-				return .failure(convertedError)
+				guard let wrappedError = error as? Error else {
+					return .failure(Error.init(error))
+				}
+				return .failure(wrappedError)
 			}
 		}
 	}
@@ -144,3 +140,5 @@ extension Result {
 
 @available(*, unavailable, renamed: "ErrorConvertible")
 public protocol ErrorProtocolConvertible: ErrorConvertible {}
+@available(*, unavailable, message: "This has been removed. Use `ErrorInitializing` instead.")
+public protocol ErrorConvertible {}
