@@ -138,7 +138,7 @@ extension Result {
 
 // MARK: - migration support
 
-@available(*, unavailable, renamed: "ErrorConvertible")
-public protocol ErrorProtocolConvertible: ErrorConvertible {}
+@available(*, unavailable, message: "This has been removed. Use `ErrorInitializing` instead.")
+public protocol ErrorProtocolConvertible {}
 @available(*, unavailable, message: "This has been removed. Use `ErrorInitializing` instead.")
 public protocol ErrorConvertible {}
