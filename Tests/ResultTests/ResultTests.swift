@@ -117,6 +117,9 @@ final class ResultTests: XCTestCase {
 
 		let result: Result<String, AnyError> = Result(attempt: function)
 		XCTAssert(result.error == AnyError(nsError))
+		
+		let wrapperResult: Result<String, WrapperError> = Result(attempt: function)
+		XCTAssert(wrapperResult.error == WrapperError(nsError))
 	}
 
 	func testMaterializeProducesSuccesses() {
@@ -125,6 +128,7 @@ final class ResultTests: XCTestCase {
 
 		let result2: Result<String, AnyError> = Result(attempt: { try tryIsSuccess("success") })
 		XCTAssert(result2 == success)
+		
 	}
 
 	func testMaterializeProducesFailures() {
@@ -135,9 +139,41 @@ final class ResultTests: XCTestCase {
 		XCTAssert(result2.error == error)
 	}
 
+	func testMaterializeProducesSuccessesForErrorInitializing() {
+		let result1: Result<String, WrapperError> = Result(try tryIsSuccess("success"))
+		XCTAssert(result1 == wrapperSuccess)
+
+		let result2: Result<String, WrapperError> = Result(attempt: { try tryIsSuccess("success") })
+		XCTAssert(result2 == wrapperSuccess)
+	}
+
+	func testMaterializeProducesFailuresForErrorInitializing() {
+		let result1: Result<String, WrapperError> = Result(try tryIsSuccess(nil))
+		XCTAssert(result1.error == wrapperError)
+
+		let result2: Result<String, WrapperError> = Result(attempt: { try tryIsSuccess(nil) })
+		XCTAssert(result2.error == wrapperError)
+		
+	}
+
 	func testMaterializeInferrence() {
 		let result = Result(attempt: { try tryIsSuccess(nil) })
 		XCTAssert((type(of: result) as Any.Type) is Result<String, AnyError>.Type)
+		
+		let result2 = Result(1)
+		XCTAssert((type(of: result2) as Any.Type) is Result<Int, NoError>.Type)
+		
+	}
+	
+	func testParsingSuccess() {
+		let result = Result(attempt: { try tryParseJSON(jsonRaw) })
+		XCTAssert((type(of: result) as Any.Type) is Result<Any, AnyError>.Type)
+		XCTAssert(result.value != nil)
+	}
+	func testParsingFailure() {
+		let result = Result(attempt: { try tryParseJSON(jsonRawMalformed) })
+		XCTAssert((type(of: result) as Any.Type) is Result<Any, AnyError>.Type)
+		XCTAssert(result.error != nil)
 	}
 
 	// MARK: Recover
@@ -213,12 +249,43 @@ enum Error: Swift.Error, LocalizedError {
 	}
 }
 
+enum WrapperError: Swift.Error, LocalizedError, ErrorInitializing {
+	case c, d, other(Swift.Error)
+	
+	init(_ error: Swift.Error) {
+		self = (error as? WrapperError) ?? .other(error)
+	}
+
+	var errorDescription: String? {
+		return "localized description"
+	}
+
+	var failureReason: String? {
+		return "failure reason"
+	}
+
+	var helpAnchor: String? {
+		return "help anchor"
+	}
+
+	var recoverySuggestion: String? {
+		return "recovery suggestion"
+	}
+}
+
 let success = Result<String, AnyError>.success("success")
 let error = AnyError(Error.a)
 let error2 = AnyError(Error.b)
 let error3 = AnyError(NSError(domain: "Result", code: 42, userInfo: [NSLocalizedDescriptionKey: "localized description"]))
 let failure = Result<String, AnyError>.failure(error)
 let failure2 = Result<String, AnyError>.failure(error2)
+
+let wrapperSuccess = Result<String, WrapperError>.success("success")
+let wrapperError = WrapperError(Error.a)
+let wrapperError2 = WrapperError(Error.b)
+let wrapperError3 = WrapperError(NSError(domain: "Result", code: 42, userInfo: [NSLocalizedDescriptionKey: "localized description"]))
+let wrapperFailure = Result<String, WrapperError>.failure(wrapperError)
+let wrapperFailure2 = Result<String, WrapperError>.failure(wrapperError2)
 
 // MARK: - Helpers
 
@@ -229,12 +296,32 @@ extension AnyError: Equatable {
 	}
 }
 
+extension WrapperError: Equatable {
+	public static func ==(lhs: WrapperError, rhs: WrapperError) -> Bool {
+		switch (lhs, rhs) {
+			case (.c, .c), (.d, .d): return true
+			case (.other(let lError), .other(let rError)):
+				return lError._code == rError._code
+					&& lError._domain == rError._domain
+			default:
+				return false
+		}
+	}
+}
+
 func tryIsSuccess(_ text: String?) throws -> String {
 	guard let text = text, text == "success" else {
-		throw error
+		throw Error.a
 	}
 
 	return text
+}
+
+let jsonObject: Any = ["foo": "bar"]
+let jsonRaw = "{\"foo\": \"bar\"}"
+let jsonRawMalformed = "{\"foo\": \"bar\""
+func tryParseJSON(_ jsonString: String) throws -> Any {
+	return try JSONSerialization.jsonObject(with: jsonString.data(using: .utf8) ?? Data(), options: [])
 }
 
 extension NSError {
@@ -270,6 +357,10 @@ extension ResultTests {
 			("testTryCatchWithFunctionCatchProducesFailures", testTryCatchWithFunctionCatchProducesFailures),
 			("testMaterializeProducesSuccesses", testMaterializeProducesSuccesses),
 			("testMaterializeProducesFailures", testMaterializeProducesFailures),
+			("testMaterializeProducesSuccessesForErrorInitializing", testMaterializeProducesSuccessesForErrorInitializing),
+			("testMaterializeProducesFailuresForErrorInitializing", testMaterializeProducesFailuresForErrorInitializing),
+			("testParsingSuccess", testParsingSuccess),
+			("testParsingFailure", testParsingFailure),
 			("testRecoverProducesLeftForLeftSuccess", testRecoverProducesLeftForLeftSuccess),
 			("testRecoverProducesRightForLeftFailure", testRecoverProducesRightForLeftFailure),
 			("testRecoverWithProducesLeftForLeftSuccess", testRecoverWithProducesLeftForLeftSuccess),
