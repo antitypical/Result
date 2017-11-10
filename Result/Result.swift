@@ -118,6 +118,29 @@ extension Result where Error: ErrorInitializing {
 	}
 }
 
+extension Result where Error == AnyError {
+	/// Constructs a result from an expression that uses `throw`, failing with `AnyError` if throws.
+	public init(_ f: @autoclosure () throws -> Value) {
+		self.init(attempt: f)
+	}
+
+	/// Constructs a result from a closure that uses `throw`, failing with `AnyError` if throws.
+	public init(attempt f: () throws -> Value) {
+		do {
+			self = .success(try f())
+		} catch {
+			self = .failure(AnyError(error))
+		}
+	}
+}
+
+extension Result where Error == NoError {
+	/// Constructs a result from an expression that uses `throw` but should never fail.
+	public init(_ f: @autoclosure () -> Value) {
+		self = .success(f())
+	}
+}
+
 // MARK: - Derive result from failable closure
 
 @available(*, deprecated, renamed: "Result.init(attempt:)")
