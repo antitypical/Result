@@ -7,7 +7,7 @@ public protocol ErrorInitializing: Swift.Error {
 
 /// A type-erased error which wraps an arbitrary error instance. This should be
 /// useful for generic contexts.
-public struct AnyError: Swift.Error : ErrorInitializing {
+public struct AnyError: Swift.Error, ErrorInitializing {
 	/// The underlying error.
 	public let error: Swift.Error
 
