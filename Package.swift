@@ -1,11 +1,14 @@
+// swift-tools-version:4.0
 import PackageDescription
 
 let package = Package(
     name: "Result",
-    targets: [
-        Target(
-            name: "Result"
-        )
+    products: [
+        .library(name: "Result", targets: ["Result"]),
     ],
-    swiftLanguageVersions: [3, 4]
+    targets: [
+        .target(name: "Result", dependencies: [], path: "Result"),
+        .testTarget(name: "ResultTests", dependencies: ["Result"]),
+    ],
+    swiftLanguageVersions: [4]
 )
