@@ -135,6 +135,11 @@ extension Result where Error == AnyError {
 }
 
 extension Result where Error == NoError {
+	/// Constructs a success wrapping a `value`.
+	public init(value: Value) {
+		self = .success(value)
+	}
+	
 	/// Constructs a result from an expression that does not use `throw` and should never fail.
 	public init(_ f: @autoclosure () -> Value) {
 		self = .success(f())
