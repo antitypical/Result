@@ -140,5 +140,4 @@ extension Result {
 
 @available(*, unavailable, message: "This has been removed. Use `ErrorInitializing` instead.")
 public protocol ErrorProtocolConvertible {}
-@available(*, unavailable, message: "This has been removed. Use `ErrorInitializing` instead.")
-public protocol ErrorConvertible {}
+

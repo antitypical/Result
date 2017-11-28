@@ -249,11 +249,18 @@ enum Error: Swift.Error, LocalizedError {
 	}
 }
 
-enum WrapperError: Swift.Error, LocalizedError, ErrorInitializing {
+enum WrapperError: Swift.Error, LocalizedError, ErrorInitializing, ErrorConvertible {
 	case c, d, other(Swift.Error)
 	
 	init(_ error: Swift.Error) {
 		self = (error as? WrapperError) ?? .other(error)
+	}
+	
+	var error: Swift.Error {
+		switch self {
+			case .other(let error): return error
+			default: return self
+		}
 	}
 
 	var errorDescription: String? {

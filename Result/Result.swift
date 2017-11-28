@@ -30,6 +30,9 @@ public enum Result<Value, Error: Swift.Error>: ResultProtocol, CustomStringConve
 		case let .success(value):
 			return value
 		case let .failure(error):
+			if let wrapper = error as? ErrorConvertible {
+				throw wrapper.error
+			}
 			throw error
 		}
 	}
