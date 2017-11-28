@@ -8,13 +8,19 @@ public enum Result<Value, Error: Swift.Error>: ResultProtocol, CustomStringConve
 	// MARK: Constructors
 
 	/// Constructs a success wrapping a `value`.
-	public init(value: Value) {
+	public init(value: Value, errorType: Error.Type) {
 		self = .success(value)
+	}
+	public init(value: Value) {
+		self.init(value: value, errorType: Error.self)
 	}
 
 	/// Constructs a failure wrapping an `error`.
-	public init(error: Error) {
+	public init(error: Error, valueType: Value.Type) {
 		self = .failure(error)
+	}
+	public init(error: Error) {
+		self.init(error: error, valueType: Value.self)
 	}
 
 	/// Constructs a result from an `Optional`, failing with `Error` if `nil`.
