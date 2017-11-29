@@ -156,12 +156,30 @@ final class ResultTests: XCTestCase {
 		
 	}
 
-	func testMaterializeInferrence() {
-		let result = Result(attempt: { try tryIsSuccess(nil) })
-		XCTAssert((type(of: result) as Any.Type) is Result<String, AnyError>.Type)
+	func testInference() {
 		
-		let result2 = Result(1)
-		XCTAssert((type(of: result2) as Any.Type) is Result<Int, NoError>.Type)
+		let resultAny = Result(attempt: { try tryIsSuccess(nil) })
+		XCTAssert((type(of: resultAny) as Any.Type) is Result<String, AnyError>.Type)
+		
+		
+		let resultWrp: Result<String, WrapperError> = Result(attempt: { try tryIsSuccess(nil) })
+		XCTAssert((type(of: resultWrp) as Any.Type) is Result<String, WrapperError>.Type)
+		
+		let resultWrp2 = Result(attempt: { try tryIsSuccess(nil) }).mapError{ WrapperError($0.error) }
+		XCTAssert((type(of: resultWrp2) as Any.Type) is Result<String, WrapperError>.Type)
+		
+		let resultWrp3 = Result(value: successValue, errorType: WrapperError.self)
+		XCTAssert((type(of: resultWrp3) as Any.Type) is Result<String, WrapperError>.Type)
+		
+		let resultWrp4 = Result(error: WrapperError.c, valueType: String.self)
+		XCTAssert((type(of: resultWrp4) as Any.Type) is Result<String, WrapperError>.Type)
+		
+		
+		let resultNo = Result(successValue)
+		XCTAssert((type(of: resultNo) as Any.Type) is Result<String, NoError>.Type)
+		
+		let resultNo2 = Result(value: successValue)
+		XCTAssert((type(of: resultNo2) as Any.Type) is Result<String, NoError>.Type)
 		
 	}
 	
@@ -280,14 +298,15 @@ enum WrapperError: Swift.Error, LocalizedError, ErrorInitializing, ErrorConverti
 	}
 }
 
-let success = Result<String, AnyError>.success("success")
+let successValue = "success"
+let success = Result<String, AnyError>.success(successValue)
 let error = AnyError(Error.a)
 let error2 = AnyError(Error.b)
 let error3 = AnyError(NSError(domain: "Result", code: 42, userInfo: [NSLocalizedDescriptionKey: "localized description"]))
 let failure = Result<String, AnyError>.failure(error)
 let failure2 = Result<String, AnyError>.failure(error2)
 
-let wrapperSuccess = Result<String, WrapperError>.success("success")
+let wrapperSuccess = Result<String, WrapperError>.success(successValue)
 let wrapperError = WrapperError(Error.a)
 let wrapperError2 = WrapperError(Error.b)
 let wrapperError3 = WrapperError(NSError(domain: "Result", code: 42, userInfo: [NSLocalizedDescriptionKey: "localized description"]))
@@ -366,6 +385,7 @@ extension ResultTests {
 			("testMaterializeProducesFailures", testMaterializeProducesFailures),
 			("testMaterializeProducesSuccessesForErrorInitializing", testMaterializeProducesSuccessesForErrorInitializing),
 			("testMaterializeProducesFailuresForErrorInitializing", testMaterializeProducesFailuresForErrorInitializing),
+			("testInference", testInference),
 			("testParsingSuccess", testParsingSuccess),
 			("testParsingFailure", testParsingFailure),
 			("testRecoverProducesLeftForLeftSuccess", testRecoverProducesLeftForLeftSuccess),
