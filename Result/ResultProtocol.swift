@@ -59,6 +59,11 @@ public extension Result {
 		case let .failure(error): return transform(error)
 		}
 	}
+	
+	/// Returns the result of re-wrapping `Failure`’s errors in a different `Error` wrapper, or re-wrapping `Success`es’ values.
+	public func mapError<Error2: ErrorInitializing>(to errorType: Error2.Type = Error2.self) -> Result<Value, Error2> {
+		return mapError{ Error2(($0 as? ErrorConvertible)?.error ?? $0) }
+	}
 
 	/// Returns a new Result by mapping `Success`es’ values using `success`, and by mapping `Failure`'s values using `failure`.
 	public func bimap<U, Error2>(success: (Value) -> U, failure: (Error) -> Error2) -> Result<U, Error2> {

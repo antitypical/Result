@@ -165,13 +165,13 @@ final class ResultTests: XCTestCase {
 		let resultWrp: Result<String, WrapperError> = Result(attempt: { try tryIsSuccess(nil) })
 		XCTAssert((type(of: resultWrp) as Any.Type) is Result<String, WrapperError>.Type)
 		
-		let resultWrp2 = Result(attempt: { try tryIsSuccess(nil) }).mapError{ WrapperError($0.error) }
+		let resultWrp2 = resultAny.mapError{ WrapperError($0.error) }
 		XCTAssert((type(of: resultWrp2) as Any.Type) is Result<String, WrapperError>.Type)
 		
-		let resultWrp3 = Result(value: successValue, errorType: WrapperError.self)
+		let resultWrp3 = resultAny.mapError(to: WrapperError.self)
 		XCTAssert((type(of: resultWrp3) as Any.Type) is Result<String, WrapperError>.Type)
 		
-		let resultWrp4 = Result(error: WrapperError.c, valueType: String.self)
+		let resultWrp4: Result<String, WrapperError> = resultAny.mapError()
 		XCTAssert((type(of: resultWrp4) as Any.Type) is Result<String, WrapperError>.Type)
 		
 		
@@ -180,6 +180,16 @@ final class ResultTests: XCTestCase {
 		
 		let resultNo2 = Result(value: successValue)
 		XCTAssert((type(of: resultNo2) as Any.Type) is Result<String, NoError>.Type)
+		
+	}
+	
+	func testPartialInference() {
+		
+		let resultVal = Result(value: successValue, errorType: Error.self)
+		XCTAssert((type(of: resultVal) as Any.Type) is Result<String, Error>.Type)
+		
+		let resultErr = Result(error: WrapperError.c, valueType: String.self)
+		XCTAssert((type(of: resultErr) as Any.Type) is Result<String, WrapperError>.Type)
 		
 	}
 	
@@ -386,6 +396,7 @@ extension ResultTests {
 			("testMaterializeProducesSuccessesForErrorInitializing", testMaterializeProducesSuccessesForErrorInitializing),
 			("testMaterializeProducesFailuresForErrorInitializing", testMaterializeProducesFailuresForErrorInitializing),
 			("testInference", testInference),
+			("testPartialInference", testInference),
 			("testParsingSuccess", testParsingSuccess),
 			("testParsingFailure", testParsingFailure),
 			("testRecoverProducesLeftForLeftSuccess", testRecoverProducesLeftForLeftSuccess),
