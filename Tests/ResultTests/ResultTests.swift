@@ -271,7 +271,7 @@ enum WrapperError: Swift.Error, LocalizedError, ErrorInitializing, ErrorConverti
 	case c, d, other(Swift.Error)
 	
 	init(_ error: Swift.Error) {
-		self = (error as? WrapperError) ?? .other(error)
+		self = (error as? WrapperError) ?? .other((error as? ErrorConvertible)?.error ?? error)
 	}
 	
 	var error: Swift.Error {

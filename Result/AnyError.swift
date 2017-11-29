@@ -18,7 +18,7 @@ public struct AnyError: Swift.Error, ErrorInitializing, ErrorConvertible {
 		if let anyError = error as? AnyError {
 			self = anyError
 		} else {
-			self.error = error
+			self.error = (error as? ErrorConvertible)?.error ?? error
 		}
 	}
 }
