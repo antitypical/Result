@@ -44,3 +44,13 @@ extension AnyError: LocalizedError {
 		return (error as? LocalizedError)?.recoverySuggestion
 	}
 }
+
+/// `Swift.Error` extension.
+public extension Swift.Error {
+
+	/// Returns `AnyError` instance if `self` is `AnyError`; otherwise creates
+	/// `AnyError` instance with `self`.
+	public var anyError: AnyError {
+		return self as? AnyError ?? AnyError(self)
+	}
+}
