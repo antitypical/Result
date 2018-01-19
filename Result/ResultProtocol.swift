@@ -121,12 +121,18 @@ extension Result where Value: Equatable, Error: Equatable {
 		}
 		return false
 	}
-
-	/// Returns `true` if `left` and `right` represent different cases, or if they represent the same case but different values.
-	public static func !=(left: Result<Value, Error>, right: Result<Value, Error>) -> Bool {
-		return !(left == right)
-	}
 }
+
+#if swift(>=4.1)
+	extension Result: Equatable where Value: Equatable, Error: Equatable { }
+#else
+	extension Result where Value: Equatable, Error: Equatable {
+		/// Returns `true` if `left` and `right` represent different cases, or if they represent the
+		public static func !=(left: Result<Value, Error>, right: Result<Value, Error>) -> Bool {
+			return !(left == right)
+		}
+	}
+#endif
 
 extension Result {
 	/// Returns the value of `left` if it is a `Success`, or `right` otherwise. Short-circuits.
