@@ -117,6 +117,9 @@ final class ResultTests: XCTestCase {
 
 		let result: Result<String, AnyError> = Result(attempt: function)
 		XCTAssert(result.error == AnyError(nsError))
+		
+		let wrapperResult: Result<String, WrapperError> = Result(attempt: function)
+		XCTAssert(wrapperResult.error == WrapperError(nsError))
 	}
 
 	func testMaterializeProducesSuccesses() {
@@ -125,6 +128,7 @@ final class ResultTests: XCTestCase {
 
 		let result2: Result<String, AnyError> = Result(attempt: { try tryIsSuccess("success") })
 		XCTAssert(result2 == success)
+		
 	}
 
 	func testMaterializeProducesFailures() {
@@ -135,9 +139,69 @@ final class ResultTests: XCTestCase {
 		XCTAssert(result2.error == error)
 	}
 
-	func testMaterializeInferrence() {
-		let result = Result(attempt: { try tryIsSuccess(nil) })
-		XCTAssert((type(of: result) as Any.Type) is Result<String, AnyError>.Type)
+	func testMaterializeProducesSuccessesForErrorInitializing() {
+		let result1: Result<String, WrapperError> = Result(try tryIsSuccess("success"))
+		XCTAssert(result1 == wrapperSuccess)
+
+		let result2: Result<String, WrapperError> = Result(attempt: { try tryIsSuccess("success") })
+		XCTAssert(result2 == wrapperSuccess)
+	}
+
+	func testMaterializeProducesFailuresForErrorInitializing() {
+		let result1: Result<String, WrapperError> = Result(try tryIsSuccess(nil))
+		XCTAssert(result1.error == wrapperError)
+
+		let result2: Result<String, WrapperError> = Result(attempt: { try tryIsSuccess(nil) })
+		XCTAssert(result2.error == wrapperError)
+		
+	}
+
+	func testInference() {
+		
+		let resultAny = Result(attempt: { try tryIsSuccess(nil) })
+		XCTAssert((type(of: resultAny) as Any.Type) is Result<String, AnyError>.Type)
+		
+		
+		let resultWrp: Result<String, WrapperError> = Result(attempt: { try tryIsSuccess(nil) })
+		XCTAssert((type(of: resultWrp) as Any.Type) is Result<String, WrapperError>.Type)
+		
+		let resultWrp2 = resultAny.mapError{ WrapperError($0.error) }
+		XCTAssert((type(of: resultWrp2) as Any.Type) is Result<String, WrapperError>.Type)
+		
+		let resultWrp3 = resultAny.mapError(to: WrapperError.self)
+		XCTAssert((type(of: resultWrp3) as Any.Type) is Result<String, WrapperError>.Type)
+		
+		let resultWrp4: Result<String, WrapperError> = resultAny.mapError()
+		XCTAssert((type(of: resultWrp4) as Any.Type) is Result<String, WrapperError>.Type)
+		
+		
+		let resultNo = Result(successValue)
+		XCTAssert((type(of: resultNo) as Any.Type) is Result<String, NoError>.Type)
+		
+		let resultNo2 = Result(value: successValue)
+		XCTAssert((type(of: resultNo2) as Any.Type) is Result<String, NoError>.Type)
+		
+	}
+	
+	func testPartialInference() {
+		
+		let resultVal = Result(value: successValue, errorType: Error.self)
+		XCTAssert((type(of: resultVal) as Any.Type) is Result<String, Error>.Type)
+		
+		let resultErr = Result(error: WrapperError.c, valueType: String.self)
+		XCTAssert((type(of: resultErr) as Any.Type) is Result<String, WrapperError>.Type)
+		
+	}
+	
+	func testParsingSuccess() {
+		let result = Result(attempt: { try tryParseJSON(jsonRaw) })
+		XCTAssert((type(of: result) as Any.Type) is Result<Any, AnyError>.Type)
+		XCTAssert(result.value != nil)
+	}
+	func testParsingFailure() {
+		let result = Result(attempt: { try tryParseJSON(jsonRawMalformed) })
+		XCTAssert((type(of: result) as Any.Type) is Result<Any, AnyError>.Type)
+		XCTAssert(result.error != nil)
 	}
 
 	// MARK: Recover
@@ -213,12 +277,51 @@ enum Error: Swift.Error, LocalizedError {
 	}
 }
 
-let success = Result<String, AnyError>.success("success")
+enum WrapperError: Swift.Error, LocalizedError, ErrorInitializing, ErrorConvertible {
+	case c, d, other(Swift.Error)
+	
+	init(_ error: Swift.Error) {
+		self = (error as? WrapperError) ?? .other((error as? ErrorConvertible)?.error ?? error)
+	}
+	
+	var error: Swift.Error {
+		switch self {
+			case .other(let error): return error
+			default: return self
+		}
+	}
+
+	var errorDescription: String? {
+		return "localized description"
+	}
+
+	var failureReason: String? {
+		return "failure reason"
+	}
+
+	var helpAnchor: String? {
+		return "help anchor"
+	}
+
+	var recoverySuggestion: String? {
+		return "recovery suggestion"
+	}
+}
+
+let successValue = "success"
+let success = Result<String, AnyError>.success(successValue)
 let error = AnyError(Error.a)
 let error2 = AnyError(Error.b)
 let error3 = AnyError(NSError(domain: "Result", code: 42, userInfo: [NSLocalizedDescriptionKey: "localized description"]))
 let failure = Result<String, AnyError>.failure(error)
 let failure2 = Result<String, AnyError>.failure(error2)
+
+let wrapperSuccess = Result<String, WrapperError>.success(successValue)
+let wrapperError = WrapperError(Error.a)
+let wrapperError2 = WrapperError(Error.b)
+let wrapperError3 = WrapperError(NSError(domain: "Result", code: 42, userInfo: [NSLocalizedDescriptionKey: "localized description"]))
+let wrapperFailure = Result<String, WrapperError>.failure(wrapperError)
+let wrapperFailure2 = Result<String, WrapperError>.failure(wrapperError2)
 
 // MARK: - Helpers
 
@@ -229,12 +332,32 @@ extension AnyError: Equatable {
 	}
 }
 
+extension WrapperError: Equatable {
+	public static func ==(lhs: WrapperError, rhs: WrapperError) -> Bool {
+		switch (lhs, rhs) {
+			case (.c, .c), (.d, .d): return true
+			case (.other(let lError), .other(let rError)):
+				return lError._code == rError._code
+					&& lError._domain == rError._domain
+			default:
+				return false
+		}
+	}
+}
+
 func tryIsSuccess(_ text: String?) throws -> String {
 	guard let text = text, text == "success" else {
-		throw error
+		throw Error.a
 	}
 
 	return text
+}
+
+let jsonObject: Any = ["foo": "bar"]
+let jsonRaw = "{\"foo\": \"bar\"}"
+let jsonRawMalformed = "{\"foo\": \"bar\""
+func tryParseJSON(_ jsonString: String) throws -> Any {
+	return try JSONSerialization.jsonObject(with: jsonString.data(using: .utf8) ?? Data(), options: [])
 }
 
 extension NSError {
@@ -270,6 +393,12 @@ extension ResultTests {
 			("testTryCatchWithFunctionCatchProducesFailures", testTryCatchWithFunctionCatchProducesFailures),
 			("testMaterializeProducesSuccesses", testMaterializeProducesSuccesses),
 			("testMaterializeProducesFailures", testMaterializeProducesFailures),
+			("testMaterializeProducesSuccessesForErrorInitializing", testMaterializeProducesSuccessesForErrorInitializing),
+			("testMaterializeProducesFailuresForErrorInitializing", testMaterializeProducesFailuresForErrorInitializing),
+			("testInference", testInference),
+			("testPartialInference", testInference),
+			("testParsingSuccess", testParsingSuccess),
+			("testParsingFailure", testParsingFailure),
 			("testRecoverProducesLeftForLeftSuccess", testRecoverProducesLeftForLeftSuccess),
 			("testRecoverProducesRightForLeftFailure", testRecoverProducesRightForLeftFailure),
 			("testRecoverWithProducesLeftForLeftSuccess", testRecoverWithProducesLeftForLeftSuccess),

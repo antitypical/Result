@@ -8,35 +8,24 @@ public enum Result<Value, Error: Swift.Error>: ResultProtocol, CustomStringConve
 	// MARK: Constructors
 
 	/// Constructs a success wrapping a `value`.
-	public init(value: Value) {
+	public init(value: Value, errorType: Error.Type) {
 		self = .success(value)
+	}
+	public init(value: Value) {
+		self.init(value: value, errorType: Error.self)
 	}
 
 	/// Constructs a failure wrapping an `error`.
-	public init(error: Error) {
+	public init(error: Error, valueType: Value.Type) {
 		self = .failure(error)
+	}
+	public init(error: Error) {
+		self.init(error: error, valueType: Value.self)
 	}
 
 	/// Constructs a result from an `Optional`, failing with `Error` if `nil`.
 	public init(_ value: Value?, failWith: @autoclosure () -> Error) {
 		self = value.map(Result.success) ?? .failure(failWith())
-	}
-
-	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws.
-	public init(_ f: @autoclosure () throws -> Value) {
-		self.init(attempt: f)
-	}
-
-	/// Constructs a result from a function that uses `throw`, failing with `Error` if throws.
-	public init(attempt f: () throws -> Value) {
-		do {
-			self = .success(try f())
-		} catch var error {
-			if Error.self == AnyError.self {
-				error = AnyError(error)
-			}
-			self = .failure(error as! Error)
-		}
 	}
 
 	// MARK: Deconstruction
@@ -47,6 +36,9 @@ public enum Result<Value, Error: Swift.Error>: ResultProtocol, CustomStringConve
 		case let .success(value):
 			return value
 		case let .failure(error):
+			if let wrapper = error as? ErrorConvertible {
+				throw wrapper.error
+			}
 			throw error
 		}
 	}
@@ -115,6 +107,26 @@ public enum Result<Value, Error: Swift.Error>: ResultProtocol, CustomStringConve
 	}
 }
 
+extension Result where Error: ErrorInitializing {
+	/// Constructs a result from an expression that uses `throw`, failing with `Error` if throws.
+	public init(_ f: @autoclosure () throws -> Value) {
+		self.init(attempt: f)
+	}
+
+	/// Constructs a result from a closure that uses `throw`, failing with `Error` if throws.
+	public init(attempt f: () throws -> Value) {
+		do {
+			self = .success(try f())
+		} catch {
+			if let wrappedError = error as? Error {
+				self = .failure(wrappedError)
+			} else {
+				self = .failure(Error.init(error))
+			}
+		}
+	}
+}
+
 extension Result where Error == AnyError {
 	/// Constructs a result from an expression that uses `throw`, failing with `AnyError` if throws.
 	public init(_ f: @autoclosure () throws -> Value) {
@@ -131,6 +143,18 @@ extension Result where Error == AnyError {
 	}
 }
 
+extension Result where Error == NoError {
+	/// Constructs a success wrapping a `value`.
+	public init(value: Value) {
+		self = .success(value)
+	}
+	
+	/// Constructs a result from an expression that does not use `throw` and should never fail.
+	public init(_ f: @autoclosure () -> Value) {
+		self = .success(f())
+	}
+}
+
 // MARK: - Derive result from failable closure
 
 @available(*, deprecated, renamed: "Result.init(attempt:)")
@@ -141,18 +165,6 @@ public func materialize<T>(_ f: () throws -> T) -> Result<T, AnyError> {
 @available(*, deprecated, renamed: "Result.init(_:)")
 public func materialize<T>(_ f: @autoclosure () throws -> T) -> Result<T, AnyError> {
 	return Result(f)
-}
-
-// MARK: - ErrorConvertible conformance
-	
-extension NSError: ErrorConvertible {
-	public static func error(from error: Swift.Error) -> Self {
-		func cast<T: NSError>(_ error: Swift.Error) -> T {
-			return error as! T
-		}
-
-		return cast(error)
-	}
 }
 
 // MARK: - migration support

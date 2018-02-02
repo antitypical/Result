@@ -59,6 +59,11 @@ public extension Result {
 		case let .failure(error): return transform(error)
 		}
 	}
+	
+	/// Returns the result of re-wrapping `Failure`’s errors in a different `Error` wrapper, or re-wrapping `Success`es’ values.
+	public func mapError<Error2: ErrorInitializing>(to errorType: Error2.Type = Error2.self) -> Result<Value, Error2> {
+		return mapError{ Error2(($0 as? ErrorConvertible)?.error ?? $0) }
+	}
 
 	/// Returns a new Result by mapping `Success`es’ values using `success`, and by mapping `Failure`'s values using `failure`.
 	public func bimap<U, Error2>(success: (Value) -> U, failure: (Error) -> Error2) -> Result<U, Error2> {
@@ -87,12 +92,7 @@ public extension Result {
 	}
 }
 
-/// Protocol used to constrain `tryMap` to `Result`s with compatible `Error`s.
-public protocol ErrorConvertible: Swift.Error {
-	static func error(from error: Swift.Error) -> Self
-}
-
-public extension Result where Error: ErrorConvertible {
+public extension Result where Error: ErrorInitializing {
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or wrapping thrown errors.
 	public func tryMap<U>(_ transform: (Value) throws -> U) -> Result<U, Error> {
@@ -101,9 +101,10 @@ public extension Result where Error: ErrorConvertible {
 				return .success(try transform(value))
 			}
 			catch {
-				let convertedError = Error.error(from: error)
-				// Revisit this in a future version of Swift. https://twitter.com/jckarter/status/672931114944696321
-				return .failure(convertedError)
+				guard let wrappedError = error as? Error else {
+					return .failure(Error.init(error))
+				}
+				return .failure(wrappedError)
 			}
 		}
 	}
@@ -142,5 +143,6 @@ extension Result {
 
 // MARK: - migration support
 
-@available(*, unavailable, renamed: "ErrorConvertible")
-public protocol ErrorProtocolConvertible: ErrorConvertible {}
+@available(*, unavailable, message: "This has been removed. Use `ErrorInitializing` instead.")
+public protocol ErrorProtocolConvertible {}
+
