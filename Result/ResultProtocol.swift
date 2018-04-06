@@ -127,7 +127,7 @@ extension Result where Value: Equatable, Error: Equatable {
 	extension Result: Equatable where Value: Equatable, Error: Equatable { }
 #else
 	extension Result where Value: Equatable, Error: Equatable {
-		/// Returns `true` if `left` and `right` represent different cases, or if they represent the
+		/// Returns `true` if `left` and `right` represent different cases, or if they represent the same case but different values.
 		public static func !=(left: Result<Value, Error>, right: Result<Value, Error>) -> Bool {
 			return !(left == right)
 		}
