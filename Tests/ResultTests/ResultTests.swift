@@ -251,40 +251,6 @@ extension NSError {
 	}
 }
 
-extension ResultTests {
-	static var allTests: [(String, (ResultTests) -> () throws -> Void)] {
-		return [
-			("testMapTransformsSuccesses", testMapTransformsSuccesses),
-			("testMapRewrapsFailures", testMapRewrapsFailures),
-			("testInitOptionalSuccess", testInitOptionalSuccess),
-			("testInitOptionalFailure", testInitOptionalFailure),
-			("testFanout", testFanout),
-			("testBimapTransformsSuccesses", testBimapTransformsSuccesses),
-			("testBimapTransformsFailures", testBimapTransformsFailures),
-			("testErrorsIncludeTheSourceFile", testErrorsIncludeTheSourceFile),
-			("testErrorsIncludeTheSourceLine", testErrorsIncludeTheSourceLine),
-			("testErrorsIncludeTheCallingFunction", testErrorsIncludeTheCallingFunction),
-			("testTryCatchProducesSuccesses", testTryCatchProducesSuccesses),
-			("testTryCatchProducesFailures", testTryCatchProducesFailures),
-			("testTryCatchWithFunctionProducesSuccesses", testTryCatchWithFunctionProducesSuccesses),
-			("testTryCatchWithFunctionCatchProducesFailures", testTryCatchWithFunctionCatchProducesFailures),
-			("testMaterializeProducesSuccesses", testMaterializeProducesSuccesses),
-			("testMaterializeProducesFailures", testMaterializeProducesFailures),
-			("testRecoverProducesLeftForLeftSuccess", testRecoverProducesLeftForLeftSuccess),
-			("testRecoverProducesRightForLeftFailure", testRecoverProducesRightForLeftFailure),
-			("testRecoverWithProducesLeftForLeftSuccess", testRecoverWithProducesLeftForLeftSuccess),
-			("testRecoverWithProducesRightSuccessForLeftFailureAndRightSuccess", testRecoverWithProducesRightSuccessForLeftFailureAndRightSuccess),
-			("testRecoverWithProducesRightFailureForLeftFailureAndRightFailure", testRecoverWithProducesRightFailureForLeftFailureAndRightFailure),
-			("testTryMapProducesSuccess", testTryMapProducesSuccess),
-			("testTryMapProducesFailure", testTryMapProducesFailure),
-			("testAnyErrorDelegatesLocalizedDescriptionToUnderlyingError", testAnyErrorDelegatesLocalizedDescriptionToUnderlyingError),
-			("testAnyErrorDelegatesLocalizedFailureReasonToUnderlyingError", testAnyErrorDelegatesLocalizedFailureReasonToUnderlyingError),
-			("testAnyErrorDelegatesLocalizedRecoverySuggestionToUnderlyingError", testAnyErrorDelegatesLocalizedRecoverySuggestionToUnderlyingError),
-			("testAnyErrorDelegatesLocalizedHelpAnchorToUnderlyingError", testAnyErrorDelegatesLocalizedHelpAnchorToUnderlyingError),
-		]
-	}
-}
-
 import Foundation
 import Result
 import XCTest

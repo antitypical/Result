@@ -1,9 +1,8 @@
 import XCTest
 
-@testable import ResultTests
+import ResultTests
 
-XCTMain([
-	testCase(AnyErrorTests.allTests),
-	testCase(NoErrorTests.allTests),
-	testCase(ResultTests.allTests),
-])
+var tests = [XCTestCaseEntry]()
+tests += ResultTests.__allTests()
+
+XCTMain(tests)
