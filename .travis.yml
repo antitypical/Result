@@ -10,7 +10,7 @@ matrix:
         - xcodebuild $XCODE_ACTION -scheme Result-iOS -sdk iphonesimulator -destination "name=iPhone SE" | xcpretty
         - xcodebuild $XCODE_ACTION -scheme Result-tvOS -sdk appletvsimulator -destination "name=Apple TV" | xcpretty
         - xcodebuild build -scheme Result-watchOS -sdk watchsimulator | xcpretty
-        - pod lib lint
+        - rm .swift-version && pod lib lint
       env:
         - JOB=Xcode
         - XCODE_ACTION="build-for-testing test-without-building"
@@ -23,7 +23,7 @@ matrix:
         - xcodebuild $XCODE_ACTION -scheme Result-iOS -sdk iphonesimulator -destination "name=iPhone SE" | xcpretty
         - xcodebuild $XCODE_ACTION -scheme Result-tvOS -sdk appletvsimulator -destination "name=Apple TV" | xcpretty
         - xcodebuild build -scheme Result-watchOS -sdk watchsimulator | xcpretty
-        - pod lib lint
+        - rm .swift-version && pod lib lint
       env:
         - JOB=Xcode
         - XCODE_ACTION="build-for-testing test-without-building"
