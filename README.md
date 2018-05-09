@@ -94,7 +94,7 @@ An in depth discussion of `map` and `flatMap` is beyond the scope of this docume
 ### Cocoapods
 
 ```ruby
-pod 'Result', '~> 3.0.0'
+pod 'Result', '~> 4.0.0'
 ```
 
 ### Swift Package Manager
