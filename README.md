@@ -28,12 +28,11 @@ func stringForKey(json: JSONObject, key: String) -> Result<String, JSONError> {
         return .failure(.noSuchKey(key))
     }
     
-    if let value = value as? String {
-        return .success(value)
-    }
-    else {
+    guard let value = value as? String else {
         return .failure(.typeMismatch)
     }
+
+    return .success(value)
 }
 ```
 
