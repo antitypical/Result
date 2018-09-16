@@ -31,6 +31,19 @@ matrix:
       osx_image: xcode9.3
       language: objective-c
     - script:
+        - set -o pipefail
+        - xcodebuild $XCODE_ACTION -scheme Result-Mac | xcpretty
+        - xcodebuild $XCODE_ACTION -scheme Result-iOS -sdk iphonesimulator -destination "name=iPhone SE" | xcpretty
+        - xcodebuild $XCODE_ACTION -scheme Result-tvOS -sdk appletvsimulator -destination "name=Apple TV" | xcpretty
+        - xcodebuild build -scheme Result-watchOS -sdk watchsimulator | xcpretty
+        - rm .swift-version && pod lib lint
+      env:
+        - JOB=Xcode
+        - XCODE_ACTION="build-for-testing test-without-building"
+      os: osx
+      osx_image: xcode10
+      language: objective-c
+    - script:
         - swift --version
         - swift build
         - swift test
@@ -45,6 +58,14 @@ matrix:
       env: JOB=SPM
       os: osx
       osx_image: xcode9.3
+      language: objective-c
+    - script:
+        - swift --version
+        - swift build
+        - swift test
+      env: JOB=SPM
+      os: osx
+      osx_image: xcode10
       language: objective-c
     - script:
         - swift --version
