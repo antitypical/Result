@@ -106,7 +106,7 @@ let package = Package(
     targets: [],
     dependencies: [
         .Package(url: "https://github.com/antitypical/Result.git",
-                 majorVersion: 3)
+                 majorVersion: 4)
     ]
 )
 ```
