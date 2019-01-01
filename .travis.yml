@@ -77,6 +77,18 @@ matrix:
       language: generic
       install:
         - eval "$(curl -sL https://gist.githubusercontent.com/kylef/5c0475ff02b7c7671d2a/raw/9f442512a46d7a2af7b850d65a7e9bd31edfb09b/swiftenv-install.sh)"
+    - script:
+        - swift --version
+        - swift build
+        - swift test
+      env:
+        - JOB=Linux
+        - SWIFT_VERSION=5.0-DEVELOPMENT-SNAPSHOT-2018-12-28-a
+      sudo: required
+      dist: trusty
+      language: generic
+      install:
+        - eval "$(curl -sL https://gist.githubusercontent.com/kylef/5c0475ff02b7c7671d2a/raw/9f442512a46d7a2af7b850d65a7e9bd31edfb09b/swiftenv-install.sh)"
 
 notifications:
   email: false
