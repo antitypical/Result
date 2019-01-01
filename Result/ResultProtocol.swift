@@ -11,7 +11,7 @@ public protocol ResultProtocol {
 	var result: Result<Value, Error> { get }
 }
 
-public extension Result {
+extension Result {
 	/// Returns the value if self represents a success, `nil` otherwise.
 	public var value: Value? {
 		switch self {
@@ -69,7 +69,7 @@ public extension Result {
 	}
 }
 
-public extension Result {
+extension Result {
 
 	// MARK: Higher-order functions
 
@@ -92,7 +92,7 @@ public protocol ErrorConvertible: Swift.Error {
 	static func error(from error: Swift.Error) -> Self
 }
 
-public extension Result where Result.Failure: ErrorConvertible {
+extension Result where Result.Failure: ErrorConvertible {
 
 	/// Returns the result of applying `transform` to `Success`es’ values, or wrapping thrown errors.
 	public func tryMap<U>(_ transform: (Value) throws -> U) -> Result<U, Error> {
