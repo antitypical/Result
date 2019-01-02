@@ -1,7 +1,7 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
 /// An enum representing either a failure with an explanatory error, or a success with a result value.
-public enum Result<Value, Error: Swift.Error>: ResultProtocol, CustomStringConvertible, CustomDebugStringConvertible {
+public enum Result<Value, Error: Swift.Error> {
 	case success(Value)
 	case failure(Error)
 
@@ -17,18 +17,10 @@ public enum Result<Value, Error: Swift.Error>: ResultProtocol, CustomStringConve
 	/// and https://forums.swift.org/t/accepted-with-modifications-se-0235-add-result-to-the-standard-library/18603
 	/// for the details.
 	public typealias Failure = Error
+}
 
+extension Result {
 	// MARK: Constructors
-
-	/// Constructs a success wrapping a `value`.
-	public init(value: Value) {
-		self = .success(value)
-	}
-
-	/// Constructs a failure wrapping an `error`.
-	public init(error: Error) {
-		self = .failure(error)
-	}
 
 	/// Constructs a result from an `Optional`, failing with `Error` if `nil`.
 	public init(_ value: Value?, failWith: @autoclosure () -> Error) {
@@ -124,25 +116,34 @@ public enum Result<Value, Error: Swift.Error>: ResultProtocol, CustomStringConve
 
 		return NSError(domain: errorDomain, code: 0, userInfo: userInfo)
 	}
+}
 
-
-	// MARK: CustomStringConvertible
-
+extension Result: CustomStringConvertible {
 	public var description: String {
 		switch self {
 		case let .success(value): return ".success(\(value))"
 		case let .failure(error): return ".failure(\(error))"
 		}
 	}
+}
 
-
-	// MARK: CustomDebugStringConvertible
-
+extension Result: CustomDebugStringConvertible {
 	public var debugDescription: String {
 		return description
 	}
+}
 
-	// MARK: ResultProtocol
+extension Result: ResultProtocol {
+	/// Constructs a success wrapping a `value`.
+	public init(value: Value) {
+		self = .success(value)
+	}
+
+	/// Constructs a failure wrapping an `error`.
+	public init(error: Error) {
+		self = .failure(error)
+	}
+
 	public var result: Result<Value, Error> {
 		return self
 	}
