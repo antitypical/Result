@@ -1,10 +1,35 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
+#if swift(>=4.2)
+#if compiler(>=5)
+
+// Use Swift.Result
+extension Result {
+	// ResultProtocol
+	public typealias Value = Success
+	public typealias Error = Failure
+}
+
+#else
+
 /// An enum representing either a failure with an explanatory error, or a success with a result value.
 public enum Result<Value, Error: Swift.Error> {
 	case success(Value)
 	case failure(Error)
+}
 
+#endif
+#else
+
+/// An enum representing either a failure with an explanatory error, or a success with a result value.
+public enum Result<Value, Error: Swift.Error> {
+	case success(Value)
+	case failure(Error)
+}
+
+#endif
+
+extension Result {
 	/// The compatibility alias for the Swift 5's `Result` in the standard library.
 	///
 	/// See https://github.com/apple/swift-evolution/blob/master/proposals/0235-add-result.md
@@ -167,7 +192,11 @@ extension Result where Result.Failure == AnyError {
 
 // MARK: - Equatable
 
-#if swift(>=4.1)
+#if swift(>=4.2)
+#if !compiler(>=5)
+	extension Result: Equatable where Result.Success: Equatable, Result.Failure: Equatable {}
+#endif
+#elseif swift(>=4.1)
 	extension Result: Equatable where Result.Success: Equatable, Result.Failure: Equatable {}
 #endif
 
