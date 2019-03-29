@@ -393,11 +393,11 @@
 					};
 					D45480561A9572F5009D7229 = {
 						CreatedOnToolsVersion = 6.3;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1020;
 					};
 					D45480661A9572F5009D7229 = {
 						CreatedOnToolsVersion = 6.3;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1020;
 					};
 					D454807C1A957361009D7229 = {
 						CreatedOnToolsVersion = 6.3;
