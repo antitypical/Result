@@ -379,7 +379,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0930;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "Rob Rix";
 				TargetAttributes = {
 					57FCDE3C1BA280DC00130C48 = {
@@ -393,11 +393,11 @@
 					};
 					D45480561A9572F5009D7229 = {
 						CreatedOnToolsVersion = 6.3;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1020;
 					};
 					D45480661A9572F5009D7229 = {
 						CreatedOnToolsVersion = 6.3;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1020;
 					};
 					D454807C1A957361009D7229 = {
 						CreatedOnToolsVersion = 6.3;
@@ -411,7 +411,7 @@
 			};
 			buildConfigurationList = D45480511A9572F5009D7229 /* Build configuration list for PBXProject "Result" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
