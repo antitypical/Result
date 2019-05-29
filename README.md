@@ -93,20 +93,21 @@ An in depth discussion of `map` and `flatMap` is beyond the scope of this docume
 ### Cocoapods
 
 ```ruby
-pod 'Result', '~> 4.0.0'
+pod 'Result', '~> 5.0'
 ```
 
 ### Swift Package Manager
 
 ```swift
+// swift-tools-version:4.0
 import PackageDescription
 
 let package = Package(
     name: "MyProject",
     targets: [],
     dependencies: [
-        .Package(url: "https://github.com/antitypical/Result.git",
-                 majorVersion: 4)
+        .package(url: "https://github.com/antitypical/Result.git",
+                 from: "5.0.0")
     ]
 )
 ```
