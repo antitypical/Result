@@ -1,5 +1,7 @@
 //  Copyright (c) 2015 Rob Rix. All rights reserved.
 
+import Foundation
+
 #if swift(>=4.2)
 #if compiler(>=5)
 
@@ -282,7 +284,3 @@ public func `try`(_ function: String = #function, file: String = #file, line: In
 }
 
 #endif
-
-// MARK: -
-
-import Foundation
